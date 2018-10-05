@@ -5,9 +5,9 @@ Now it support socks4 too.
 
 # Install
 
-  pip2 install pysocks
-  git clone https://github.com/Leeon123/socks-doser
-  cd socks-doser
+  pip2 install pysocks\n
+  git clone https://github.com/Leeon123/socks-doser \n
+  cd socks-doser\n
 
 # Usage
 
