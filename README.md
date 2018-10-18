@@ -1,14 +1,16 @@
-# Socks-doser
+# CC-attack
 Use Socks5 proxy to ddos(Http-Flood) attack.
 
-Now it supports socks4 too.
+(It supports socks4 too.)
+
+And now it is upgraded to python3 version.
 
 # Install
 
-    pip2 install pysocks
-    git clone https://github.com/Leeon123/socks-doser.git
-    cd socks-doser
+    pip3 install pysocks
+    git clone https://github.com/Leeon123/CC-attack.git
+    cd CC-attack
 
 # Usage
 
-    python2 socks-doser.py
+    python3 cc.py
