@@ -28,7 +28,7 @@ And now it is upgraded to python3 version.
                  close the window.
     >---------------------------------------------<
     > Host/Ip:
-    > The page you want to attack:
+    > Page you want to attack:
     > Port:
     > Threads:
     > Proxy file path(proxy.txt):
