@@ -3,7 +3,8 @@
     | |  | |   _____ / _ \| __| __/ _` |/ __| |/ /
     | |__| |__|_____/ ___ \ |_| || (_| | (__|   <
      \____\____|   /_/   \_\__|\__\__,_|\___|_|\_\
-     [Version 1.2]
+
+  ![](https://img.shields.io/badge/Version-1.2-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
 # CC-attack
 Use Socks5 proxy to ddos(Http-Flood) attack.
 
