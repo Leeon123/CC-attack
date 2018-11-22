@@ -4,8 +4,7 @@
     | |__| |__|_____/ ___ \ |_| || (_| | (__|   <
      \____\____|   /_/   \_\__|\__\__,_|\___|_|\_\
 
-  ![](https://img.shields.io/badge/Version-1.2-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
-# CC-attack
+# CC-attack ![](https://img.shields.io/badge/Version-1.2-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
 Use Socks5 proxy to ddos(Http-Flood) attack.
 
 (It supports socks4 too.)
