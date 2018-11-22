@@ -1,3 +1,9 @@
+      ____ ____        _   _   _             _
+     / ___/ ___|      / \ | |_| |_ __ _  ___| | __
+    | |  | |   _____ / _ \| __| __/ _` |/ __| |/ /
+    | |__| |__|_____/ ___ \ |_| || (_| | (__|   <
+     \____\____|   /_/   \_\__|\__\__,_|\___|_|\_\
+     [Version 1.2]
 # CC-attack
 Use Socks5 proxy to ddos(Http-Flood) attack.
 
@@ -5,13 +11,17 @@ Use Socks5 proxy to ddos(Http-Flood) attack.
 
 And now it is upgraded to python3 version.
 
-# Install
+## News
+
+Now the script support https. :)
+
+## Install
 
     pip3 install pysocks
     git clone https://github.com/Leeon123/CC-attack.git
     cd CC-attack
 
-# Usage
+## Usage
 
     python3 cc.py
     
@@ -20,7 +30,7 @@ And now it is upgraded to python3 version.
     | |  | |   _____ / _ \| __| __/ _` |/ __| |/ /
     | |__| |__|_____/ ___ \ |_| || (_| | (__|   <
      \____\____|   /_/   \_\__|\__\__,_|\___|_|\_\
-    Python3 version 1.1
+    Python3 version 1.2
                                 Cobed by Leeon123
     >---------------------------------------------<
                 If you want to stop
@@ -28,8 +38,9 @@ And now it is upgraded to python3 version.
                  close the window.
     >---------------------------------------------<
     > Host/Ip:
+    > Https(y/n):
     > Page you want to attack:
-    > Port:
+    > Port(Https default is 443):
     > Threads:
     > Proxy file path(proxy.txt):
     > Number Of Proxies:
