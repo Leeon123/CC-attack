@@ -11,6 +11,10 @@ Use Socks5 proxy to ddos(Http-Flood) attack.
 
 And now it is upgraded to python3 version.
 
+# License
+
+MIT License
+
 ## News
 
 Now the script support https. :)
