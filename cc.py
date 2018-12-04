@@ -206,7 +206,7 @@ def run():
             s.close()
             try:
                 socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
-		s = socks.socksocket()
+                s = socks.socksocket()
                 s.connect((str(ip), int(port)))
                 s.send(str.encode(request))
                 print (str(proxy[0]+":"+proxy[1])+"<>---------<>Request Send!!!\r\n")
