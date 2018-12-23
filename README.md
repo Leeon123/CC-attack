@@ -27,7 +27,7 @@ Now the script support https. :)
 
 ## Usage
 
-Target=http://xxx.com/index.html
+If Target = http://xxx.com/index.html:
 
     python3 cc.py
     
