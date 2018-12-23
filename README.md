@@ -27,6 +27,8 @@ Now the script support https. :)
 
 ## Usage
 
+Target=http://xxx.com/index.html
+
     python3 cc.py
     
       ____ ____        _   _   _             _
@@ -41,11 +43,11 @@ Now the script support https. :)
                this script, pls just
                  close the window.
     >---------------------------------------------<
-    > Host/Ip:
-    > Https(y/n):
-    > Page you want to attack:
-    > Port(Https default is 443):
-    > Threads:
-    > Proxy file path(proxy.txt):
-    > Number Of Proxies:
-    > Input the Magnification:
+    > Host/Ip:xxx.com
+    > Https(y/n):n
+    > Page you want to attack:/index.html
+    > Port(Https default is 443):80
+    > Threads:300
+    > Proxy file path(proxy.txt):(Your socks5 list)
+    > Number Of Proxies:(your proxies number)
+    > Input the Magnification:(50-100)
