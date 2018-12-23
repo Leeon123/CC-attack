@@ -27,7 +27,7 @@ Now the script support https. :)
 
 ## Usage
 
-If Target = http://xxx.com/index.html:
+If target = http://xxx.com/:
 
     python3 cc.py
     
@@ -45,7 +45,7 @@ If Target = http://xxx.com/index.html:
     >---------------------------------------------<
     > Host/Ip:xxx.com
     > Https(y/n):n
-    > Page you want to attack:/index.html
+    > Page you want to attack:/
     > Port(Https default is 443):80
     > Threads:300
     > Proxy file path(proxy.txt):(Your socks5 list)
