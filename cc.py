@@ -165,7 +165,7 @@ time.sleep(0.3)
 multiple = int(input("> Input the Magnification:"))
 #For those who don't know what is the page you want to attack :)
 if url == '':
-	url2 = /
+	url2 = "/"
 else:
 	url2 = str(url)
 
