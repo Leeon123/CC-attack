@@ -15,8 +15,8 @@ print ('''
 | |  | |   _____ / _ \| __| __/ _` |/ __| |/ /
 | |__| |__|_____/ ___ \ |_| || (_| | (__|   <
  \____\____|   /_/   \_\__|\__\__,_|\___|_|\_\\
-Python3 version 1.2 (Support Https)
-                            Cobed by Leeon123
+Python3 version 1.2.1 (Support Https)
+                            Cobed by Lee0n123
 >---------------------------------------------<
              If you want to stop
             this script, pls just
