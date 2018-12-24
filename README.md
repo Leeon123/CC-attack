@@ -4,10 +4,10 @@
     | |__| |__|_____/ ___ \ |_| || (_| | (__|   <
      \____\____|   /_/   \_\__|\__\__,_|\___|_|\_\
 
-# CC-attack ![](https://img.shields.io/badge/Version-1.2-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
+# CC-attack ![](https://img.shields.io/badge/Version-1.2.1-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
 Use Socks5 proxy to ddos(Http-Flood) attack.
 
-(It supports socks4 too.)
+(It supports socks4 too,but the best choice is using socks5)
 
 And now it is upgraded to python3 version.
 
@@ -18,6 +18,8 @@ MIT License
 ## News
 
 Now the script support https. :)
+
+And now you don't need to fill in "Page you want to attack:".
 
 ## Install
 
@@ -36,7 +38,7 @@ If target = http://xxx.com/:
     | |  | |   _____ / _ \| __| __/ _` |/ __| |/ /
     | |__| |__|_____/ ___ \ |_| || (_| | (__|   <
      \____\____|   /_/   \_\__|\__\__,_|\___|_|\_\
-    Python3 version 1.2
+    Python3 version 1.2.1 (Support Https)
                                 Cobed by Leeon123
     >---------------------------------------------<
                 If you want to stop
@@ -45,7 +47,7 @@ If target = http://xxx.com/:
     >---------------------------------------------<
     > Host/Ip:xxx.com
     > Https(y/n):n
-    > Page you want to attack:/
+    > Page you want to attack(default=/):/
     > Port(Https default is 443):80
     > Threads:300
     > Proxy file path(proxy.txt):(Your socks5 list)
