@@ -166,7 +166,7 @@ if N == 'y':
     r = requests.get("https://www.proxy-list.download/api/v1/get?type=socks5")
     with open("socks.txt",'wb') as f:
         f.write(r.content)
-    print("\r\n [!] Have already download socks5 list as socks.txt")
+    print("\r\n [!] Have already download socks5 list as socks.txt\r\n")
 else:
     pass
 out_file = str(input("> Proxy file path(socks.txt):"))
