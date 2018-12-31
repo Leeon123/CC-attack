@@ -16,7 +16,7 @@ print ('''
 | |__| |__|_____/ ___ \ |_| || (_| | (__|   <
  \____\____|   /_/   \_\__|\__\__,_|\___|_|\_\\
 Python3 version 1.3 (Auto get socks5 list)
-                            Cobed by Leeon123
+                            C0d3d by Lee0n123
 >---------------------------------------------<
              If you want to stop
             this script, pls just
