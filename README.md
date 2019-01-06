@@ -4,7 +4,7 @@
     | |__| |__|_____/ ___ \ |_| || (_| | (__|   <
      \____\____|   /_/   \_\__|\__\__,_|\___|_|\_\
 
-# CC-attack ![](https://img.shields.io/badge/Version-1.3-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
+# CC-attack ![](https://img.shields.io/badge/Version-1.3.1-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
 Use Socks5 proxy to ddos(Http-Flood) attack.
 
 (It supports socks4 too,but the best choice is using socks5)
@@ -17,9 +17,9 @@ MIT License
 
 ## News
 
-Now the script support https. :)
+Fixed some bug when doing requests.
 
-And now you don't need to fill in "Page you want to attack:".
+Now the script support https. :)
 
 "Download socks5 list" is added in this script.
 
