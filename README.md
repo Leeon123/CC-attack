@@ -26,6 +26,7 @@ Now the script support https. :)
 ## Install
 
     pip3 install pysocks
+    pip3 install request
     git clone https://github.com/Leeon123/CC-attack.git
     cd CC-attack
 
