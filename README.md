@@ -1,8 +1,9 @@
-      ____ ____        _   _   _             _
-     / ___/ ___|      / \ | |_| |_ __ _  ___| | __
-    | |  | |   _____ / _ \| __| __/ _` |/ __| |/ /
-    | |__| |__|_____/ ___ \ |_| || (_| | (__|   <
-     \____\____|   /_/   \_\__|\__\__,_|\___|_|\_\
+       /////    /////    /////////////
+      CCCCC/   CCCCC/   | CC-attack |/
+     CC/      CC/       |-----------|/ 
+     CC/      CC/       |  Layer 7  |/ 
+     CC/////  CC/////   | ddos tool |/ 
+      CCCCC/   CCCCC/   |___________|/
 
 # CC-attack ![](https://img.shields.io/badge/Version-1.4-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
 Use Socks5 proxy to ddos(Http-Flood) attack.
