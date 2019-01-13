@@ -10,9 +10,9 @@ Use Socks5 proxy to ddos(Http-Flood) attack.
 
 (It supports socks4 too,but the best choice is using socks5)
 
-And now it is upgraded to python3 version.
+And now it is upgraded to **python3 version**.
 
-Support https :)
+***Support https*** :)
 
 # License
 
