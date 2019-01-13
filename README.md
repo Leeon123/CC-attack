@@ -5,7 +5,7 @@
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 
-# CC-attack ![](https://img.shields.io/badge/Version-1.4-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
+# CC-attack ![](https://img.shields.io/badge/Version-1.5-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
 Use Socks5 proxy to ddos(Http-Flood) attack.
 
 (It supports socks4 too,but the best choice is using socks5)
@@ -20,9 +20,9 @@ MIT License
 
 ## News
 
-Added fake x-forwarded-for and google search referer header
+Added google search referer header
 
-Fixed some bug when doing requests.
+***Fixed*** some *bug* when doing **SSL requests**.
 
 "Download socks5 list" is added in this script.
 
