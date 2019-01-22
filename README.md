@@ -5,7 +5,7 @@
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 
-# CC-attack ![](https://img.shields.io/badge/Version-1.5-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
+# CC-attack ![](https://img.shields.io/badge/Version-1.6-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
 Use Socks5 proxy to ddos(Http-Flood) attack.
 
 (It supports socks4 too,but the best choice is using socks5)
