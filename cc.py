@@ -17,7 +17,7 @@ print ('''
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Python3 version 1.6(Slow mode added)
+Python3 version 1.6.1(Improve Slow attack)
                             C0d3d by Lee0n123
 ===============================================
          --> Added Slow attack mode <--
