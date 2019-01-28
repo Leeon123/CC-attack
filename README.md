@@ -6,7 +6,9 @@
       CCCCC/   CCCCC/   |___________|/
 
 # CC-attack ![](https://img.shields.io/badge/Version-1.6.2-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
-Use Socks5 proxy to ddos(Http-Flood) attack.
+**Use Socks5 proxy to ddos(Http-Flood) attack.**
+
+***Slow Attack Can Bypass some WAF, used to attack apache2 server is the best :)***
 
 (It supports socks4 too,but the best choice is using socks5)
 
