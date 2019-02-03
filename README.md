@@ -5,7 +5,7 @@
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 
-# CC-attack ![](https://img.shields.io/badge/Version-1.6.2-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
+# CC-attack ![](https://img.shields.io/badge/Version-1.6.3-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
 **Use Socks5 proxy to ddos(Http-Flood) attack.**
 
 ***Slow Attack Can Bypass some WAF, it used to attack apache2 server is the best :)***
@@ -24,7 +24,9 @@ MIT License
 
 **SLOW ATTACK MODE ADDED**
 
-Added google search referer header
+**AUTO ENABLE SSL MODE, NO MORE "https(y/n):" choice**
+
+*Added google search referer header*
 
 ***Fixed*** some *bug* when doing **SSL requests**.
 
@@ -32,7 +34,7 @@ Added google search referer header
 
 ## Install
 
-    pip3 install requests pysocks
+    pip3 install requests pysocks ssl
     git clone https://github.com/Leeon123/CC-attack.git
     cd CC-attack
 
