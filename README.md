@@ -5,10 +5,12 @@
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 
-# CC-attack ![](https://img.shields.io/badge/Version-1.6.3-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
+# CC-attack ![](https://img.shields.io/badge/Version-1.7-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
 **Use Socks5 proxy to ddos(Http-Flood) attack.**
 
-***Slow Attack Can Bypass some WAF, it used to attack apache2 server is the best :)***
+***Added Http-Post attack mode***
+
+*Slow Attack Can Bypass some WAF, it used to attack apache2 server is the best :)*
 
 (It supports socks4 too,but the best choice is using socks5)
 
@@ -22,9 +24,9 @@ MIT License
 
 ## News
 
-**SLOW ATTACK MODE ADDED**
+**SLOW attack mode AND HTTP-POST attack mode ADDED**
 
-**AUTO ENABLE SSL MODE, NO MORE "https(y/n):" choice**
+*AUTO ENABLE SSL MODE, NO MORE "https(y/n):" choice*
 
 *Added google search referer header*
 
