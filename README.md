@@ -5,7 +5,7 @@
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 
-# CC-attack ![](https://img.shields.io/badge/Version-1.7-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
+# CC-attack ![](https://img.shields.io/badge/Version-1.8-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
 **Use Socks5 proxy to ddos(Http-Flood) attack.**
 
 ***Added Http-Post attack mode***
@@ -23,6 +23,8 @@ And now it is upgraded to **python3 version**.
 MIT License
 
 ## News
+
+**Added random header**
 
 **SLOW attack mode AND HTTP-POST attack mode ADDED**
 
