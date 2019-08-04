@@ -13,6 +13,7 @@
 - [x] Http Get  Flood
 - [x] Http Post Flood
 - [x] Http Slow Attack
+- [x] Support HTTPS
 - [x] Socks5 Proxies Downloader
 - [x] Socks5 Proxies Checker
 - [x] Random Http Header
