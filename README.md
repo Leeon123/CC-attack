@@ -5,36 +5,19 @@
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 
-# CC-attack ![](https://img.shields.io/badge/Version-1.8-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
-**Use Socks5 proxy to ddos(Http-Flood) attack.**
-
-***Added Http-Post attack mode***
-
-*Slow Attack Can Bypass some WAF, it used to attack apache2 server is the best :)*
-
-(It supports socks4 too,but the best choice is using socks5)
-
-And now it is upgraded to **python3 version**.
-
-***Support https*** :)
-
-# License
-
-MIT License
-
-## News
-
-**Added random header**
-
-**SLOW attack mode AND HTTP-POST attack mode ADDED**
-
-*AUTO ENABLE SSL MODE, NO MORE "https(y/n):" choice*
-
-*Added google search referer header*
-
-***Fixed*** some *bug* when doing **SSL requests**.
-
-"Download socks5 list" is added in this script.
+# CC-attack ![](https://img.shields.io/badge/Version-1.9-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
+ A script for using socks5 proxies to attack http server.
+ 
+ Info:
+- [x] Use Python3
+- [x] Http Get  Flood
+- [x] Http Post Flood
+- [x] Http Slow Attack
+- [x] Socks5 Proxies Downloader
+- [x] Socks5 Proxies Checker
+- [x] Random Http Header
+- [x] Random Http Useragent
+- [x] Still Improving Project
 
 ## Install
 
