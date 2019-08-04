@@ -9,7 +9,7 @@
  A script for using socks5 proxies to attack http server.
  
  Info:
-- [x] Use Python3
+- [x] Using Python3
 - [x] Http Get  Flood
 - [x] Http Post Flood
 - [x] Http Slow Attack
