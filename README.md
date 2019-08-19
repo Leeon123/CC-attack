@@ -6,7 +6,7 @@
       CCCCC/   CCCCC/   |___________|/
 
 # CC-attack ![](https://img.shields.io/badge/Version-2.2-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
- A script for using socks5 proxies to attack http server.
+ A script for using socks4/5 proxies to attack http server.
  
  News:
 - [x] Added more human-like options
