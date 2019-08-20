@@ -5,14 +5,15 @@
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 
-# CC-attack ![](https://img.shields.io/badge/Version-2.2-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
+# CC-attack ![](https://img.shields.io/badge/Version-2.3-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
  A script for using socks4/5 proxies to attack http server.
  
  News:
-- [x] Added more human-like options
+- [x] Fixed Bug
  
  Info:
 - [x] Using Python3
+- [x] Added more human-like options
 - [x] Http Get  Flood
 - [x] Http Post Flood
 - [x] Http Slow Attack
