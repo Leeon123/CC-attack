@@ -5,11 +5,16 @@
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 
-# CC-attack ![](https://img.shields.io/badge/Version-2.3-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
+# CC-attack ![](https://img.shields.io/badge/Version-2.4-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
  A script for using socks4/5 proxies to attack http server.
  
+ I removed the mixed proxies flood because in my perspective, it doesn't give 
+ 
+ more performance when flooding.
+ 
  News:
-- [x] Fixed Bug
+- [x] Removed mixed proxies flood
+- [x] Added proxies mode selection
  
  Info:
 - [x] Using Python3
