@@ -8,9 +8,7 @@
 # CC-attack ![](https://img.shields.io/badge/Version-2.4-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
  A script for using socks4/5 proxies to attack http server.
  
- I removed the mixed proxies flood because in my perspective, it doesn't give 
- 
- more performance when flooding.
+ I removed the mixed proxies flood because in my perspective, it doesn't give more performance when flooding.
  
  News:
 - [x] Removed mixed proxies flood
