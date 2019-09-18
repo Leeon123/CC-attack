@@ -132,8 +132,6 @@ useragents=["Mozilla/5.0 (Android; Linux armv7l; rv:10.0.1) Gecko/20100101 Firef
 			"Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.1.2) Gecko/20090803 Ubuntu/9.04 (jaunty) Shiretoko/3.5.2",
 			"Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9a3pre) Gecko/20070330",
 			"Mozilla/5.0 (X11; U; Linux i686; it; rv:1.9.2.3) Gecko/20100406 Firefox/3.6.3 (Swiftfox)",
-			"Mozilla/5.0 (X11; U; Linux i686; pl-PL; rv:1.9.0.2) Gecko/20121223 Ubuntu/9.25 (jaunty) Firefox/3.8",
-			"Mozilla/5.0 (X11; U; Linux i686; pt-PT; rv:1.9.2.3) Gecko/20100402 Iceweasel/3.6.3 (like Firefox/3.6.3) GTB7.0",
 			"Mozilla/5.0 (X11; U; Linux ppc; en-US; rv:1.8.1.13) Gecko/20080313 Iceape/1.1.9 (Debian-1.1.9-5)",
 			"Mozilla/5.0 (X11; U; Linux x86_64; en-US) AppleWebKit/532.9 (KHTML, like Gecko) Chrome/5.0.309.0 Safari/532.9",
 			"Mozilla/5.0 (X11; U; Linux x86_64; en-US) AppleWebKit/534.15 (KHTML, like Gecko) Chrome/10.0.613.0 Safari/534.15",
@@ -428,14 +426,17 @@ def main():
 		if N == 'y' or N == "" :
 			if choice == "4":
 				r = requests.get("https://api.proxyscrape.com/?request=displayproxies&proxytype=socks4&country=all&timeout=1000")
-				with open("socks4.txt",'wb') as f:
-					f.write(r.content)
-					print("> Have already downloaded socks4 list as socks4.txt")
+				f = open("socks4.txt",'wb')
+				f.write(r.content)
+				r = requests.get("https://www.proxy-list.download/api/v1/get?type=socks4")
+				f.write(r.content)
+				f.close()
+				print("> Have already downloaded socks4 list as socks4.txt")
 			if choice == "5":
-				r = requests.get("https://api.proxyscrape.com/?request=displayproxies&proxytype=socks5&country=all&timeout=1000")
+				r = requests.get("https://api.proxyscrape.com/?request=displayproxies&proxytype=socks5&country=all&timeout=10000")
 				f = open("socks5.txt",'wb')
 				f.write(r.content)
-				r = requests.get("https://www.proxy-list.download/api/v1/get?type=socks5&anon=elite")
+				r = requests.get("https://www.proxy-list.download/api/v1/get?type=socks5")
 				f.write(r.content)
 				f.close()
 				print("> Have already downloaded socks5 list as socks5.txt")
