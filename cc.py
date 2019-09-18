@@ -425,20 +425,26 @@ def main():
 		N = str(input("> Do you need to get socks list?(y/n,default=y):"))
 		if N == 'y' or N == "" :
 			if choice == "4":
-				r = requests.get("https://api.proxyscrape.com/?request=displayproxies&proxytype=socks4&country=all&timeout=1000")
 				f = open("socks4.txt",'wb')
-				f.write(r.content)
-				r = requests.get("https://www.proxy-list.download/api/v1/get?type=socks4")
-				f.write(r.content)
-				f.close()
+				try:
+					r = requests.get("https://api.proxyscrape.com/?request=displayproxies&proxytype=socks4&country=all&timeout=1000")
+					f.write(r.content)
+					r = requests.get("https://www.proxy-list.download/api/v1/get?type=socks4")
+					f.write(r.content)
+					f.close()
+				except:
+					f.close()
 				print("> Have already downloaded socks4 list as socks4.txt")
 			if choice == "5":
-				r = requests.get("https://api.proxyscrape.com/?request=displayproxies&proxytype=socks5&country=all&timeout=10000")
 				f = open("socks5.txt",'wb')
-				f.write(r.content)
-				r = requests.get("https://www.proxy-list.download/api/v1/get?type=socks5")
-				f.write(r.content)
-				f.close()
+				try:
+					r = requests.get("https://api.proxyscrape.com/?request=displayproxies&proxytype=socks5&country=all")
+					f.write(r.content)
+					r = requests.get("https://www.proxy-list.download/api/v1/get?type=socks5")
+					f.write(r.content)
+					f.close()
+				except:
+					f.close()
 				print("> Have already downloaded socks5 list as socks5.txt")
 		else:
 			pass
