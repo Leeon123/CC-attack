@@ -331,16 +331,22 @@ def checking(lines,socks_type,ms):#Proxy checker coded by Leeon123
 		socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
 	if socks_type == 5:
 		socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
-	try:
-		s = socks.socksocket()
-		s.settimeout(ms)#You can change by yourself
-		s.connect((str(ip), int(port)))
-		if port == 443:
-			s = ssl.wrap_socket(s)
-		s.send(str.encode("GET / HTTP/1.1\r\n\r\n"))
-		s.close()
-	except:
-		proxies.remove(lines)
+	err = 0
+	while True:
+		if err == 3:
+			proxies.remove(lines)
+			break
+		try:
+			s = socks.socksocket()
+			s.settimeout(ms)#You can change by yourself
+			s.connect((str(ip), int(port)))
+			if port == 443:
+				s = ssl.wrap_socket(s)
+			s.send(str.encode("GET / HTTP/1.1\r\n\r\n"))
+			s.close()
+			break
+		except:
+			err +=1
 	nums += 1
 
 def check_socks(ms):#Coded by Leeon123
@@ -354,7 +360,7 @@ def check_socks(ms):#Coded by Leeon123
 			th = threading.Thread(target=checking,args=(lines,5,ms,))
 			th.start()
 		thread_list.append(th)
-		time.sleep(0.03)
+		time.sleep(0.01)
 		sys.stdout.write("> Checked "+str(nums)+" proxies\r")
 		sys.stdout.flush()
 	for th in list(thread_list):
@@ -376,6 +382,18 @@ def check_socks(ms):#Coded by Leeon123
 					fp.write(bytes(lines,encoding='utf8'))
 			fp.close()
 			print("> They are saved in socks5.txt.")
+			
+def check_list(socks_file):
+	print("> Checking list")
+	temp = open(socks_file).readlines()
+	temp_list = []
+	for i in temp:
+		if i not in temp_list:
+			temp_list.append(i)
+	rfile = open(socks_file, "wb")
+	for i in list(temp_list):
+		rfile.write(bytes(i,encoding='utf-8'))
+	rfile.close()
 
 def main():
 	global ip
@@ -460,6 +478,7 @@ def main():
 				out_file = str("socks4.txt")
 			else:
 				out_file = str(out_file)
+			check_list(out_file)
 			proxies = open(out_file).readlines()
 		elif choice == "5":
 			out_file = str(input("> Socks5 Proxy file path(socks5.txt):"))
@@ -467,6 +486,7 @@ def main():
 				out_file = str("socks5.txt")
 			else:
 				out_file = str(out_file)
+			check_list(out_file)
 			proxies = open(out_file).readlines()
 		print ("> Number Of Socks%s Proxies: %s" %(choice,len(proxies)))
 		time.sleep(0.03)
@@ -499,17 +519,32 @@ def main():
 	N = str(input("> Do you need to get socks list?(y/n,default=y):"))
 	if N == 'y' or N == "" :
 		if choice == "4":
-			r = requests.get("https://api.proxyscrape.com/?request=displayproxies&proxytype=socks4&country=all&timeout=1000")
-			with open("socks4.txt",'wb') as f:
+			f = open("socks4.txt",'wb')
+			try:
+				r = requests.get("https://api.proxyscrape.com/?request=displayproxies&proxytype=socks4&country=all&timeout=1000")
 				f.write(r.content)
-				print("> Have already downloaded socks4 list as socks4.txt")
+			except:
+				pass
+			try:
+				r = requests.get("https://www.proxy-list.download/api/v1/get?type=socks4")
+				f.write(r.content)
+				f.close()
+			except:
+				f.close()
+			print("> Have already downloaded socks4 list as socks4.txt")
 		if choice == "5":
-			r = requests.get("https://api.proxyscrape.com/?request=displayproxies&proxytype=socks5&country=all&timeout=1000")
 			f = open("socks5.txt",'wb')
-			f.write(r.content)
-			r = requests.get("https://www.proxy-list.download/api/v1/get?type=socks5&anon=elite")
-			f.write(r.content)
-			f.close()
+			try:
+				r = requests.get("https://api.proxyscrape.com/?request=displayproxies&proxytype=socks5&country=all")
+				f.write(r.content)
+			except:
+				pass
+			try:
+				r = requests.get("https://www.proxy-list.download/api/v1/get?type=socks5")
+				f.write(r.content)
+				f.close()
+			except:
+				f.close()
 			print("> Have already downloaded socks5 list as socks5.txt")
 	else:
 		pass
@@ -519,6 +554,7 @@ def main():
 			out_file = str("socks4.txt")
 		else:
 			out_file = str(out_file)
+		check_list(out_file)
 		proxies = open(out_file).readlines()
 	elif choice == "5":
 		out_file = str(input("> Socks5 Proxy file path(socks5.txt):"))
@@ -526,6 +562,7 @@ def main():
 			out_file = str("socks5.txt")
 		else:
 			out_file = str(out_file)
+		check_list(out_file)
 		proxies = open(out_file).readlines()
 	print ("> Number Of Socks%s Proxies: %s" %(choice,len(proxies)))
 	time.sleep(0.03)
