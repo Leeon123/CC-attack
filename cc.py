@@ -23,7 +23,7 @@ print ('''
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Python3 version 2.7 (Added Fake Client)
+Python3 version 2.7.1 (Fixed Error)
                             C0d3d by L330n123
 ╔═════════════════════════════════════════════╗
 ║        Tos: Don't attack .gov website       ║
