@@ -5,12 +5,13 @@
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 
-# CC-attack ![](https://img.shields.io/badge/Version-2.7-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
+# CC-attack ![](https://img.shields.io/badge/Version-2.7.1-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
  A script for using socks4/5 proxies to attack http server.
  
  I removed the mixed proxies flood because in my perspective, it doesn't give more performance when flooding.
  
  News:
+- [x] Fixed a mistake, Thanks @[idlefire](https://github.com/idlefire)
 - [x] Random Client IP(only get mode)
 - [x] Fixed slow mode
  
