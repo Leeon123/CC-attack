@@ -357,7 +357,7 @@ def check_socks(ms):#Coded by Leeon123
 			th = threading.Thread(target=checking,args=(lines,5,ms,))
 			th.start()
 		if choice == "4":
-			th = threading.Thread(target=checking,args=(lines,5,ms,))
+			th = threading.Thread(target=checking,args=(lines,4,ms,))
 			th.start()
 		thread_list.append(th)
 		time.sleep(0.01)
