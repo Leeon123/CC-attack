@@ -11,9 +11,9 @@
  I removed the mixed proxies flood because in my perspective, it doesn't give more performance when flooding.
  
  News:
+- [x] Customize Cookies
 - [x] Customize post data 
 - [x] Fast Socket Re-use 
-- [x] Improved CC mode
 - [x] Random Client IP(only get mode)
  
  Info:
@@ -33,6 +33,17 @@
 - [x] Removed mixed proxies flood
 - [x] Added proxies mode selection
 - [x] Still Improving Project
+
+## Install
+
+    pip3 install requests pysocks
+    git clone https://github.com/Leeon123/CC-attack.git
+    cd CC-attack
+
+## Usage
+
+    python3 cc.py
+    
 ## Sth need to talk
 
 I made a golang httpflood with socks5, its powerful when added random url, header
@@ -46,12 +57,3 @@ The release will not have any function, just send simple http request through so
 You can copy this [source's](https://github.com/Leeon123/golang-httpflood) fucntion to that source.
 
 Base: https://github.com/Leeon123/Golang_CC_Base
-## Install
-
-    pip3 install requests pysocks
-    git clone https://github.com/Leeon123/CC-attack.git
-    cd CC-attack
-
-## Usage
-
-    python3 cc.py
