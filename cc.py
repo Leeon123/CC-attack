@@ -452,7 +452,7 @@ def main():
 		if mode2 == "y":
 			data = open(input("> Input the file's path:").strip()).readlines()
 			data = ' '.join([str(txt) for txt in data])
-	choice2 = str(input("Customize cookies? (y/n, default=n):")).strip()
+	choice2 = str(input("> Customize cookies? (y/n, default=n):")).strip()
 	if choice2 == "y":
 		cookies = str(input("Plese input the cookies:")).strip()
 	choice = ""
