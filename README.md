@@ -44,16 +44,3 @@
 
     python3 cc.py
     
-## Sth need to talk
-
-I made a golang httpflood with socks5, its powerful when added random url, header
-
-and with some js resovler. I used it to take down some gov website and for some reason
-
-I decided to release it's base.
-
-The release will not have any function, just send simple http request through socks5 with socket
-
-You can copy this [source's](https://github.com/Leeon123/golang-httpflood) fucntion to that source.
-
-Base: https://github.com/Leeon123/Golang_CC_Base
