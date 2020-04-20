@@ -8,13 +8,15 @@
 # CC-attack ![](https://img.shields.io/badge/Version-3.2.Beta-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
  A script for using socks4/5 proxies to attack http server.
  
- I removed the mixed proxies flood because in my perspective, it doesn't give more performance when flooding.
- 
+Well, looks like python can't handle random generate as fast as golang.
+
+Removed lots of junk code.
+
  News:
+- [x] optimize code
+- [x] Added HEAD method
 - [x] Customize Cookies
 - [x] Customize post data 
-- [x] Fast Socket Re-use 
-- [x] Random Client IP(only get mode)
  
  Info:
 - [x] Using Python3
@@ -30,7 +32,6 @@
 - [x] Random Http post data
 - [x] Random Http Header
 - [x] Random Http Useragent
-- [x] Removed mixed proxies flood
 - [x] Added proxies mode selection
 - [x] Still Improving Project
 
