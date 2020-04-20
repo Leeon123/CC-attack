@@ -13,7 +13,7 @@ Well, looks like python can't handle random generate as fast as golang.
 Removed lots of junk code.
 
  News:
-- [x] optimize code
+- [x] Optimize code
 - [x] Added HEAD method
 - [x] Customize Cookies
 - [x] Customize post data 
