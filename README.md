@@ -8,7 +8,7 @@
 # CC-attack ![](https://img.shields.io/badge/Version-3.2.beta-brightgreen.svg) ![](https://img.shields.io/badge/license-GPLv2-blue.svg)
  A script for using socks4/5 proxies to attack http server.
 
- 
+
  Info:
 - [x] Using Python3
 - [x] Added more human-like options
@@ -28,7 +28,6 @@
 - [x] Customize post data 
 - [x] Added proxies mode selection
 - [x] Optimize code
-- [x] Still Improving Project
 
 ## Install
 
