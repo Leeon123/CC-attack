@@ -5,13 +5,12 @@
      CC/////  CC/////   | ddos tool |/ 
       CCCCC/   CCCCC/   |___________|/
 
-# CC-attack ![](https://img.shields.io/badge/Version-3.3-brightgreen.svg) ![](https://img.shields.io/badge/license-GPLv2-blue.svg)
+# CC-attack ![](https://img.shields.io/badge/Version-3.4-brightgreen.svg) ![](https://img.shields.io/badge/license-GPLv2-blue.svg)
  A script for using socks4/5 proxies to attack http server.
 
  News:
-- [x] Fixed low performance
-- [x] Added event for concurrent
-- [x] Select proxies at start of thread for performance
+- [x] Added new api for downloading socks
+- [x] Removed useless code
 
  Info:
 - [x] Using Python3
@@ -32,6 +31,9 @@
 - [x] Customize post data 
 - [x] Added proxies mode selection
 - [x] Optimize code
+- [x] Fixed low performance
+- [x] Added event for concurrent
+- [x] Select proxies at start of thread for performance
 
 ## Install
 
