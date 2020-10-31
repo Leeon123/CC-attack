@@ -12,30 +12,18 @@
 - [x] Added Url Parser
 - [x] Simplify the process of generate header
 - [x] Added new api for downloading socks
-- [x] Removed useless code
 
  Info:
 - [x] Using Python3
 - [x] Added more human-like options
-- [x] Http Get  Flood
-- [x] Http Head Flood
-- [x] Http Post Flood
-- [x] Http Slow Attack
-- [x] Support HTTPS
-- [x] Socks4 Proxies Downloader
-- [x] Socks4 Proxies Checker
-- [x] Socks5 Proxies Downloader
-- [x] Socks5 Proxies Checker
-- [x] Random Http post data
-- [x] Random Http Header
-- [x] Random Http Useragent
+- [x] Http Get/Head/Post/Slow Flood
+- [x] Random Http Header/Data
+- [x] Socks4/5 Proxies Downloader
+- [x] Socks4/5 Proxies Checker
 - [x] Customize Cookies
-- [x] Customize post data 
-- [x] Added proxies mode selection
-- [x] Optimize code
-- [x] Fixed low performance
-- [x] Added event for concurrent
-- [x] Select proxies at start of thread for performance
+- [x] Customize Post Data 
+- [x] Support HTTPS
+- [x] Support Socks4/5
 
 ## Install
 
