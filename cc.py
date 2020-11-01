@@ -154,8 +154,8 @@ def GenReqHeader(method):
 		refer = "Referer: http://"+ target + path + "\r\n"
 		user_agent = "User-Agent: " + getuseragent() + "\r\n"
 		accept = Choice(acceptall)
-		if mode2 != "y":
-			data = str(random._urandom(16)) # You can enable bring data in HTTP Header
+		if mode2 != "y":# You can enable customize data
+			data = str(random._urandom(16)) 
 		length = "Content-Length: "+str(len(data))+" \r\nConnection: Keep-Alive\r\n"
 		if cookies != "":
 			length += "Cookies: "+str(cookies)+"\r\n"
@@ -252,7 +252,6 @@ def head(event,socks_type):#HEAD MODE
 			s.close()
 
 def post(event,socks_type):
-	global data
 	request = GenReqHeader("post")
 	proxy = Choice(proxies).strip().split(":")
 	event.wait()
