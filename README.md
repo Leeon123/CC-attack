@@ -9,9 +9,8 @@
  A script for using socks4/5 proxies to attack http(s) server.
 
  News:
+- [x] Added Output Indicator
 - [x] Added Url Parser
-- [x] Simplify the process of generate header
-- [x] Added new api for downloading socks
 
  Info:
 - [x] Using Python3
@@ -24,6 +23,10 @@
 - [x] Customize Post Data 
 - [x] Support HTTPS
 - [x] Support Socks4/5
+
+## Showcase
+
+![](https://i.imgur.com/hXGBnkB.png)
 
 ## Install
 
