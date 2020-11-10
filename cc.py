@@ -118,7 +118,7 @@ def getuseragent():
 	if browser == 'chrome':
 		webkit = str(Intn(500, 599))
 		version = str(Intn(0, 99)) + '.0' + str(Intn(0, 9999)) + '.' + str(Intn(0, 999))
-		return 'Mozilla/5.0 (' + os + ') AppleWebKit/' + webkit + '.0 (KHTML, like Gecko) Chrome/' + version + ' Safari/' + webkit
+		return 'Mozilla/5.0 (' + os + ') AppleWebKit/' + webkit + '.0 (KHTML, like Gecko) Chrome/' + version + ' Safari/' + webkit +'(compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
 	elif browser == 'firefox':
 		currentYear = datetime.date.today().year
 		year = str(Intn(2020, currentYear))
@@ -134,7 +134,7 @@ def getuseragent():
 			day = str(day)
 		gecko = year + month + day
 		version = str(Intn(1, 72)) + '.0'
-		return 'Mozilla/5.0 (' + os + '; rv:' + version + ') Gecko/' + gecko + ' Firefox/' + version
+		return 'Mozilla/5.0 (' + os + '; rv:' + version + ') Gecko/' + gecko + ' Firefox/' + version +'(compatible; Google-Read-Aloud;  +https://support.google.com/webmasters/answer/1061943)'
 	elif browser == 'ie':
 		version = str(Intn(1, 99)) + '.0'
 		engine = str(Intn(1, 99)) + '.0'
@@ -143,7 +143,7 @@ def getuseragent():
 			token = Choice(['.NET CLR', 'SV1', 'Tablet PC', 'Win64; IA64', 'Win64; x64', 'WOW64']) + '; '
 		else:
 			token = ''
-		return 'Mozilla/5.0 (compatible; MSIE ' + version + '; ' + os + '; ' + token + 'Trident/' + engine + ')'
+		return 'Mozilla/5.0 (compatible; MSIE ' + version + '; ' + os + '; ' + token + 'Trident/' + engine + ' ;+http://www.google.com/adsbot.html)'
 
 def randomurl():
 	 return str(Choice(strings)+str(Intn(0,271400281257))+Choice(strings)+str(Intn(0,271004281257))+Choice(strings) + Choice(strings)+str(Intn(0,271400281257))+Choice(strings)+str(Intn(0,271004281257))+Choice(strings))
