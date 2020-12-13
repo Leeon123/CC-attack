@@ -663,6 +663,9 @@ def main():
 		except:
 			sys.exit("Error thread number")
 	CheckerOption()
+	if len(proxies) == 0:
+		print("> There are no more proxies. Please download a new one.")
+		return
 	ind_rlock = threading.RLock()
 	if mode == "slow":
 		input("Press Enter to continue.")
