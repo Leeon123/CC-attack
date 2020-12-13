@@ -24,7 +24,7 @@ print ('''
 	 CC/////  CC/////   | ddos tool |/ 
 	  CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Version 3.6 (2020/11/14)
+Version 3.6 (2020/12/14)
 							C0d3d by L330n123
 ┌─────────────────────────────────────────────┐
 │        Tos: Don't attack .gov website       │
@@ -236,6 +236,9 @@ def CheckerOption():
 			out_file = str(out_file)
 		check_list(out_file)
 		proxies = open(out_file).readlines()
+	if len(proxies) == 0:
+		print("> There are no more proxies. Please download a new one.")
+		sys.exit(1)
 	print ("> Number Of Socks%s Proxies: %s" %(choice,len(proxies)))
 	time.sleep(0.03)
 	ans = str(input("> Do u need to check the socks list?(y/n, defualt=y):"))
