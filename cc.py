@@ -640,7 +640,10 @@ def downloadsocks(choice):
 		except:
 			f.close()
 		print("> Have already downloaded socks5 list as socks5.txt")
-
+def prevent():
+    if '.gov' in url :
+        print("You can't attack .gov website!")
+        exit()
 def main():
 	global multiple
 	global choice
@@ -651,6 +654,7 @@ def main():
 	print("> Mode: [cc/post/head/slow/check]")
 	mode = InputOption("> Choose Your Mode (default=cc) :",["cc","post","head","slow","check"],"cc")
 	url = str(input("> Input the target url:")).strip()
+	prevent()
 	ParseUrl(url)
 	if mode == "post":
 		mode2 = InputOption("> Customize post data? (y/n, default=n):",["y","n","yes","no"],"n")
