@@ -651,6 +651,7 @@ def main():
 	global mode2
 	global cookies
 	global brute
+	global url
 	print("> Mode: [cc/post/head/slow/check]")
 	mode = InputOption("> Choose Your Mode (default=cc) :",["cc","post","head","slow","check"],"cc")
 	url = str(input("> Input the target url:")).strip()
