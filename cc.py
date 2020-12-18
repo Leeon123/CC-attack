@@ -24,7 +24,7 @@ print ('''
 	 CC/////  CC/////   | ddos tool |/ 
 	  CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Version 3.6 (2020/12/16)
+Version 3.6 (2020/12/19)
 							C0d3d by L330n123
 ┌─────────────────────────────────────────────┐
 │        Tos: Don't attack .gov website       │
@@ -639,9 +639,10 @@ def downloadsocks(choice):
 			f.close()
 		print("> Have already downloaded socks5 list as socks5.txt")
 def prevent():
-    if '.gov' in url :
-        print("You can't attack .gov website!")
-        exit()
+	if '.gov' in url :
+		print("> You can't attack .gov website!")
+		exit()
+	
 def main():
 	global multiple
 	global choice
