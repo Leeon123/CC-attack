@@ -38,5 +38,3 @@
 
     python3 cc.py
     
-## Donate
-Btc: 3HYjBg43cFqpqCzurcfprMAn4A2xyrDB7E
