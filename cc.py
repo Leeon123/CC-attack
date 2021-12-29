@@ -21,7 +21,7 @@ print ('''
 	  CCCCC/   CCCCC/   | CC-attack |/
 	 CC/      CC/       |-----------|/ 
 	 CC/      CC/       |  Layer 7  |/ 
-	 CC/////  CC/////   | ddos tool |/ 
+	 CC/////  CC/////   |   Botnet  |/ 
 	  CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
 Version 3.6 (2021/29/21)
@@ -723,4 +723,4 @@ def main():
 	
 
 if __name__ == "__main__":
-	main()#Coded by Leeon123
+	main()#Coded by D4rkD3m0n1c
