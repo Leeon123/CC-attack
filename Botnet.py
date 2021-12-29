@@ -1,8 +1,8 @@
 #!/usr/bin/python3
-#Coded by L330n123
+#Coded by D4rkD3m0n1c
 #########################################
 #         Just a little change          #
-#                           -- L330n123 #
+#                           -- D4rkD3m0n1c #
 #########################################
 import requests
 import socket
@@ -24,7 +24,7 @@ print ('''
 	 CC/////  CC/////   | ddos tool |/ 
 	  CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Version 3.6 (2020/12/19)
+Version 3.6 (2021/29/21)
 							C0d3d by L330n123
 ┌─────────────────────────────────────────────┐
 │        Tos: Don't attack .gov website       │
@@ -34,7 +34,7 @@ Version 3.6 (2020/12/19)
 │          [+] Changed Output                 │
 │          [+] Added Url Parser               │
 ├─────────────────────────────────────────────┤
-│ Link: https://github.com/Leeon123/CC-attack │
+│ Link: https://github.com/D4RKD3M0N1C/CC-attack/ │
 └─────────────────────────────────────────────┘''')
 
 acceptall = [
@@ -723,4 +723,4 @@ def main():
 	
 
 if __name__ == "__main__":
-	main()#Coded by Leeon123
+	main()#Coded by D4rkD3m0n1c
