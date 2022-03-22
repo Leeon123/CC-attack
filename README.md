@@ -48,9 +48,34 @@
    -f        | set proxies file (default:socks.txt)
    -b        | enable/disable brute mode
              | Enable=1 Disable=0  (default:0)
-   -s        | set attack period (default:60)
+   -s        | set attack time(default:60)
    -down     | download proxies
    -check    | check proxies
 =====================================================
 ```
-    
+
+## Usage of multiproc.sh
+```
+This script is using for increasing the performance of cc.py.
+Due to the suck performance of python since it has a GIL lock,
+And I am lazy to make a multiprocess version.
+There is a option for linux user to increase their performance of cc.py
+
+This script basicly just run cc.py multiple times to make it "multi-processing"
+
+First, put this script and cc.py in the same folder.
+
+Then prepare the proxies list by yourself or just run "python3 cc.py -down -v 4" (-v socks version)
+
+After that, change the number of process.
+
+At last, change atk_cmd to your command and run the script by "bash multiproc.sh"
+```
+Example setup of multiproc.sh (-v socks version) (-s attack time)
+```
+atk_cmd="python3 cc.py -url http://target.com -v 4 -s 60"
+
+#number of process that you want
+process=10
+
+```
