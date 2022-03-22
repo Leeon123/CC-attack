@@ -8,7 +8,7 @@
 #the command you want to exec
 atk_cmd="python3 cc.py -url http://target.com -v 4 -s 60"
 
-#process number that you want
+#number of process that you want
 process=10
 
 #change the system limit
