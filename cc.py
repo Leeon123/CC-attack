@@ -550,7 +550,7 @@ def PrintHelp():
    -f        | set proxies file (default:socks.txt)
    -b        | enable/disable brute mode
              | Enable=1 Disable=0  (default:0)
-   -s        | set attack period (default:60)
+   -s        | set attack time(default:60)
    -down     | download proxies
    -check    | check proxies
 =====================================================''')
