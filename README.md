@@ -6,12 +6,11 @@
       CCCCC/   CCCCC/   |___________|/
 
 # CC-attack ![](https://img.shields.io/badge/Version-3.7-brightgreen.svg) ![](https://img.shields.io/badge/license-GPLv2-blue.svg)
- A script for using socks4/5 proxies to attack http(s) server.
+ A script for using socks4/5 or http proxies to attack http(s) server.
 
  News:
-- [x] Changed input method. Now using command line arguments
-- [x] Removed indicator 
-- [x] Removed slow attack
+- [x] Added Support of HTTP proxies
+- [x] Added More proxies api to download 
 
  Info:
 - [x] Using Python3
@@ -24,6 +23,10 @@
 - [x] Customize Post Data 
 - [x] Support HTTPS
 - [x] Support Socks4/5
+
+## Showcase
+Using multiproc.sh with socks4 on a vps
+![](https://i.imgur.com/KLJIZs8.png)
 
 ## Install
 
