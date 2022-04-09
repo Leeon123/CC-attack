@@ -46,9 +46,9 @@ Using multiproc.sh with socks4 on a vps
    -data     | set post data path (only works on post mode)
              | (Example: -data data.json)
    -cookies  | set cookies (Example: 'id:xxx;ua:xxx')
-   -v        | set socks version (4/5, default:5)
-   -t        | set threads number (default:400)
-   -f        | set proxies file (default:socks.txt)
+   -v        | set proxy type (4/5/http, default:5)
+   -t        | set threads number (default:800)
+   -f        | set proxies file (default:proxy.txt)
    -b        | enable/disable brute mode
              | Enable=1 Disable=0  (default:0)
    -s        | set attack time(default:60)
