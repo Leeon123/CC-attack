@@ -1,0 +1,43 @@
+#
+#     File: Other/Tunnel
+#  Descrpt: VPNs & Proxies
+# IP Count: 24
+#  Updated: 6/29/2022 14:51 (04:51 PM CST)
+#  Creator: ShadowWhisperer  (Sean H.)
+#
+#  curl -s https://raw.githubusercontent.com/ShadowWhisperer/IPs/main/Other/Tunnel
+#
+
+45.61.187.248    #Air VPN
+
+45.132.225.134   #Express VPN
+45.132.115.243   #Express VPN
+
+212.129.44.3     #FreeVPN.me
+
+185.65.134.180   #Mullvad
+193.32.126.155   #Mullvad
+193.32.127.157   #Mullvad
+
+94.46.223.20     #Nord VPN
+213.34.163.254   #Nord VPN  *Guess
+
+46.246.3.184     #Private Internet Access
+181.214.206.204  #Private Internet Access
+
+185.134.22.93    #Surfshark
+
+176.126.237.207  #VPNBook (Romania)
+176.126.237.214  #VPNBook (Romania)
+176.126.237.217  #VPNBook (Romania)
+192.99.37.222    #VPNBook (Canada)
+198.27.69.198    #VPNBook (Canada)
+37.187.158.97    #VPNBook (France)
+51.68.152.226    #VPNBook (Poland)
+51.68.180.4      #VPNBook (Germany)
+94.23.57.8       #VPNBook (France)
+
+162.253.131.106  #VPN Unlimited
+
+8.30.234.73      #WARP
+8.29.105.93      #WARP
