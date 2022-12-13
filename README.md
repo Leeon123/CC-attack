@@ -11,9 +11,10 @@
 - [ ] Rewrite the whole script(in progress)
 - [x] New Attack Logic
 - [x] New Proxies Downloader and Checker 
-- [x] Multiprocessing
+- [x] Multiprocessing (maybe use concurrent in the future)
 - [ ] Optimization (did some)
 - [ ] More Clear and Clean Coding Style (hopefully?)
+- [ ] Maybe add a mode for using mixed proxies?
  
 ## 2022/12/13
 ##### Updated New Proxies Downloader and Checker
