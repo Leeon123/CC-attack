@@ -15,6 +15,7 @@
 - [ ] Optimization (did some)
 - [ ] More Clear and Clean Coding Style (hopefully?)
 - [ ] Maybe add a mode for using mixed proxies?
+- [ ] BTW, Old Menu(old input method)
  
 ## 2022/12/13
 ##### Updated New Proxies Downloader and Checker
