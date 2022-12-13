@@ -109,7 +109,7 @@ def PrintLogo():
 	 CC/////  CC/////   | ddos tool |/ 
 	  CCCCC/   CCCCC/   |___________|/
 >--------------------------------------------->
-Version Preview
+Version: Preview
 .                             C0d3d by L330n123
 ┌─────────────────────────────────────────────┐
 │        Tos: Don't attack .gov website       │
