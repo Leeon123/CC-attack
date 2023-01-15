@@ -39,11 +39,11 @@ Using multiproc.sh with socks4 on a vps
     git clone https://github.com/Ni3zam/CC-attack.git
     cd CC-attack
     pip3 install -r requirements.txt
-    pip3 cc.py -help
+    python3 cc.py -help
 
 ## Usage
 
-    python3 cc.py <arguments>
+    python cc.py <arguments> / python3 cc.py <arguments>
 
 ```
 ===============  CC-attack help list  ===============
