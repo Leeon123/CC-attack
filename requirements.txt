@@ -1,0 +1,4 @@
+urllib3
+pysocks
+chardet
+requests
