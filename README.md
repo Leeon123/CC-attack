@@ -66,18 +66,10 @@ Using multiproc.sh with socks4 on a vps
 ### Some example of the usage
 Download socks5 proxies as proxy.txt:
 ```
-If you only have one version of python:
-python cc.py -down -f proxy.txt -v 5
-
-If you are using multiple version of python:
 python3 cc.py -down -f proxy.txt -v 5
 ```
 Attack a target with custom proxies list(socks4.txt) for 30 seconds :
 ```
-If you only have one version of python:
-python cc.py -url http://target.com -f socks4.txt -v 4 -s 30
-
-If you are using multiple version of python:
 python3 cc.py -url http://target.com -f socks4.txt -v 4 -s 30
 ```
 
