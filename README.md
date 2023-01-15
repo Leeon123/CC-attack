@@ -10,7 +10,7 @@
 
  News:
 - [x] Added Support of HTTP proxies
-- [x] Added More proxies api to download 
+- [x] Updated proxy list based on rewritten script.
 
  Info:
 - [x] Using Python3
