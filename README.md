@@ -15,8 +15,13 @@
 - [ ] Optimization (did some)
 - [ ] More Clear and Clean Coding Style (hopefully?)
 - [ ] Maybe add a mode for using mixed proxies?
-- [ ] BTW, Old Menu(old input method)
- 
+- [x] BTW, Old Interface(old input method)
+- [ ] Communicate function (for controlling multiple instances) 
+
+## 2023/5/21
+##### Added old interface back
+##### Someone may like it
+
 ## 2022/12/13
 ##### Updated New Proxies Downloader and Checker
 ###### They are (really) fast
