@@ -18,6 +18,11 @@
 - [x] BTW, Old Interface(old input method)
 - [ ] Communicate function (for controlling multiple instances) 
 
+## 2023/10/13
+##### Added HTTP2 Support
+###### Haven't got enough test, may have bug or errors, 
+###### or even the request payload is wrong
+
 ## 2023/5/21
 ##### Added old interface back
 ##### Someone may like it
